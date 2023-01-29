@@ -11,6 +11,16 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h3><%= player.first_name %> <%= player.last_name %> <%= player.position %></h3>
+        <form action="/pages/teams/add/players/<%= player.id %>" method="POST">
+            <select name="position" id="position">
+                <option value="C">Center</option>
+                <option value="PF">Power Forward</option>
+                <option value="SF">Small Forward</option>
+                <option value="SG">Shooting Guard</option>
+                <option value="PG">Point Guard</option>
+            </select>
+            <button>Add</button>
+        </form>
     </div>
 </body>
 </html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <%- include("_navbar.ejs") %>
+        Center: 
+        <% if(team.center){ %>
+        <%= team.center.first_name %> <%= team.center.last_name %> <br>
+        <% } %>
+        Small Forward:
+        <% if(team.smallForward){ %>
+        <%= team.smallForward.first_name %> <%= team.smallForward.last_name %> <br>
+        <% } %>
+        Power Forward: 
+        <% if(team.powerForward){ %>
+        <%= team.powerForward.first_name %> <%= team.powerForward.last_name %> <br>
+        <% } %>
+        Shooting Guard:
+        <% if(team.shootingGuard){ %>
+        <%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %> <br>
+        <% } %>
+        Point Guard: 
+        <% if(team.pointGuard){ %>
+        <%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %>
+        <% } %>
+    </div>
+</body>
+</html>

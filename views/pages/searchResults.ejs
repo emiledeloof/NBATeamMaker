@@ -10,10 +10,14 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
+        <form action="/pages/search" method="POST">
+            <input type="text" name="search" id="search">
+            <button>Search</button>
+        </form>
         <% results.forEach(result => { %>
-            <a href="/pages/players/<%= result.data[0].id %>">
+            <a href="/pages/players/<%= result.id %>">
                 <div class="card">
-                    <%= result.data[0].first_name %> <%= result.data[0].last_name %>
+                    <%= result.first_name %> <%= result.last_name %>
                 </div>
             </a>
         <% }) %>
