@@ -9,6 +9,14 @@ mongoose.connect("mongodb://localhost:27017/NBA")
 app.set("view engine", "ejs")
 app.use(express.static("style"))
 app.use(express.urlencoded({ extended: false }));
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
 
 app.get("/", (req, res) => {
     res.render("pages/index")

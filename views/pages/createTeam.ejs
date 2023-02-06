@@ -12,8 +12,68 @@
         <%- include("_navbar.ejs") %>
         <h2>Create team</h2>
         <form action="/pages/teams/create">
-            
+            Point guard: <label id="PG"></label>
+            <a class="button PG">Add player</a>
+            <br> Shooting guard: <label id="SG"></label>
+            <a class="button SG">Add player</a>
+            <br> Small forward: <label id="SF"></label>
+            <a class="button SF">Add player</a>
+            <br> Power forward: <label id="PF"></label>
+            <a class="button PF">Add player</a>
+            <br> Center: <label id="C"></label>
+            <a class="button C">Add player</a>
         </form>
+        <div id="searchPlayer">
+            <h3>Search for player</h3>
+            <input type="text" id="searchInput">
+            <button onclick="search()">Search</button>
+            <div id="searchResults"></div>
+        </div>
     </div>
+    <script>
+        let seachPlayer = document.getElementById("searchPlayer")
+        let position
+        document.addEventListener("click", async (e) => {
+            if(e.target.classList.contains("button")){
+                position = e.target.classList[1]
+                searchPlayer.style.display = "block"
+            }
+            if(e.target.classList.contains("addPlayer")){
+                let playerName = e.target.parentNode.childNodes[0].innerText
+                let playerId = e.target.parentNode.childNodes[2].innerText
+                document.getElementById(position).innerText = playerName
+                document.querySelector("." + position).remove()
+                await fetch(`http://127.0.0.1:5001/pages/teams/add/players/${playerId}?position=${position}`, {
+                    method: "POST",
+                    body: JSON.stringify({position: position})
+                })
+                .then(response => console.log(response))
+            }
+        })
+        function search(){
+            let resultsWrapper = document.getElementById("searchResults")
+            let input = document.getElementById("searchInput").value
+            fetch(`https://www.balldontlie.io/api/v1/players?search=${input}`)
+            .then(response => response.text())
+            .then(text => {
+                let parsed = JSON.parse(text);
+                parsed.data.forEach(player => {
+                    let createdLabel = document.createElement("label");
+                    let createdButton = document.createElement("button")
+                    let createdDiv = document.createElement("div")
+                    let idLabel = document.createElement("label")
+                    createdButton.innerText = "Add player"
+                    createdButton.classList.add("addPlayer")
+                    createdLabel.innerText = player.first_name + " " + player.last_name
+                    idLabel.innerText = player.id
+                    idLabel.style.display = "none"
+                    createdDiv.append(createdLabel)
+                    createdDiv.append(createdButton)
+                    createdDiv.append(idLabel)
+                    resultsWrapper.append(createdDiv)
+                })
+            })
+        }
+    </script>
 </body>
 </html>

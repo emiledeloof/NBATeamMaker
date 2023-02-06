@@ -40,7 +40,7 @@ router.post("/teams/add/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     req.team = new Team()
     let team = req.team
-    switch(req.body.position){
+    switch(req.body.position || req.query.position){
         case "C":
             team.center = player.data
             break;
