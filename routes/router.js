@@ -38,8 +38,14 @@ router.post("/users/register", (req, res) => {
 // add player to team POST
 router.post("/teams/add/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
-    req.team = new Team()
-    let team = req.team
+    let team
+    if(await Team.findOne({name: req.query.teamName})){
+        team = await Team.findOne({name: req.query.teamName})
+    } else {
+        req.team = new Team()
+        team = req.team
+        team.name = req.query.teamName
+    }
     switch(req.body.position || req.query.position){
         case "C":
             team.center = player.data
@@ -62,7 +68,7 @@ router.post("/teams/add/players/:id", async (req, res) => {
     } catch(e){
         console.log(e)
     }
-    res.redirect("/")
+    res.redirect("/")  
 })
 
 // show all teams

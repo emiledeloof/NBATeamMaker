@@ -2,7 +2,8 @@ const mongoose = require("mongoose")
 
 const schema = new mongoose.Schema({
     name:{
-        type: String
+        type: String,
+        unique: true
     },
     center: {
         

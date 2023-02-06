@@ -10,29 +10,36 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
-        <h2>Create team</h2>
-        <form action="/pages/teams/create">
-            Point guard: <label id="PG"></label>
-            <a class="button PG">Add player</a>
-            <br> Shooting guard: <label id="SG"></label>
-            <a class="button SG">Add player</a>
-            <br> Small forward: <label id="SF"></label>
-            <a class="button SF">Add player</a>
-            <br> Power forward: <label id="PF"></label>
-            <a class="button PF">Add player</a>
-            <br> Center: <label id="C"></label>
-            <a class="button C">Add player</a>
-        </form>
-        <div id="searchPlayer">
-            <h3>Search for player</h3>
-            <input type="text" id="searchInput">
-            <button onclick="search()">Search</button>
-            <div id="searchResults"></div>
+        <div class="createTeamConfirm">
+            <input type="text" placeholder="Team name" id="teamName">
+            <button id="createTeamName">Start creating!</button>
+        </div>
+        <div class="createTeamWrapper">
+            <h2>Create team</h2>
+            <div class="createTeam">
+                Point guard: <label id="PG"></label>
+                <a class="button PG">Add player</a>
+                <br> Shooting guard: <label id="SG"></label>
+                <a class="button SG">Add player</a>
+                <br> Small forward: <label id="SF"></label>
+                <a class="button SF">Add player</a>
+                <br> Power forward: <label id="PF"></label>
+                <a class="button PF">Add player</a>
+                <br> Center: <label id="C"></label>
+                <a class="button C">Add player</a>
+            </div>
+            <div id="searchPlayer">
+                <h3>Search for player</h3>
+                <input type="text" id="searchInput">
+                <button onclick="search()">Search</button>
+                <div id="searchResults"></div>
+            </div>
         </div>
     </div>
     <script>
         let seachPlayer = document.getElementById("searchPlayer")
         let position
+        let teamName
         document.addEventListener("click", async (e) => {
             if(e.target.classList.contains("button")){
                 position = e.target.classList[1]
@@ -43,15 +50,21 @@
                 let playerId = e.target.parentNode.childNodes[2].innerText
                 document.getElementById(position).innerText = playerName
                 document.querySelector("." + position).remove()
-                await fetch(`http://127.0.0.1:5001/pages/teams/add/players/${playerId}?position=${position}`, {
+                await fetch(`http://127.0.0.1:5001/pages/teams/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST",
                     body: JSON.stringify({position: position})
                 })
                 .then(response => console.log(response))
             }
+            if(e.target.id == "createTeamName"){
+                teamName = document.getElementById("teamName").value
+            }
         })
         function search(){
             let resultsWrapper = document.getElementById("searchResults")
+            resultsWrapper.childNodes.forEach(child => {
+                child.remove()
+            })
             let input = document.getElementById("searchInput").value
             fetch(`https://www.balldontlie.io/api/v1/players?search=${input}`)
             .then(response => response.text())
