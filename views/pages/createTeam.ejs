@@ -50,6 +50,7 @@
                 let playerId = e.target.parentNode.childNodes[2].innerText
                 document.getElementById(position).innerText = playerName
                 document.querySelector("." + position).remove()
+                document.getElementById("searchPlayer").style.display = "none"
                 await fetch(`http://127.0.0.1:5001/pages/teams/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST"
                 })
@@ -57,6 +58,12 @@
             }
             if(e.target.id == "createTeamName"){
                 teamName = document.getElementById("teamName").value
+                if(teamName){
+                    document.querySelector(".createTeamWrapper").style.display = "block"
+                    document.querySelector(".createTeamConfirm").style.display = "none"
+                } else{
+                    alert("Please enter a team name before getting started.")
+                }
             }
         })
         function search(){

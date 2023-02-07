@@ -12,9 +12,9 @@ nav a{
     display: none;
 }
 
-/* .createTeamWrapper{
+.createTeamWrapper{
     display: none;
-} */
+}
 
 .teamCardWrapper a{
     color: white;
