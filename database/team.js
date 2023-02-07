@@ -19,6 +19,9 @@ const schema = new mongoose.Schema({
     },
     pointGuard: {
         
+    },
+    userId:{
+        
     }
 })
 

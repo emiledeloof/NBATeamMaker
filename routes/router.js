@@ -7,20 +7,6 @@ const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const algorith = "aes-256-cbc"
 
-// search
-router.post("/search", async(req, res) => {
-    let request = await axios.get(`${URL}/players?search=${req.body.search}`)
-    res.render("pages/searchResults", {search: req.body.search, results: request.data.data})
-})
-
-// player info
-router.get("/players/:id", async (req, res) => {
-    let player = await axios.get(`${URL}/players/${req.params.id}`)
-    res.render("pages/playerDetails", {
-        player: player.data
-    })
-})
-
 // register
 router.get("/users/register", (req, res) => {
     res.render("pages/register")
@@ -39,6 +25,20 @@ router.post("/users/register", async (req, res) => {
         console.log(e)
     }
     res.redirect("/")
+})
+
+// search
+router.post("/search", async(req, res) => {
+    let request = await axios.get(`${URL}/players?search=${req.body.search}`)
+    res.render("pages/searchResults", {search: req.body.search, results: request.data.data})
+})
+
+// player info
+router.get("/players/:id", async (req, res) => {
+    let player = await axios.get(`${URL}/players/${req.params.id}`)
+    res.render("pages/playerDetails", {
+        player: player.data
+    })
 })
 
 // add player to team POST

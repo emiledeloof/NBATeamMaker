@@ -51,7 +51,7 @@
                 document.getElementById(position).innerText = playerName
                 document.querySelector("." + position).remove()
                 document.getElementById("searchPlayer").style.display = "none"
-                await fetch(`http://127.0.0.1:5001/pages/teams/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
+                await fetch(`${process.env.URL}/pages/teams/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST"
                 })
                 .then(response => console.log(response))
