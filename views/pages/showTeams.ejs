@@ -10,11 +10,20 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
-        <% teams.forEach(team => { %>
-            <a href="/pages/teams/<%= team._id %>/view">
-                <%= team.name %>
-            </a>
-        <% }) %>
+        <div id="teamsWrapper">
+            <% teams.forEach(team => { %>
+                <div class="teamCardWrapper">    
+                    <a href="/pages/teams/<%= team._id %>/view">
+                        <div class="teamCard">
+                            <%= team.name %>
+                        </div>
+                    </a>
+                    <form action="/pages/teams/<%= team._id %>/delete" method="POST">
+                        <button>Delete</button>
+                    </form>
+                </div>
+            <% }) %>
+        </div>
     </div>
 </body>
 </html>

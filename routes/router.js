@@ -68,7 +68,7 @@ router.post("/teams/add/players/:id", async (req, res) => {
     } catch(e){
         console.log(e)
     }
-    res.redirect("/")  
+    res.end()
 })
 
 // show all teams
@@ -86,6 +86,12 @@ router.get("/teams/:id/view", async(req, res) => {
 // create new team
 router.get("/teams/create", (req, res) => {
     res.render("pages/createTeam")
+})
+
+// delete team POST
+router.post("/teams/:id/delete", async(req, res) => {
+    await Team.findByIdAndDelete(req.params.id)
+    res.redirect("/pages/teams/show")
 })
 
 module.exports = router
