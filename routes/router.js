@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV !== "production"){
+    require("dotenv").config();
+}
+
 const express = require("express")
 const axios = require("axios")
 const crypto = require("crypto")
@@ -91,7 +95,7 @@ router.get("/teams/:id/view", async(req, res) => {
 
 // create new team
 router.get("/teams/create", (req, res) => {
-    res.render("pages/createTeam")
+    res.render("pages/createTeam", {url: process.env.URL})
 })
 
 // delete team POST
