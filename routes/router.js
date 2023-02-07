@@ -80,7 +80,6 @@ router.get("/teams/show", async(req, res) => {
 // view team
 router.get("/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
-    console.log(team)
     res.render("pages/team", {team: team})
 })
 

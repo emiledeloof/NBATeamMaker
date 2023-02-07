@@ -12,7 +12,7 @@
         <%- include("_navbar.ejs") %>
         <% teams.forEach(team => { %>
             <a href="/pages/teams/<%= team._id %>/view">
-                <%= team._id %>
+                <%= team.name %>
             </a>
         <% }) %>
     </div>

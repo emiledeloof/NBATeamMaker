@@ -4,7 +4,7 @@ const router = require("./routes/router")
 const app = express()
 const PORT = 5001
 
-mongoose.connect("mongodb://localhost:27017/NBA")
+mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority")
 
 app.set("view engine", "ejs")
 app.use(express.static("style"))

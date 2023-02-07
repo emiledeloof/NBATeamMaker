@@ -10,9 +10,13 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
-        Center: 
-        <% if(team.center){ %>
-        <%= team.center.first_name %> <%= team.center.last_name %> <br>
+        Point Guard: 
+        <% if(team.pointGuard){ %>
+        <%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> <br>
+        <% } %>
+        Shooting Guard:
+        <% if(team.shootingGuard){ %>
+        <%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %> <br>
         <% } %>
         Small Forward:
         <% if(team.smallForward){ %>
@@ -22,13 +26,9 @@
         <% if(team.powerForward){ %>
         <%= team.powerForward.first_name %> <%= team.powerForward.last_name %> <br>
         <% } %>
-        Shooting Guard:
-        <% if(team.shootingGuard){ %>
-        <%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %> <br>
-        <% } %>
-        Point Guard: 
-        <% if(team.pointGuard){ %>
-        <%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %>
+        Center: 
+        <% if(team.center){ %>
+        <%= team.center.first_name %> <%= team.center.last_name %> <br>
         <% } %>
     </div>
 </body>
