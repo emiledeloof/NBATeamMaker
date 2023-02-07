@@ -27,12 +27,18 @@ router.get("/users/register", (req, res) => {
 })
 
 // register POST
-router.post("/users/register", (req, res) => {
+router.post("/users/register", async (req, res) => {
     req.user = new User()
     let user = req.user
     user.username = req.body.username
     user.email = req.body.email
-    
+    user.password = req.body.password
+    try{
+        await user.save()
+    } catch (e){
+        console.log(e)
+    }
+    res.redirect("/")
 })
 
 // add player to team POST
