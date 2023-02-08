@@ -28,7 +28,32 @@ router.post("/users/register", async (req, res) => {
     } catch (e){
         console.log(e)
     }
-    res.redirect("/")
+    res.redirect(`/pages/users/${user._id}`)
+})
+
+// dashboard
+router.get("/users/:id", async(req, res) => {
+    res.render("pages/dashboard")
+})
+
+// login
+router.get("/login", (req, res) => {
+    res.render("pages/login")
+})
+
+// login POST
+router.post("/users/login", async (req, res) => {
+    let user
+    let confirmedUser
+    try{
+        user = await User.findOne({username: req.body.username})
+        if(user.password == req.body.password){
+            confirmedUser = user
+        }
+    } catch (e){
+        console.log(e)
+    }
+    res.redirect(`/pages/users/${user._id}`)
 })
 
 // search
