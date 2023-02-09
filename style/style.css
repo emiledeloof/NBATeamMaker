@@ -48,3 +48,30 @@ nav a{
     display: grid;
     grid-template-columns: 150px 150px;
 }
+
+#statsOverlay{
+    display: none;
+    position: absolute;
+    padding: 0px 20px 20px 20px;
+    border: 1px solid white;
+    border-radius: 7px;
+    background-color: #333;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+}
+
+#closeOverlay{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#closeWrapper{
+    position: relative;
+}
+
+#closeWrapper:hover{
+    cursor: pointer;
+}
