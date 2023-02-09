@@ -40,8 +40,10 @@ router.post("/search", async(req, res) => {
 // player info
 router.get("/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
+    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
     res.render("pages/playerDetails", {
-        player: player.data
+        player: player.data,
+        stats: stats.data.data[0]
     })
 })
 
