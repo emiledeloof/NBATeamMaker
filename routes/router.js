@@ -67,7 +67,7 @@ router.get("/players/:id", async (req, res) => {
 })
 
 // add player to team POST
-router.post("/teams/add/players/:id", async (req, res) => {
+router.post("/teams/users/:userId/add/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let team
     if(await Team.findOne({name: req.query.teamName})){
@@ -76,6 +76,7 @@ router.post("/teams/add/players/:id", async (req, res) => {
         req.team = new Team()
         team = req.team
         team.name = req.query.teamName
+        team.userId = req.params.userId
     }
     switch(req.body.position || req.query.position){
         case "C":
@@ -116,7 +117,8 @@ router.get("/teams/:id/view", async(req, res) => {
 
 // create new team
 router.get("/users/:userId/teams/create", (req, res) => {
-    res.render("pages/createTeam", {userId: req.params.userId})
+    let url = process.env.URL
+    res.render("pages/createTeam", {userId: req.params.userId, url: url})
 })
 
 // delete team POST
