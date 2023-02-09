@@ -105,14 +105,14 @@ router.post("/teams/users/:userId/add/players/:id", async (req, res) => {
 
 // show all teams
 router.get("/users/:userId/teams/show", async(req, res) => {
-    let teams = await Team.find()
+    let teams = await Team.find({userId: req.params.userId})
     res.render("pages/showTeams", {teams: teams, userId: req.params.userId})
 })
 
 // view team
 router.get("/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
-    res.render("pages/team", {team: team})
+    res.render("pages/team", {team: team, userId: req.params.userId})
 })
 
 // create new team
