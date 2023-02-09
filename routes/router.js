@@ -90,7 +90,8 @@ router.get("/teams/show", async(req, res) => {
 // view team
 router.get("/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
-    res.render("pages/team", {team: team})
+    let url = process.env.URL
+    res.render("pages/team", {team: team, url: url})
 })
 
 // create new team

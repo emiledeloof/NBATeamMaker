@@ -16,58 +16,131 @@
                 Point Guard: 
             </div>
             <div class="gridItem">
+                <label id="PG">
                 <% if(team.pointGuard){ %>
-                <%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> <br>
+                    <%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> <br>
                 <% } %>
+                </label>
             </div>
             <div class="gridItem">
-                <a class="editPlayer">Edit player</a>
+                <a class="button PG">Edit player</a>
             </div>
             <div class="gridItem">
                 Shooting Guard:
             </div>
             <div class="gridItem">
+                <label id="SG">
                 <% if(team.shootingGuard){ %>
-                <%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %> <br>
+                    <%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %> <br>
                 <% } %>
+                </label>
             </div>
             <div class="gridItem">
-                <a class="editPlayer">Edit player</a>
+                <a class="button SG">Edit player</a>
             </div>
             <div class="gridItem">
                 Small Forward:
             </div>
             <div class="gridItem">
+                <label id="SF">
                 <% if(team.smallForward){ %>
-                <%= team.smallForward.first_name %> <%= team.smallForward.last_name %> <br>
+                    <%= team.smallForward.first_name %> <%= team.smallForward.last_name %> <br>
                 <% } %>
+                </label>
             </div>
             <div class="gridItem">
-                <a class="editPlayer">Edit player</a>
+                <a class="button SF">Edit player</a>
             </div>
             <div class="gridItem">
                 Power Forward: 
             </div>
             <div class="gridItem">
+                <label id="PF">
                 <% if(team.powerForward){ %>
-                <%= team.powerForward.first_name %> <%= team.powerForward.last_name %> <br>
+                    <%= team.powerForward.first_name %> <%= team.powerForward.last_name %> <br>
                 <% } %>
+                </label>
             </div>
             <div class="gridItem">
-                <a class="editPlayer">Edit player</a>
+                <a class="button PF">Edit player</a>
             </div>
             <div class="gridItem">
                 Center: 
             </div>
             <div class="gridItem">
+                <label id="C">
                 <% if(team.center){ %>
-                <%= team.center.first_name %> <%= team.center.last_name %> <br>
+                    <%= team.center.first_name %> <%= team.center.last_name %> <br>
                 <% } %>
+                </label>
             </div>
             <div class="gridItem">
-                <a class="editPlayer">Edit player</a>
+                <a class="button C">Edit player</a>
             </div>
         </div>
+        <div id="searchPlayer">
+            <h3>Search for player</h3>
+            <input type="text" id="searchInput">
+            <button onclick="search()">Search</button>
+            <div id="searchResults"></div>
+        </div>
     </div>
+    <script>
+        let seachPlayer = document.getElementById("searchPlayer")
+        let position
+        let teamName
+        document.addEventListener("click", async (e) => {
+            if(e.target.classList.contains("button")){
+                position = e.target.classList[1]
+                searchPlayer.style.display = "block"
+            }
+            if(e.target.classList.contains("addPlayer")){
+                let playerName = e.target.parentNode.childNodes[0].innerText
+                let playerId = e.target.parentNode.childNodes[2].innerText
+                document.getElementById(position).innerText = playerName
+                document.getElementById("searchPlayer").style.display = "none"
+                await fetch(`<%= url %>/pages/teams/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
+                    method: "POST"
+                })
+                .then(response => console.log(response))
+            }
+            if(e.target.id == "createTeamName"){
+                teamName = document.getElementById("teamName").value
+                if(teamName){
+                    document.querySelector(".createTeamWrapper").style.display = "block"
+                    document.querySelector(".createTeamConfirm").style.display = "none"
+                } else{
+                    alert("Please enter a team name before getting started.")
+                }
+            }
+        })
+        function search(){
+            let resultsWrapper = document.getElementById("searchResults")
+            resultsWrapper.childNodes.forEach(child => {
+                child.remove()
+            })
+            let input = document.getElementById("searchInput").value
+            fetch(`https://www.balldontlie.io/api/v1/players?search=${input}`)
+            .then(response => response.text())
+            .then(text => {
+                let parsed = JSON.parse(text);
+                parsed.data.forEach(player => {
+                    let createdLabel = document.createElement("label");
+                    let createdButton = document.createElement("button")
+                    let createdDiv = document.createElement("div")
+                    let idLabel = document.createElement("label")
+                    createdButton.innerText = "Add player"
+                    createdButton.classList.add("addPlayer")
+                    createdLabel.innerText = player.first_name + " " + player.last_name
+                    idLabel.innerText = player.id
+                    idLabel.style.display = "none"
+                    createdDiv.append(createdLabel)
+                    createdDiv.append(createdButton)
+                    createdDiv.append(idLabel)
+                    resultsWrapper.append(createdDiv)
+                })
+            })
+        }
+    </script>
 </body>
 </html>
