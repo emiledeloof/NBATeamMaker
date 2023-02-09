@@ -10,26 +10,64 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
-        Point Guard: 
-        <% if(team.pointGuard){ %>
-        <%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> <br>
-        <% } %>
-        Shooting Guard:
-        <% if(team.shootingGuard){ %>
-        <%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %> <br>
-        <% } %>
-        Small Forward:
-        <% if(team.smallForward){ %>
-        <%= team.smallForward.first_name %> <%= team.smallForward.last_name %> <br>
-        <% } %>
-        Power Forward: 
-        <% if(team.powerForward){ %>
-        <%= team.powerForward.first_name %> <%= team.powerForward.last_name %> <br>
-        <% } %>
-        Center: 
-        <% if(team.center){ %>
-        <%= team.center.first_name %> <%= team.center.last_name %> <br>
-        <% } %>
+        <h2><%= team.name %></h2>
+        <div class="grid">
+            <div class="gridItem">
+                Point Guard: 
+            </div>
+            <div class="gridItem">
+                <% if(team.pointGuard){ %>
+                <%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> <br>
+                <% } %>
+            </div>
+            <div class="gridItem">
+                <a class="editPlayer">Edit player</a>
+            </div>
+            <div class="gridItem">
+                Shooting Guard:
+            </div>
+            <div class="gridItem">
+                <% if(team.shootingGuard){ %>
+                <%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %> <br>
+                <% } %>
+            </div>
+            <div class="gridItem">
+                <a class="editPlayer">Edit player</a>
+            </div>
+            <div class="gridItem">
+                Small Forward:
+            </div>
+            <div class="gridItem">
+                <% if(team.smallForward){ %>
+                <%= team.smallForward.first_name %> <%= team.smallForward.last_name %> <br>
+                <% } %>
+            </div>
+            <div class="gridItem">
+                <a class="editPlayer">Edit player</a>
+            </div>
+            <div class="gridItem">
+                Power Forward: 
+            </div>
+            <div class="gridItem">
+                <% if(team.powerForward){ %>
+                <%= team.powerForward.first_name %> <%= team.powerForward.last_name %> <br>
+                <% } %>
+            </div>
+            <div class="gridItem">
+                <a class="editPlayer">Edit player</a>
+            </div>
+            <div class="gridItem">
+                Center: 
+            </div>
+            <div class="gridItem">
+                <% if(team.center){ %>
+                <%= team.center.first_name %> <%= team.center.last_name %> <br>
+                <% } %>
+            </div>
+            <div class="gridItem">
+                <a class="editPlayer">Edit player</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>

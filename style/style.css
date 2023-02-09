@@ -34,3 +34,12 @@ nav a{
     border-radius: 7px;
     margin-bottom: 10px;
 }
+
+.grid{
+    display: grid;
+    grid-template-columns: 150px 150px 150px;
+}
+
+.gridItem{
+    margin-top: 10px;
+}
