@@ -29,7 +29,7 @@ router.post("/users/register", async (req, res) => {
 
 // dashboard
 router.get("/users/:id", async(req, res) => {
-    res.render("pages/dashboard")
+    res.render("pages/dashboard", {userId: req.params.id})
 })
 
 // login
@@ -103,9 +103,9 @@ router.post("/teams/add/players/:id", async (req, res) => {
 })
 
 // show all teams
-router.get("/teams/show", async(req, res) => {
+router.get("/users/:userId/teams/show", async(req, res) => {
     let teams = await Team.find()
-    res.render("pages/showTeams", {teams: teams})
+    res.render("pages/showTeams", {teams: teams, userId: req.params.userId})
 })
 
 // view team
@@ -115,8 +115,8 @@ router.get("/teams/:id/view", async(req, res) => {
 })
 
 // create new team
-router.get("/teams/create", (req, res) => {
-    res.render("pages/createTeam")
+router.get("/users/:userId/teams/create", (req, res) => {
+    res.render("pages/createTeam", {userId: req.params.userId})
 })
 
 // delete team POST
