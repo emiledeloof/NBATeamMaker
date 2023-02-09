@@ -81,6 +81,35 @@ router.post("/teams/add/players/:id", async (req, res) => {
     res.end()
 })
 
+// edit player on team POST
+router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
+    let player = await axios.get(`${URL}/players/${req.params.id}`)
+    let team = await Team.findById(req.params.teamId)
+    switch(req.body.position || req.query.position){
+        case "C":
+            team.center = player.data
+            break;
+        case "PF":
+            team.powerForward = player.data
+            break;
+        case "SF":
+            team.smallForward = player.data
+            break;
+        case "SG":
+            team.shootingGuard = player.data
+            break;
+        case "PG":
+            team.pointGuard = player.data
+            break;
+    }
+    try{
+        team = await team.save()
+    } catch(e){
+        console.log(e)
+    }
+    res.end()
+})
+
 // show all teams
 router.get("/teams/show", async(req, res) => {
     let teams = await Team.find()

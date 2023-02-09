@@ -88,7 +88,6 @@
     <script>
         let seachPlayer = document.getElementById("searchPlayer")
         let position
-        let teamName
         document.addEventListener("click", async (e) => {
             if(e.target.classList.contains("button")){
                 position = e.target.classList[1]
@@ -99,19 +98,10 @@
                 let playerId = e.target.parentNode.childNodes[2].innerText
                 document.getElementById(position).innerText = playerName
                 document.getElementById("searchPlayer").style.display = "none"
-                await fetch(`<%= url %>/pages/teams/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
+                await fetch(`<%= url %>/pages/teams/<%= team._id %>/edit/players/${playerId}?position=${position}`, {
                     method: "POST"
                 })
                 .then(response => console.log(response))
-            }
-            if(e.target.id == "createTeamName"){
-                teamName = document.getElementById("teamName").value
-                if(teamName){
-                    document.querySelector(".createTeamWrapper").style.display = "block"
-                    document.querySelector(".createTeamConfirm").style.display = "none"
-                } else{
-                    alert("Please enter a team name before getting started.")
-                }
             }
         })
         function search(){
