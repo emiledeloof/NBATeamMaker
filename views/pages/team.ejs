@@ -10,26 +10,127 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
-        Point Guard: 
-        <% if(team.pointGuard){ %>
-        <%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> <br>
-        <% } %>
-        Shooting Guard:
-        <% if(team.shootingGuard){ %>
-        <%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %> <br>
-        <% } %>
-        Small Forward:
-        <% if(team.smallForward){ %>
-        <%= team.smallForward.first_name %> <%= team.smallForward.last_name %> <br>
-        <% } %>
-        Power Forward: 
-        <% if(team.powerForward){ %>
-        <%= team.powerForward.first_name %> <%= team.powerForward.last_name %> <br>
-        <% } %>
-        Center: 
-        <% if(team.center){ %>
-        <%= team.center.first_name %> <%= team.center.last_name %> <br>
-        <% } %>
+        <h2><%= team.name %></h2>
+        <div class="grid">
+            <div class="gridItem">
+                Point Guard: 
+            </div>
+            <div class="gridItem">
+                <label id="PG">
+                <% if(team.pointGuard){ %>
+                    <a href="/pages/players/<%= team.pointGuard.id %>"><%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> </a><br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                <a class="button PG">Edit player</a>
+            </div>
+            <div class="gridItem">
+                Shooting Guard:
+            </div>
+            <div class="gridItem">
+                <label id="SG">
+                <% if(team.shootingGuard){ %>
+                    <a href="/pages/players/<%= team.shootingGuard.id %>"><%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %></a> <br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                <a class="button SG">Edit player</a>
+            </div>
+            <div class="gridItem">
+                Small Forward:
+            </div>
+            <div class="gridItem">
+                <label id="SF">
+                <% if(team.smallForward){ %>
+                    <a href="/pages/players/<%= team.smallForward.id %>"><%= team.smallForward.first_name %> <%= team.smallForward.last_name %></a> <br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                <a class="button SF">Edit player</a>
+            </div>
+            <div class="gridItem">
+                Power Forward: 
+            </div>
+            <div class="gridItem">
+                <label id="PF">
+                <% if(team.powerForward){ %>
+                    <a href="/pages/players/<%= team.powerForward.id %>"><%= team.powerForward.first_name %> <%= team.powerForward.last_name %></a> <br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                <a class="button PF">Edit player</a>
+            </div>
+            <div class="gridItem">
+                Center: 
+            </div>
+            <div class="gridItem">
+                <label id="C">
+                <% if(team.center){ %>
+                    <a href="/pages/players/<%= team.center.id %>"><%= team.center.first_name %> <%= team.center.last_name %></a> <br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                <a class="button C">Edit player</a>
+            </div>
+        </div>
+        <div id="searchPlayer">
+            <h3>Search for player</h3>
+            <input type="text" id="searchInput">
+            <button onclick="search()">Search</button>
+            <div id="searchResults"></div>
+        </div>
     </div>
+    <script>
+        let seachPlayer = document.getElementById("searchPlayer")
+        let position
+        document.addEventListener("click", async (e) => {
+            if(e.target.classList.contains("button")){
+                position = e.target.classList[1]
+                searchPlayer.style.display = "block"
+            }
+            if(e.target.classList.contains("addPlayer")){
+                let playerName = e.target.parentNode.childNodes[0].innerText
+                let playerId = e.target.parentNode.childNodes[2].innerText
+                document.getElementById(position).innerText = playerName
+                document.getElementById("searchPlayer").style.display = "none"
+                await fetch(`<%= url %>/pages/teams/<%= team._id %>/edit/players/${playerId}?position=${position}`, {
+                    method: "POST"
+                })
+                .then(response => console.log(response))
+            }
+        })
+        function search(){
+            let resultsWrapper = document.getElementById("searchResults")
+            resultsWrapper.childNodes.forEach(child => {
+                child.remove()
+            })
+            let input = document.getElementById("searchInput").value
+            fetch(`https://www.balldontlie.io/api/v1/players?search=${input}`)
+            .then(response => response.text())
+            .then(text => {
+                let parsed = JSON.parse(text);
+                parsed.data.forEach(player => {
+                    let createdLabel = document.createElement("label");
+                    let createdButton = document.createElement("button")
+                    let createdDiv = document.createElement("div")
+                    let idLabel = document.createElement("label")
+                    createdButton.innerText = "Add player"
+                    createdButton.classList.add("addPlayer")
+                    createdLabel.innerText = player.first_name + " " + player.last_name
+                    idLabel.innerText = player.id
+                    idLabel.style.display = "none"
+                    createdDiv.append(createdLabel)
+                    createdDiv.append(createdButton)
+                    createdDiv.append(idLabel)
+                    resultsWrapper.append(createdDiv)
+                })
+            })
+        }
+    </script>
 </body>
 </html>

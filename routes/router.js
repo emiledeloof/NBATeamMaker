@@ -10,6 +10,7 @@ const Team = require("./../database/team")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const algorith = "aes-256-cbc"
+const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
 
 // register
 router.get("/users/register", (req, res) => {
@@ -65,8 +66,13 @@ router.post("/search", async(req, res) => {
 // player info
 router.get("/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
+    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
+    let allPlayers = await axios.get(nbaURL)
+    let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
     res.render("pages/playerDetails", {
-        player: player.data
+        player: player.data,
+        stats: stats.data.data[0],
+        personId: nbaPlayer.personId
     })
 })
 
@@ -107,6 +113,35 @@ router.post("/teams/users/:userId/add/players/:id", async (req, res) => {
     res.end()
 })
 
+// edit player on team POST
+router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
+    let player = await axios.get(`${URL}/players/${req.params.id}`)
+    let team = await Team.findById(req.params.teamId)
+    switch(req.body.position || req.query.position){
+        case "C":
+            team.center = player.data
+            break;
+        case "PF":
+            team.powerForward = player.data
+            break;
+        case "SF":
+            team.smallForward = player.data
+            break;
+        case "SG":
+            team.shootingGuard = player.data
+            break;
+        case "PG":
+            team.pointGuard = player.data
+            break;
+    }
+    try{
+        team = await team.save()
+    } catch(e){
+        console.log(e)
+    }
+    res.end()
+})
+
 // show all teams
 router.get("/users/:userId/teams/show", async(req, res) => {
     let teams = await Team.find({userId: req.params.userId})
@@ -116,7 +151,8 @@ router.get("/users/:userId/teams/show", async(req, res) => {
 // view team
 router.get("/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
-    res.render("pages/team", {team: team, userId: req.params.userId})
+    let url = process.env.URL
+    res.render("pages/team", {team: team, url: url, userId: req.params.userId})
 })
 
 // create new team

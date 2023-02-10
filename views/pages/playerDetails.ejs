@@ -10,8 +10,66 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
+        <img src="https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/<%= personId %>.png">
         <h3><%= player.first_name %> <%= player.last_name %> <%= player.position %></h3>
-        <form action="/pages/teams/add/players/<%= player.id %>" method="POST">
+        <h4>player season stats:</h4>
+        <div class="statsGrid">
+            <div class="gridItem">
+                Games Played:
+            </div>
+            <div class="gridItem">
+                <%= stats.games_played %>
+            </div>
+            <div class="gridItem">
+                Minutes:
+            </div>
+            <div class="gridItem">
+                <%= stats.min %>
+            </div>
+            <div class="gridItem">
+                FG%:
+            </div>
+            <div class="gridItem">
+                <%= stats.fg_pct * 100 %>
+            </div>
+            <div class="gridItem">
+                Points:
+            </div>
+            <div class="gridItem">
+                <%= stats.pts %>
+            </div>
+            <div class="gridItem">
+                Rebounds:
+            </div>
+            <div class="gridItem">
+                <%= stats.reb %>
+            </div>
+            <div class="gridItem">
+                Assists:
+            </div>
+            <div class="gridItem">
+                <%= stats.ast %>
+            </div>
+            <div class="gridItem">
+                Steals:
+            </div>
+            <div class="gridItem">
+                <%= stats.stl %>
+            </div>
+            <div class="gridItem">
+                Blocks:
+            </div> 
+            <div class="gridItem">
+                <%= stats.blk %>
+            </div>
+            <div class="gridItem">
+                Turnovers:
+            </div>
+            <div class="gridItem">
+                <%= stats.turnover %>
+            </div>
+        </div>
+        <!-- <form action="/pages/teams/add/players/<%=// player.id %>" method="POST">
             <select name="position" id="position">
                 <option value="C">Center</option>
                 <option value="PF">Power Forward</option>
@@ -20,7 +78,7 @@
                 <option value="PG">Point Guard</option>
             </select>
             <button>Add</button>
-        </form>
+        </form> -->
     </div>
 </body>
 </html>
