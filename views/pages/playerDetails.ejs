@@ -9,7 +9,11 @@
 </head>
 <body>
     <div class="container">
+        <% if(loggedIn == true){ %>
         <%- include("_navbar.ejs") %>
+        <% } else{ %>
+            <%- include("_notLoggedNav.ejs") %>
+        <% } %>
         <img src="https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/<%= personId %>.png">
         <h3><%= player.first_name %> <%= player.last_name %> <%= player.position %></h3>
         <h4>player season stats:</h4>

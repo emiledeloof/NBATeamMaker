@@ -9,7 +9,11 @@
 </head>
 <body>
     <div class="container">
+        <% if(loggedIn == true){ %>
         <%- include("_navbar.ejs") %>
+        <% } else { %>
+        <%- include("_notLoggedNav.ejs") %>
+        <% } %>
         <form action="/pages/search" method="POST">
             <input type="text" name="search" id="search">
             <button>Search</button>

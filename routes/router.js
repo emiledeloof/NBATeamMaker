@@ -9,8 +9,12 @@ const User = require("./../database/user")
 const Team = require("./../database/team")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
-const algorith = "aes-256-cbc"
+const algorithm = "aes-256-cbc"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
+const initVector = crypto.randomBytes(16)
+const securityKey = crypto.randomBytes(32)
+const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
+const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
 
 // register
 router.get("/users/register", (req, res) => {
@@ -23,7 +27,8 @@ router.post("/users/register", async (req, res) => {
     let user = req.user
     user.username = req.body.username
     user.email = req.body.email
-    user.password = req.body.password
+    let encryptedData = cipher.update(req.body.password, "utf-8", "hex");
+    user.password = encryptedData + cipher.final("hex");
     try{
         await user.save()
     } catch (e){
@@ -48,7 +53,9 @@ router.post("/users/login", async (req, res) => {
     let confirmedUser
     try{
         user = await User.findOne({username: req.body.username})
-        if(user.password == req.body.password){
+        let decryptedData = decipher.update(user.password, "hex", "utf-8");
+        decryptedData += decipher.final("utf-8");
+        if(decryptedData == req.body.password){
             confirmedUser = user
         }
     } catch (e){
@@ -60,7 +67,11 @@ router.post("/users/login", async (req, res) => {
 // search
 router.post("/search", async(req, res) => {
     let request = await axios.get(`${URL}/players?search=${req.body.search}`)
-    res.render("pages/searchResults", {search: req.body.search, results: request.data.data})
+    res.render("pages/searchResults", {
+        search: req.body.search, 
+        results: request.data.data,
+        loggedIn: false
+    })
 })
 
 // player info
@@ -72,7 +83,8 @@ router.get("/players/:id", async (req, res) => {
     res.render("pages/playerDetails", {
         player: player.data,
         stats: stats.data.data[0],
-        personId: nbaPlayer.personId
+        personId: nbaPlayer.personId,
+        loggedIn: false
     })
 })
 
@@ -149,7 +161,7 @@ router.get("/users/:userId/teams/show", async(req, res) => {
 })
 
 // view team
-router.get("/teams/:id/view", async(req, res) => {
+router.get("/users/:userId/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
     let url = process.env.URL
     res.render("pages/team", {team: team, url: url, userId: req.params.userId})
@@ -165,6 +177,21 @@ router.get("/users/:userId/teams/create", (req, res) => {
 router.post("/teams/:id/delete", async(req, res) => {
     await Team.findByIdAndDelete(req.params.id)
     res.redirect("/pages/teams/show")
+})
+
+// view player when logged in
+router.get("/users/:userId/players/:playerId", async(req, res) => {
+    let player = await axios.get(`${URL}/players/${req.params.playerId}`)
+    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.playerId}`)
+    let allPlayers = await axios.get(nbaURL)
+    let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
+    res.render("pages/playerDetails", {
+        player: player.data,
+        stats: stats.data.data[0],
+        personId: nbaPlayer.personId,
+        userId: req.params.userId,
+        loggedIn: true
+    })
 })
 
 module.exports = router
