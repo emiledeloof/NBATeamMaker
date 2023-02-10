@@ -7,7 +7,7 @@ const axios = require("axios")
 const crypto = require("crypto")
 const User = require("./../database/user")
 const Team = require("./../database/team")
-const Group = require("./../database/group")
+const League = require("../database/league")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const algorithm = "aes-256-cbc"
@@ -40,7 +40,8 @@ router.post("/users/register", async (req, res) => {
 
 // dashboard
 router.get("/users/:id", async(req, res) => {
-    res.render("pages/dashboard", {userId: req.params.id})
+    let leagues = await League.find({users: [req.params.id]})
+    res.render("pages/dashboard", {userId: req.params.id, leagues: leagues})
 })
 
 // login
@@ -193,6 +194,30 @@ router.get("/users/:userId/players/:playerId", async(req, res) => {
         userId: req.params.userId,
         loggedIn: true
     })
+})
+
+// Create league
+router.get("/users/:userId/leagues/create", (req, res) => {
+    res.render("pages/createLeague", {userId: req.params.userId})
+})
+
+// Create league POST
+router.post("/users/:userId/leagues/create", async (req, res) => {
+    let league = new League()
+    league.name = req.body.name
+    league.users = [req.params.userId]
+    try{
+        league = await league.save()
+    } catch(e){
+        console.log(e)
+    }
+    res.redirect(`/pages/users/${req.params.userId}/leagues/${league._id}`)
+})
+
+//view league
+router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
+    let league = await League.findById(req.params.leagueId)
+    res.render("pages/showleague", {league: league, userId: req.params.userId})
 })
 
 module.exports = router

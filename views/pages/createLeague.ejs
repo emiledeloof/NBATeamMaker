@@ -4,19 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Create group</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
-        <h1>Dashboard</h1>
-        <h3>Your leagues:</h3>
-        <% leagues.forEach(league => { %>
-            <div class="card">
-                <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>"><%= league.name %></a>
-            </div>
-        <% }) %>
+        <h1>Create group</h1>
+        <form action="/pages/users/<%= userId %>/leagues/create" method="POST">
+            <input type="text" id="name" name="name" placeholder="Name">
+            <button>Create</button>
+        </form>
     </div>
 </body>
 </html>

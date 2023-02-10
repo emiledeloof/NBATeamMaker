@@ -9,4 +9,4 @@ const schema = new mongoose.Schema({
     ]
 })
 
-module.exports = mongoose.model("group", schema)
+module.exports = mongoose.model("league", schema)
