@@ -10,6 +10,7 @@ const Team = require("./../database/team")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const algorith = "aes-256-cbc"
+const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
 
 // register
 router.get("/users/register", (req, res) => {
@@ -41,9 +42,12 @@ router.post("/search", async(req, res) => {
 router.get("/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
+    let allPlayers = await axios.get(nbaURL)
+    let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
     res.render("pages/playerDetails", {
         player: player.data,
-        stats: stats.data.data[0]
+        stats: stats.data.data[0],
+        personId: nbaPlayer.personId
     })
 })
 
