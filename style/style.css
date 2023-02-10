@@ -75,3 +75,7 @@ nav a{
 #closeWrapper:hover{
     cursor: pointer;
 }
+
+.gridItem a{
+    color: white;
+}
