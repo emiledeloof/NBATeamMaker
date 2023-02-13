@@ -60,10 +60,11 @@ router.post("/users/login", async (req, res) => {
         if(decryptedData == req.body.password){
             confirmedUser = user
         }
+        res.redirect(`/pages/users/${user._id}`)
     } catch (e){
         console.log(e)
+        res.redirect("/pages/login")
     }
-    res.redirect(`/pages/users/${user._id}`)
 })
 
 // search
