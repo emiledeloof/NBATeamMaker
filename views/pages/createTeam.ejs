@@ -106,8 +106,10 @@
                 searchPlayer.style.display = "block"
             }
             if(e.target.classList.contains("addPlayer")){
+                let searchInput = document.getElementById("searchInput")
                 let playerName = e.target.parentNode.childNodes[0].innerText
                 let playerId = e.target.parentNode.childNodes[2].innerText
+                searchInput.value = ""
                 document.getElementById(position).innerText = playerName
                 document.querySelector("." + position).remove()
                 document.getElementById("searchPlayer").style.display = "none"
