@@ -44,6 +44,18 @@ router.get("/users/:id", async(req, res) => {
     res.render("pages/dashboard", {userId: req.params.id})
 })
 
+router.post("/users/:id/search-user", async(req, res) => {
+    let users = await User.
+    console.log(users)
+    res.render("pages/searchResults", {
+        users: users,
+        type: "user",
+        search: req.body.search,
+        loggedIn: true,
+        userId: req.params.id
+    })
+})
+
 // login
 router.get("/login", (req, res) => {
     res.render("pages/login")
@@ -73,7 +85,8 @@ router.post("/search", async(req, res) => {
     res.render("pages/searchResults", {
         search: req.body.search, 
         results: request.data.data,
-        loggedIn: false
+        loggedIn: false,
+        type: "player",
     })
 })
 
