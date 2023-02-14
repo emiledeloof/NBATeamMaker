@@ -28,9 +28,14 @@
         <% }) %>
         <% } if(type == "user") { %>
             <% users.forEach(user => { %>
-                <div class="card">
-                    <%= user.username %>
-                </div>
+                <% if(user._id != userId){ %>
+                    <div class="card">
+                        <%= user.username %>
+                        <form action="/pages/users/<%= userId %>/friends/<%= user._id %>/add" method="POST">
+                            <button>Add Friend</button>
+                        </form>
+                    </div>
+                <% } %>
             <% }) %>
         <% } %>
     </div>

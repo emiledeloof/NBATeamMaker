@@ -4,18 +4,18 @@ if(process.env.NODE_ENV !== "production"){
 
 const express = require("express")
 const axios = require("axios")
-const crypto = require("crypto")
+// const crypto = require("crypto")
 const User = require("./../database/user")
 const Team = require("./../database/team")
 const League = require("./../database/league")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
-const algorithm = "aes-256-cbc"
+// const algorithm = "aes-256-cbc"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
-const initVector = crypto.randomBytes(16)
-const securityKey = crypto.randomBytes(32)
-const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
-const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
+// const initVector = crypto.randomBytes(16)
+// const securityKey = crypto.randomBytes(32)
+// const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
+// const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
 
 // register
 router.get("/users/register", (req, res) => {
@@ -28,8 +28,9 @@ router.post("/users/register", async (req, res) => {
     let user = req.user
     user.username = req.body.username
     user.email = req.body.email
-    let encryptedData = cipher.update(req.body.password, "utf-8", "hex");
-    user.password = encryptedData + cipher.final("hex");
+    // let encryptedData = cipher.update(req.body.password, "utf-8", "hex");
+    // user.password = encryptedData + cipher.final("hex");
+    user.password = req.body.password
     try{
         await user.save()
         res.redirect(`/pages/users/${user._id}`)
@@ -45,16 +46,73 @@ router.get("/users/:id", async(req, res) => {
     res.render("pages/dashboard", {userId: req.params.id, leagues: leagues})
 })
 
+// search user POST
 router.post("/users/:id/search-user", async(req, res) => {
-    let users = await User.
-    console.log(users)
+    res.redirect(`/pages/users/${req.params.id}/search-user/${req.body.searchUser}`)
+})
+
+// search user results
+router.get("/users/:id/search-user/:searchUser", async(req, res) => {
+    let users = await User.find({username: {$regex: req.params.searchUser, $options: "i"}})
     res.render("pages/searchResults", {
         users: users,
         type: "user",
-        search: req.body.search,
+        search: req.params.searchUser,
         loggedIn: true,
         userId: req.params.id
     })
+})
+
+// add friend POST
+router.post("/users/:userId/friends/:friendId/add", async (req, res) => {
+    let user = await User.findById(req.params.userId)
+    let friend = await User.findById(req.params.friendId)
+    let sentRequestTo = {
+        username: friend.username,
+        id: user._id,
+        date: Date.now()
+    }   
+    let dataToSend = {
+        username: user.username,
+        id: user._id,
+        date: Date.now()
+    }
+    user.friendRequestsSent.push(sentRequestTo)
+    friend.friendRequestsReceived.push(dataToSend)
+    try{
+        await user.save()
+        await friend.save()
+        res.redirect(`/pages/users/${req.params.userId}`)
+    } catch(e){
+        console.log(e)
+    }
+})
+
+// Accept friend request
+router.post("users/:id/friends/:friendId/accept", async(req, res) => {
+    let user = await User.findById(req.params.id)
+    let friend = await User.findById(req.params.friendId)
+    let dataToSend = {
+        username: friend.username,
+        id: friend._id,
+        date: Date.now()
+    }
+    user.friends.push(dataToSend)
+    
+    try{
+        await user.save()
+        res.redirect(`/pages/users/${req.params.id}/profile`)
+    } catch (e){
+        console.log(e)
+    }
+})
+
+// Decline friend request
+
+// profile
+router.get("/users/:id/profile", async (req, res) => {
+    let user = await User.findById(req.params.id)
+    res.render("pages/profile", {user: user, userId: req.params.id})
 })
 
 // login
@@ -65,12 +123,11 @@ router.get("/login", (req, res) => {
 // login POST
 router.post("/users/login", async (req, res) => {
     let user
-    let confirmedUser
     try{
         user = await User.findOne({username: req.body.username})
-        let decryptedData = decipher.update(user.password, "hex", "utf-8");
-        decryptedData += decipher.final("utf-8");
-        if(decryptedData == req.body.password){
+        // let decryptedData = decipher.update(user.password, "hex", "utf-8");
+        // decryptedData += decipher.final("utf-8");
+        if(user.password == req.body.password){
             confirmedUser = user
         }
         res.redirect(`/pages/users/${user._id}`)

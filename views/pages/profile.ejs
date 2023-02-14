@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <%- include("_navbar.ejs") %>
+        <h2><%= user.username %></h2>
+        <h3>Your friends:</h3>
+        <% if(user.friends.length !== 0){ %>
+            <% user.friends.forEach(friend => { %>
+                <div class="card">
+                    <a href="/pages/users/<%= friend._id %>"><%= friend.username %></a>
+                </div>
+            <% }) %>
+        <% } else { %> 
+            <h4>You don't have any friends yet.</h4>
+        <% } %>
+        <h3>Incoming friend requests</h3>
+        <% if(user.friendRequestsReceived.length !== 0){ %>
+            <% user.friendRequestsReceived.forEach(request => { %> 
+                <div class="card">
+                    From: <%= request.username %>
+                    <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
+                </div>
+                <form action="/pages/users/<%= userId %>/friends/<%= request._id %>/accept" method="POST">
+                    <button>Accept</button>
+                </form>
+                <form action="/pages/users/<%= userId %>/friends/<%= request._id %>/reject" method="POST">
+                    <button>Reject</button>
+                </form>
+                <% }) %>
+        <% } else { %>
+            <h4>No incoming friend requests</h4>
+        <% } %>
+    </div>
+</body>
+</html>
