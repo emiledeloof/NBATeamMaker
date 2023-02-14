@@ -32,10 +32,11 @@ router.post("/users/register", async (req, res) => {
     user.password = encryptedData + cipher.final("hex");
     try{
         await user.save()
+        res.redirect(`/pages/users/${user._id}`)
     } catch (e){
         console.log(e)
+        res.redirect("/pages/users/register")
     }
-    res.redirect(`/pages/users/${user._id}`)
 })
 
 // dashboard
