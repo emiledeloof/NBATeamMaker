@@ -104,8 +104,8 @@ router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
     user.friendRequestsReceived.splice(indexOfRequest, 1)
     let indexOfSent = friend.friendRequestsSent.indexOf(sent)
     friend.friendRequestsSent.splice(indexOfSent, 1)
-    user.friends.push(dataToSend)
     dataToSend.date = Date.now()
+    user.friends.push(dataToSend)
     try{
         await user.save()
         res.redirect(`/pages/users/${req.params.id}/profile`)
@@ -114,7 +114,29 @@ router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
     }
 })
 
-// Decline friend request
+// Reject friend request
+router.post("/users/:id/friends/:friendId/reject", async(req, res) => {
+    let user = await User.findById(req.params.id)
+    let friend = await User.findById(req.params.friendId)
+    let dataToSend = {
+        username: friend.username,
+        id: friend._id
+    }
+    let sent = {
+        username: user.username,
+        id: user._id
+    }
+    let indexOfRequest = user.friendRequestsReceived.indexOf(dataToSend)
+    user.friendRequestsReceived.splice(indexOfRequest, 1)
+    let indexOfSent = friend.friendRequestsSent.indexOf(sent)
+    friend.friendRequestsSent.splice(indexOfSent, 1)
+    try{
+        await user.save()
+        res.redirect(`/pages/users/${req.params.id}/profile`)
+    } catch (e){
+        console.log(e)
+    }
+})
 
 // profile
 router.get("/users/:id/profile", async (req, res) => {
