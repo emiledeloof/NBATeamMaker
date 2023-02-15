@@ -10,6 +10,18 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
+        <h1>League settings</h1>
+        <h3>Requests</h3>
+        <% league.requests.forEach(request => { %>
+            from: <%= request.username %> 
+            <br>at: <%= new Date(request.date).toLocaleString("en-GB") %>
+            <form action="/pages/users/<%= userId %>/leagues/<%= league._id %>/request/<%= request.id %>/accept" method="POST">
+                <button>Accept</button>
+            </form>
+            <form action="/pages/users/<%= userId %>/leagues/<%= league._id %>/request/<%= request.id %>/reject" method="POST">
+                <button>Reject</button>
+            </form>
+        <% }) %>
     </div>
 </body>
 </html>

@@ -345,7 +345,8 @@ router.post("/users/:userId/leagues/create", async (req, res) => {
     let user = await User.findById(req.params.userId)
     let userData = {
         username: user.username,
-        id: req.params.userId
+        id: req.params.userId,
+        date: Date.now()
     }
     let league = new League()
     league.name = req.body.name
@@ -394,5 +395,50 @@ router.post("/users/:userId/leagues/:leagueId/join", async (req, res) => {
 })
 
 // league settings
+router.get("/users/:userId/leagues/:leagueId/settings", async (req, res) => {
+    let league = await League.findById(req.params.leagueId)
+    res.render("pages/leagueSettings", {
+        userId: req.params.userId,
+        league: league
+    })
+})
+
+// Accept request to join league
+router.post("/users/:userId/leagues/:leagueId/request/:requestId/accept", async (req, res) => {
+    let league = await League.findById(req.params.leagueId)
+    let user = await User.findById(req.params.requestId)
+    let dataToSend = {
+        username: user.username,
+        id: req.params.requestId,
+    }
+    let index = league.requests.indexOf(dataToSend)
+    league.requests.splice(index, 1)
+    dataToSend.date = Date.now()
+    league.users.push(dataToSend)
+    try{
+        await league.save()
+    } catch (e){
+        console.log(e)
+    }
+    res.redirect(`/pages/users/${req.params.userId}/leagues/${req.params.leagueId}/settings`)
+})
+
+// Reject request to join league
+router.post("/users/:userId/leagues/:leagueId/request/:requestId/reject", async (req, res) => {
+    let league = await League.findById(req.params.leagueId)
+    let user = await User.findById(req.params.requestId)
+    let dataToSend = {
+        username: user.username,
+        id: req.params.requestId,
+    }
+    let index = league.requests.indexOf(dataToSend)
+    league.requests.splice(index, 1)
+    try{
+        await league.save()
+    } catch (e){
+        console.log(e)
+    }
+    res.redirect(`/pages/users/${req.params.userId}/leagues/${req.params.leagueId}/settings`)
+})
 
 module.exports = router
