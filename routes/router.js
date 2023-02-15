@@ -88,7 +88,7 @@ router.post("/users/:userId/friends/:friendId/add", async (req, res) => {
     }
 })
 
-// Accept friend request
+// Accept friend request POST
 router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
     let user = await User.findById(req.params.id)
     let friend = await User.findById(req.params.friendId)
@@ -106,15 +106,18 @@ router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
     friend.friendRequestsSent.splice(indexOfSent, 1)
     dataToSend.date = Date.now()
     user.friends.push(dataToSend)
+    sent.date = Date.now()
+    friend.friends.push(sent)
     try{
         await user.save()
-        res.redirect(`/pages/users/${req.params.id}/profile`)
+        await friend.save()
     } catch (e){
         console.log(e)
     }
+    res.redirect(`/pages/users/${req.params.id}/profile`)
 })
 
-// Reject friend request
+// Reject friend request POST
 router.post("/users/:id/friends/:friendId/reject", async(req, res) => {
     let user = await User.findById(req.params.id)
     let friend = await User.findById(req.params.friendId)
@@ -132,10 +135,36 @@ router.post("/users/:id/friends/:friendId/reject", async(req, res) => {
     friend.friendRequestsSent.splice(indexOfSent, 1)
     try{
         await user.save()
-        res.redirect(`/pages/users/${req.params.id}/profile`)
+        await friend.save()
     } catch (e){
         console.log(e)
     }
+    res.redirect(`/pages/users/${req.params.id}/profile`)
+})
+
+// Remove friend POST
+router.post("/users/:id/friends/:friendId/remove", async (req, res) => {
+    let user = await User.findById(req.params.id)
+    let friend = await User.findById(req.params.friendId)
+    let data = {
+        username: friend.username,
+        id: req.params.friendId
+    }
+    let friendData = {
+        username: user.username,
+        id: req.params.id
+    }
+    let index = user.friends.indexOf(data)
+    user.friends.splice(index, 1)
+    let friendIndex = friend.friends.indexOf(friendData)
+    friend.friends.splice(friendIndex, 1)
+    try{
+        await user.save()
+        await friend.save()
+    } catch (e){
+        console.log(e)
+    }
+    res.redirect(`/pages/users/${req.params.id}/profile`)
 })
 
 // profile
