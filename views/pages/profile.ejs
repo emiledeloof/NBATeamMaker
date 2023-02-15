@@ -28,10 +28,10 @@
                     From: <%= request.username %>
                     <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
                 </div>
-                <form action="/pages/users/<%= userId %>/friends/<%= request._id %>/accept" method="POST">
+                <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/accept" method="POST">
                     <button>Accept</button>
                 </form>
-                <form action="/pages/users/<%= userId %>/friends/<%= request._id %>/reject" method="POST">
+                <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/reject" method="POST">
                     <button>Reject</button>
                 </form>
                 <% }) %>
