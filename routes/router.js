@@ -359,4 +359,13 @@ router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
     res.render("pages/showleague", {league: league, userId: req.params.userId})
 })
 
+// view all leagues
+router.get("/users/:userId/leagues", async(req, res) => {
+    let leagues = await League.find().limit(30).exec()
+    res.render("pages/allLeagues", {
+        userId: req.params.userId,
+        leagues: leagues,
+    })
+})
+
 module.exports = router

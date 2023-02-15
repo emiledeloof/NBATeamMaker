@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leagues</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <%- include("_navbar.ejs") %>
+        <h1>Leagues</h1>
+        <% leagues.forEach(league => { %>
+            <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>">
+                <div class="card">
+                    <%= league.name %>
+                </div>
+            </a>
+        <% }) %>
+    </div>
+</body>
+</html>
