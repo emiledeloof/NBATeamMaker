@@ -173,6 +173,15 @@ router.get("/users/:id/profile", async (req, res) => {
     res.render("pages/profile", {user: user, userId: req.params.id})
 })
 
+// view other profile
+router.get("/users/:id/view-profile/:otherUser", async(req, res) => {
+    let user = await User.findById(req.params.id)
+    res.render("pages/viewProfile", {
+        user: user,
+        userId: req.params.id
+    })
+})
+
 // login
 router.get("/login", (req, res) => {
     res.render("pages/login")

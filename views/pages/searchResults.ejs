@@ -30,7 +30,7 @@
             <% users.forEach(user => { %>
                 <% if(user._id != userId){ %>
                     <div class="card">
-                        <%= user.username %>
+                        <a href="/pages/users/<%= userId %>/view-profile/<%= user._id %>"><%= user.username %></a>
                         <form action="/pages/users/<%= userId %>/friends/<%= user._id %>/add" method="POST">
                             <button>Add Friend</button>
                         </form>

@@ -15,8 +15,8 @@
         <% if(user.friends.length !== 0){ %>
             <% user.friends.forEach(friend => { %>
                 <div class="card">
-                    <a href="/pages/users/<%= friend._id %>"><%= friend.username %></a>
-                    <form action="/pages/users/<%= userId %>/friends/<%= friend._id %>/remove" method="POST">
+                    <a href="/pages/users/<%= userId %>/view-profile/<%= friend.id %>"><%= friend.username %></a>
+                    <form action="/pages/users/<%= userId %>/friends/<%= friend.id %>/remove" method="POST">
                         <button>Remove friend</button>
                     </form>
                 </div>
