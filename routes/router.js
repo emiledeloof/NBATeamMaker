@@ -363,7 +363,7 @@ router.post("/users/:userId/leagues/create", async (req, res) => {
 //view league
 router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
-    res.render("pages/showleague", {league: league, userId: req.params.userId})
+    res.render("pages/showLeague", {league: league, userId: req.params.userId})
 })
 
 // view all leagues
