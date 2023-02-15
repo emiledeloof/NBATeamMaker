@@ -82,10 +82,10 @@ router.post("/users/:userId/friends/:friendId/add", async (req, res) => {
     try{
         await user.save()
         await friend.save()
-        res.redirect(`/pages/users/${req.params.userId}`)
     } catch(e){
         console.log(e)
     }
+    res.redirect(`/pages/users/${req.params.userId}`)
 })
 
 // Accept friend request POST
