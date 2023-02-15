@@ -342,9 +342,15 @@ router.get("/users/:userId/leagues/create", (req, res) => {
 
 // Create league POST
 router.post("/users/:userId/leagues/create", async (req, res) => {
+    let user = await User.findById(req.params.userId)
+    let userData = {
+        username: user.username,
+        id: req.params.userId
+    }
     let league = new League()
     league.name = req.body.name
-    league.users = [req.params.userId]
+    league.users.push(userData)
+    league.public = req.body.public
     try{
         league = await league.save()
     } catch(e){
@@ -361,11 +367,32 @@ router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
 
 // view all leagues
 router.get("/users/:userId/leagues", async(req, res) => {
-    let leagues = await League.find().limit(30).exec()
+    // let leagues = await League.find({public: true}).limit(30).exec()
+    let leagues = await League.find({public: true})
     res.render("pages/allLeagues", {
         userId: req.params.userId,
         leagues: leagues,
     })
 })
+
+// request to join a league
+router.post("/users/:userId/leagues/:leagueId/join", async (req, res) => {
+    let league = await League.findById(req.params.leagueId)
+    let user = await User.findById(req.params.userId)
+    let dataToSend = {
+        username: user.username,
+        id: req.params.userId,
+        date: Date.now()
+    }
+    league.requests.push(dataToSend)
+    try{
+        await league.save()
+    } catch (e){
+        console.log(e)
+    }
+    res.redirect(`/pages/users/${req.params.userId}/leagues/${req.params.leagueId}`)
+})
+
+// league settings
 
 module.exports = router

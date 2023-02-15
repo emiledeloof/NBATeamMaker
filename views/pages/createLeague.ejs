@@ -10,10 +10,15 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
-        <h1>Create group</h1>
+        <h1>Create league</h1>
         <form action="/pages/users/<%= userId %>/leagues/create" method="POST">
             <input type="text" id="name" name="name" placeholder="Name">
-            <button>Create</button>
+            <br><label>Availability</label>
+            <select name="public" id="public">
+                <option value="true">Public</option>
+                <option value="false">Private</option>
+            </select>
+            <br><button>Create</button>
         </form>
     </div>
 </body>
