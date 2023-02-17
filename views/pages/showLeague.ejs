@@ -11,14 +11,22 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h1><%= league.name %></h1>
-        <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/settings">League settings</a>
+        <% if(isJoined == true){ %>
+            <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/settings">League settings</a>
+        <% } %>
         <h3>users:</h3>
         <% league.users.forEach(user => { %>
-            <%= user.username %>
+            <div class="card">
+                <a href="/pages/users/<%= userId %>/view-profile/<%= user.id %>">
+                    <%= user.username %>
+                </a>
+            </div>
         <% }) %>
-        <form action="/pages/users/<%= userId %>/leagues/<%= league._id %>/join" method="POST">
-            <button>Request to join</button>
-        </form>
+        <% if(isJoined == false){ %>
+            <form action="/pages/users/<%= userId %>/leagues/<%= league._id %>/join" method="POST">
+                <button>Request to join</button>
+            </form>
+        <% } %>
     </div>
 </body>
 </html>

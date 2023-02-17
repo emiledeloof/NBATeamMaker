@@ -42,8 +42,8 @@ router.post("/users/register", async (req, res) => {
 
 // dashboard
 router.get("/users/:id", async(req, res) => {
-    let leagues = await League.find({users: [req.params.id]})
-    res.render("pages/dashboard", {userId: req.params.id, leagues: leagues})
+    let leagues = await User.findById(req.params.id)
+    res.render("pages/dashboard", {userId: req.params.id, leagues: leagues.leagues})
 })
 
 // search user POST
@@ -100,9 +100,9 @@ router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
         username: user.username,
         id: user._id
     }
-    let indexOfRequest = user.friendRequestsReceived.indexOf(dataToSend)
+    let indexOfRequest = user.friendRequestsReceived.findIndex(element => element.id == dataToSend.id)
     user.friendRequestsReceived.splice(indexOfRequest, 1)
-    let indexOfSent = friend.friendRequestsSent.indexOf(sent)
+    let indexOfSent = friend.friendRequestsSent.findIndex(element => element.id == sent.id)
     friend.friendRequestsSent.splice(indexOfSent, 1)
     dataToSend.date = Date.now()
     user.friends.push(dataToSend)
@@ -352,8 +352,14 @@ router.post("/users/:userId/leagues/create", async (req, res) => {
     league.name = req.body.name
     league.users.push(userData)
     league.public = req.body.public
+    let leagueData = {
+        id: league._id,
+        name: league.name
+    }
+    user.leagues.push()
     try{
-        league = await league.save()
+        await league.save()
+        await user.save()
     } catch(e){
         console.log(e)
     }
@@ -363,7 +369,15 @@ router.post("/users/:userId/leagues/create", async (req, res) => {
 //view league
 router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
-    res.render("pages/showLeague", {league: league, userId: req.params.userId})
+    let isJoined = false
+    if(league.users.findIndex(element => element.id == req.params.userId) != -1){
+        isJoined = true
+    }
+    res.render("pages/showLeague", {
+        league: league, 
+        userId: req.params.userId,
+        isJoined: isJoined
+    })
 })
 
 // view all leagues
@@ -411,12 +425,18 @@ router.post("/users/:userId/leagues/:leagueId/request/:requestId/accept", async 
         username: user.username,
         id: req.params.requestId,
     }
-    let index = league.requests.indexOf(dataToSend)
+    let leagueData = {
+        id: req.params.leagueId,
+        name: league.name
+    }
+    let index = league.requests.findIndex(element => element.id == dataToSend.id)
     league.requests.splice(index, 1)
     dataToSend.date = Date.now()
     league.users.push(dataToSend)
+    user.leagues.push(leagueData)
     try{
         await league.save()
+        await user.save()
     } catch (e){
         console.log(e)
     }
@@ -431,7 +451,7 @@ router.post("/users/:userId/leagues/:leagueId/request/:requestId/reject", async 
         username: user.username,
         id: req.params.requestId,
     }
-    let index = league.requests.indexOf(dataToSend)
+    let index = league.requests.findIndex(element => element.id == dataToSend.id)
     league.requests.splice(index, 1)
     try{
         await league.save()

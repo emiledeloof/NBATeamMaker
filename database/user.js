@@ -16,6 +16,7 @@ const schema = new mongoose.Schema({
     friends: [],
     friendRequestsReceived: [],
     friendRequestsSent: [],
+    leagues: []
 })
 
 module.exports = mongoose.model("user", schema)

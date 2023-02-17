@@ -17,11 +17,11 @@
         </form>
         <h3>Your leagues:</h3>
         <% if(leagues.length !== 0){ %>
-        <% leagues.forEach(league => { %>
-            <div class="card">
-                <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>"><%= league.name %></a>
-            </div>
-        <% }) %>
+            <% leagues.forEach(league => { %>
+                <div class="card">
+                    <a href="/pages/users/<%= userId %>/leagues/<%= league.id %>"><%= league.name %></a>
+                </div>
+            <% }) %>
         <% } else{ %>
            <div>
                 You are currently not in any leagues.
