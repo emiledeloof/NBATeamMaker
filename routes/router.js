@@ -321,7 +321,7 @@ router.get("/users/:userId/leagues/:leagueId/teams/:id/view", async(req, res) =>
 })
 
 // view other team
-router.get("/users/:userId/leagues/:leagueId/teams/:id", async(req, res) => {
+router.get("/users/:userId/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
     let team = await Team.findById(req.params.id)
     res.render("pages/viewOtherTeam", {
         team: team,
@@ -339,6 +339,14 @@ router.get("/users/:userId/leagues/:leagueId/teams/create", (req, res) => {
 // delete team POST
 router.post("/users/:userId/leagues/:leagueId/teams/:id/delete", async(req, res) => {
     await Team.findByIdAndDelete(req.params.id)
+    let league = await League.findById(req.params.leagueId)
+    let index = league.users.findIndex(user => user.teamId == req.params.teamId)
+    league.users[index].teamId = null
+    try{
+        await league.save()
+    } catch (e) {
+        console.log(e)
+    }
     res.redirect(`/pages/users/${req.params.userId}/teams/show`)
 })
 

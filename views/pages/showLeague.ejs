@@ -22,7 +22,7 @@
                     <%= user.username %>
                 </a>
                 <% if(user.teamId){ %>
-                    <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/teams/<%= user.teamId %>" style="margin-left: 10px;">View team</a>
+                    <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/teams/<%= user.teamId %>/view-other" style="margin-left: 10px;">View team</a>
                 <% } %>
             </div>
         <% }) %>
