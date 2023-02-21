@@ -230,8 +230,10 @@ router.get("/players/:id", async (req, res) => {
 })
 
 // add player to team POST
-router.post("/teams/users/:userId/add/players/:id", async (req, res) => {
+router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
+    let league = await League.findById(req.params.leagueId)
+    let index = league.users.findIndex(user => user.id == req.params.userId)
     let team
     if(await Team.findOne({name: req.query.teamName})){
         team = await Team.findOne({name: req.query.teamName})
@@ -240,7 +242,11 @@ router.post("/teams/users/:userId/add/players/:id", async (req, res) => {
         team = req.team
         team.name = req.query.teamName
         team.userId = req.params.userId
+        team.leagueId = req.params.leagueId
+        league.users[index].teamId = team._id.toString()
+        league.markModified("users")
     }
+    // league.users[0].teamId = "this is a teamId"
     switch(req.body.position || req.query.position){
         case "C":
             team.center = player.data
@@ -259,7 +265,8 @@ router.post("/teams/users/:userId/add/players/:id", async (req, res) => {
             break;
     }
     try{
-        team = await team.save()
+        await team.save()
+        await league.save()
     } catch(e){
         console.log(e)
     }
@@ -302,22 +309,27 @@ router.get("/users/:userId/teams/show", async(req, res) => {
 })
 
 // view team
-router.get("/users/:userId/teams/:id/view", async(req, res) => {
+router.get("/users/:userId/leagues/:leagueId/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
     let url = process.env.URL
-    res.render("pages/team", {team: team, url: url, userId: req.params.userId})
+    res.render("pages/team", {
+        team: team, 
+        url: url, 
+        userId: req.params.userId, 
+        leagueId: req.params.leagueId
+    })
 })
 
 // create new team
-router.get("/users/:userId/teams/create", (req, res) => {
+router.get("/users/:userId/leagues/:leagueId/teams/create", (req, res) => {
     let url = process.env.URL
-    res.render("pages/createTeam", {userId: req.params.userId, url: url})
+    res.render("pages/createTeam", {userId: req.params.userId, url: url, leagueId: req.params.leagueId})
 })
 
 // delete team POST
-router.post("/teams/:id/delete", async(req, res) => {
+router.post("/users/:userId/leagues/:leagueId/teams/:id/delete", async(req, res) => {
     await Team.findByIdAndDelete(req.params.id)
-    res.redirect("/pages/teams/show")
+    res.redirect(`/pages/users/${req.params.userId}/teams/show`)
 })
 
 // view player when logged in
@@ -356,7 +368,7 @@ router.post("/users/:userId/leagues/create", async (req, res) => {
         id: league._id,
         name: league.name
     }
-    user.leagues.push()
+    user.leagues.push(leagueData)
     try{
         await league.save()
         await user.save()
@@ -423,7 +435,7 @@ router.post("/users/:userId/leagues/:leagueId/request/:requestId/accept", async 
     let user = await User.findById(req.params.requestId)
     let dataToSend = {
         username: user.username,
-        id: req.params.requestId,
+        id: req.params.requestId
     }
     let leagueData = {
         id: req.params.leagueId,

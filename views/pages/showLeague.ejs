@@ -13,6 +13,7 @@
         <h1><%= league.name %></h1>
         <% if(isJoined == true){ %>
             <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/settings">League settings</a>
+            <br><br><a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/teams/create">Create team</a>
         <% } %>
         <h3>users:</h3>
         <% league.users.forEach(user => { %>
@@ -20,6 +21,9 @@
                 <a href="/pages/users/<%= userId %>/view-profile/<%= user.id %>">
                     <%= user.username %>
                 </a>
+                <% if(user.teamId){ %>
+                    <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/teams/<%= user.teamId %>" style="margin-left: 10px;">View team</a>
+                <% } %>
             </div>
         <% }) %>
         <% if(isJoined == false){ %>
