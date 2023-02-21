@@ -83,3 +83,8 @@ nav a{
 .gridItem a{
     color: white;
 }
+
+.grid2{
+    display: grid;
+    grid-template-columns: 150px 150px;
+}

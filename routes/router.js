@@ -320,6 +320,16 @@ router.get("/users/:userId/leagues/:leagueId/teams/:id/view", async(req, res) =>
     })
 })
 
+// view other team
+router.get("/users/:userId/leagues/:leagueId/teams/:id", async(req, res) => {
+    let team = await Team.findById(req.params.id)
+    res.render("pages/viewOtherTeam", {
+        team: team,
+        userId: req.params.userId,
+        leagueId: req.params.leagueId
+    })
+})
+
 // create new team
 router.get("/users/:userId/leagues/:leagueId/teams/create", (req, res) => {
     let url = process.env.URL
