@@ -20,7 +20,7 @@
         </form>
         <% if(type == "player"){ %>
         <% results.forEach(result => { %>
-            <a href="/pages/players/<%= result.id %>">
+            <a href="/pages/users/<%= userId %>/players/<%= result.id %>">
                 <div class="card">
                     <%= result.first_name %> <%= result.last_name %>
                 </div>

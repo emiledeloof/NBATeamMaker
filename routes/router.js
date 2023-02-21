@@ -205,13 +205,14 @@ router.post("/users/login", async (req, res) => {
 })
 
 // search
-router.post("/search", async(req, res) => {
+router.post("/users/:userId/players/search", async(req, res) => {
     let request = await axios.get(`${URL}/players?search=${req.body.search}`)
     res.render("pages/searchResults", {
         search: req.body.search, 
         results: request.data.data,
         loggedIn: false,
         type: "player",
+        userId: req.params.userId
     })
 })
 
@@ -356,12 +357,22 @@ router.get("/users/:userId/players/:playerId", async(req, res) => {
     let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.playerId}`)
     let allPlayers = await axios.get(nbaURL)
     let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
+    let statsVar = stats.data.data[0]
+    let ppgScore = 1000 * statsVar.pts * statsVar.fg_pct
+    let apgScore = 750 * statsVar.ast
+    let spgScore = 1250 * statsVar.stl
+    let blkScore = 1250 * statsVar.blk
+    let rpgScore = 750 * statsVar.reb
+    let turnoverScore = 1250 * statsVar.turnover
+    let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
+    score = score.toFixed(0)
     res.render("pages/playerDetails", {
         player: player.data,
         stats: stats.data.data[0],
         personId: nbaPlayer.personId,
         userId: req.params.userId,
-        loggedIn: true
+        loggedIn: true,
+        score: score
     })
 })
 
