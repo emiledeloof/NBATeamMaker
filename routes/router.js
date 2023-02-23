@@ -235,6 +235,7 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let league = await League.findById(req.params.leagueId)
     let index = league.users.findIndex(user => user.id == req.params.userId)
+    // let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
     let team
     if(await Team.findOne({name: req.query.teamName})){
         team = await Team.findOne({name: req.query.teamName})
@@ -251,18 +252,23 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
     switch(req.body.position || req.query.position){
         case "C":
             team.center = player.data
+            team.center.score = await calculateScore(req.params.id)
             break;
         case "PF":
             team.powerForward = player.data
+            team.powerForward.score = await calculateScore(req.params.id)
             break;
         case "SF":
             team.smallForward = player.data
+            team.smallForward.score = await calculateScore(req.params.id)
             break;
         case "SG":
             team.shootingGuard = player.data
+            team.shootingGuard.score = await calculateScore(req.params.id)
             break;
         case "PG":
             team.pointGuard = player.data
+            team.pointGuard.score = await calculateScore(req.params.id)
             break;
     }
     try{
@@ -277,22 +283,28 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
 // edit player on team POST
 router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
+    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
     let team = await Team.findById(req.params.teamId)
     switch(req.body.position || req.query.position){
         case "C":
             team.center = player.data
+            team.center.score = await calculateScore(req.params.id)
             break;
         case "PF":
             team.powerForward = player.data
+            team.powerForward.score = await calculateScore(req.params.id)
             break;
         case "SF":
             team.smallForward = player.data
+            team.smallForward.score = await calculateScore(req.params.id)
             break;
         case "SG":
             team.shootingGuard = player.data
+            team.shootingGuard.score = await calculateScore(req.params.id)
             break;
         case "PG":
             team.pointGuard = player.data
+            team.pointGuard.score = await calculateScore(req.params.id)
             break;
     }
     try{
@@ -312,6 +324,16 @@ router.get("/users/:userId/teams/show", async(req, res) => {
 // view team
 router.get("/users/:userId/leagues/:leagueId/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
+    team.pointGuard.score = await calculateScore(team.pointGuard.id)
+    team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
+    team.powerForward.score = await calculateScore(team.powerForward.id)
+    team.smallForward.score = await calculateScore(team.smallForward.id)
+    team.center.score = await calculateScore(team.center.id)
+    try{
+        await team.save()
+    } catch(e){
+        console.log(e)
+    }
     let url = process.env.URL
     res.render("pages/team", {
         team: team, 
@@ -324,6 +346,16 @@ router.get("/users/:userId/leagues/:leagueId/teams/:id/view", async(req, res) =>
 // view other team
 router.get("/users/:userId/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
     let team = await Team.findById(req.params.id)
+    team.pointGuard.score = await calculateScore(team.pointGuard.id)
+    team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
+    team.powerForward.score = await calculateScore(team.powerForward.id)
+    team.smallForward.score = await calculateScore(team.smallForward.id)
+    team.center.score = await calculateScore(team.center.id)
+    try{
+        await team.save()
+    } catch(e){
+        console.log(e)
+    }
     res.render("pages/viewOtherTeam", {
         team: team,
         userId: req.params.userId,
@@ -354,18 +386,10 @@ router.post("/users/:userId/leagues/:leagueId/teams/:id/delete", async(req, res)
 // view player when logged in
 router.get("/users/:userId/players/:playerId", async(req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.playerId}`)
-    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.playerId}`)
     let allPlayers = await axios.get(nbaURL)
     let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
-    let statsVar = stats.data.data[0]
-    let ppgScore = 1000 * statsVar.pts * statsVar.fg_pct
-    let apgScore = 750 * statsVar.ast
-    let spgScore = 1250 * statsVar.stl
-    let blkScore = 1250 * statsVar.blk
-    let rpgScore = 750 * statsVar.reb
-    let turnoverScore = 1250 * statsVar.turnover
-    let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
-    score = score.toFixed(0)
+    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.playerId}`)
+    let score = await calculateScore(req.params.playerId, stats.data.data[0])
     res.render("pages/playerDetails", {
         player: player.data,
         stats: stats.data.data[0],
@@ -501,5 +525,20 @@ router.post("/users/:userId/leagues/:leagueId/request/:requestId/reject", async 
     }
     res.redirect(`/pages/users/${req.params.userId}/leagues/${req.params.leagueId}/settings`)
 })
+
+async function calculateScore(playerId, statsVar = null){
+    if(statsVar == null){
+        statsVar = await axios.get(`${URL}/season_averages?player_ids[]=${playerId}`)
+    }
+    let ppgScore = 1000 * statsVar.pts * statsVar.fg_pct
+    let apgScore = 750 * statsVar.ast
+    let spgScore = 1250 * statsVar.stl
+    let blkScore = 1250 * statsVar.blk
+    let rpgScore = 750 * statsVar.reb
+    let turnoverScore = 1250 * statsVar.turnover
+    let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
+    score = score.toFixed(0)
+    return score
+}
 
 module.exports = router
