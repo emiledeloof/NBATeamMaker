@@ -314,11 +314,12 @@ router.get("/users/:userId/teams/show", async(req, res) => {
 router.get("/users/:userId/leagues/:leagueId/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
     if(team.pointGuard && team.shootingGuard && team.powerForward && team.smallForward && team.center){
-        team.pointGuard.score = await calculateScore(team.pointGuard.id)
-        team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
-        team.powerForward.score = await calculateScore(team.powerForward.id)
-        team.smallForward.score = await calculateScore(team.smallForward.id)
-        team.center.score = await calculateScore(team.center.id)
+        team.pointGuard.scoreData = await calculateScore(team.pointGuard.id)
+        team.shootingGuard.scoreData = await calculateScore(team.shootingGuard.id)
+        team.powerForward.scoreData = await calculateScore(team.powerForward.id)
+        team.smallForward.scoreData = await calculateScore(team.smallForward.id)
+        team.center.scoreData = await calculateScore(team.center.id)
+        team.totalScore = parseInt(team.pointGuard.score) + parseInt(team.shootingGuard.score) + parseInt(team.powerForward.score) + parseInt(team.smallForward.score) + parseInt(team.center.score)
     }
     try{
         await team.save()
@@ -532,16 +533,21 @@ async function calculateScore(playerId, statsVar = null){
     let turnoverScore = 1250 * statsVar.turnover
     let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
     score = score.toFixed(0)
-    return score
+    let scoreData = {
+        score: score,
+        game: statsVar.games_played,
+        dateUpdated: Date.now()
+    }
+    return scoreData
 }
 
 async function addScores(playerId, team){
     if(team.shootingGuard && team.pointGuard && team.powerForward && team.smallForward && team.center){
-        team.center.score = await calculateScore(playerId)
-        team.powerForward.score = await calculateScore(playerId)
-        team.smallForward.score = await calculateScore(playerId)
-        team.shootingGuard.score = await calculateScore(playerId)
-        team.pointGuard.score = await calculateScore(playerId)
+        team.center.scoreData = await calculateScore(playerId)
+        team.powerForward.scoreData = await calculateScore(playerId)
+        team.smallForward.scoreData = await calculateScore(playerId)
+        team.shootingGuard.scoreData = await calculateScore(playerId)
+        team.pointGuard.scoreData = await calculateScore(playerId)
     }
 }
 

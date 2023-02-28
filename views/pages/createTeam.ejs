@@ -116,9 +116,9 @@
                 await fetch(`<%= url %>/pages/teams/users/<%= userId %>/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST"
                 })
-                .then(response, () =>{
+                .then((response) => {
                     if(response.status == 200){
-                        alert("Player added to team!")
+                        // alert("Player added to team!")
                     } else{
                         alert("Something went wrong. Please try again.")
                     }
