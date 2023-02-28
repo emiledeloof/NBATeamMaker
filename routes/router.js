@@ -100,9 +100,12 @@ router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
         username: user.username,
         id: user._id
     }
-    let indexOfRequest = user.friendRequestsReceived.indexOf(dataToSend)
+    let checkData = (element) => element.id == dataToSend.id
+    let checkSent = (element) => element.id == sent.id
+    let indexOfRequest = user.friendRequestsReceived.findIndex(element => element.id == dataToSend.id)
+    console.log(indexOfRequest)
     user.friendRequestsReceived.splice(indexOfRequest, 1)
-    let indexOfSent = friend.friendRequestsSent.indexOf(sent)
+    let indexOfSent = friend.friendRequestsSent.findIndex(checkSent)
     friend.friendRequestsSent.splice(indexOfSent, 1)
     dataToSend.date = Date.now()
     user.friends.push(dataToSend)
