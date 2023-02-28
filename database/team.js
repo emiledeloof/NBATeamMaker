@@ -5,24 +5,13 @@ const schema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    center: {
-        
-    },
-    powerForward: {
-        
-    },
-    smallForward: {
-        
-    },
-    shootingGuard: {
-        
-    },
-    pointGuard: {
-        
-    },
-    userId:{
-        
-    }
+    center: {},
+    powerForward: {},
+    smallForward: {},
+    shootingGuard: {},
+    pointGuard: {},
+    userId:{},
+    leagueId: {}
 })
 
 module.exports = mongoose.model("team", schema)

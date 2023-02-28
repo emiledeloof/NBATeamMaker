@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <%- include("_navbar.ejs") %>
+        <h2><%= team.name %></h2>
+        <div class="grid2">
+            <div class="gridItem">
+                Point Guard: 
+            </div>
+            <div class="gridItem">
+                <label id="PG">
+                <% if(team.pointGuard){ %>
+                    <a href="/pages/users/<%= userId %>/players/<%= team.pointGuard.id %>"><%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> </a><br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                Shooting Guard:
+            </div>
+            <div class="gridItem">
+                <label id="SG">
+                <% if(team.shootingGuard){ %>
+                    <a href="/pages/users/<%= userId %>/players/<%= team.shootingGuard.id %>"><%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %></a> <br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                Small Forward:
+            </div>
+            <div class="gridItem">
+                <label id="SF">
+                <% if(team.smallForward){ %>
+                    <a href="/pages/users/<%= userId %>/players/<%= team.smallForward.id %>"><%= team.smallForward.first_name %> <%= team.smallForward.last_name %></a> <br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                Power Forward: 
+            </div>
+            <div class="gridItem">
+                <label id="PF">
+                <% if(team.powerForward){ %>
+                    <a href="/pages/users/<%= userId %>/players/<%= team.powerForward.id %>"><%= team.powerForward.first_name %> <%= team.powerForward.last_name %></a> <br>
+                <% } %>
+                </label>
+            </div>
+            <div class="gridItem">
+                Center: 
+            </div>
+            <div class="gridItem">
+                <label id="C">
+                <% if(team.center){ %>
+                    <a href="/pages/users/<%= userId %>/players/<%= team.center.id %>"><%= team.center.first_name %> <%= team.center.last_name %></a> <br>
+                <% } %>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

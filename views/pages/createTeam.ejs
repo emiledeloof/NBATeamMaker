@@ -113,7 +113,7 @@
                 document.getElementById(position).innerText = playerName
                 document.querySelector("." + position).remove()
                 document.getElementById("searchPlayer").style.display = "none"
-                await fetch(`<%= url %>/pages/teams/users/<%= userId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
+                await fetch(`<%= url %>/pages/teams/users/<%= userId %>/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST"
                 })
                 .then(response, () =>{
@@ -146,7 +146,7 @@
                     let parsed = JSON.parse(text)
                     document.getElementById("gamesPlayed").innerText = parsed.data[0].games_played
                     document.getElementById("minutes").innerText = parsed.data[0].min
-                    document.getElementById("fgPct").innerText = parsed.data[0].fg_pct * 100
+                    document.getElementById("fgPct").innerText = (parsed.data[0].fg_pct * 100).toFixed(1)
                     document.getElementById("points").innerText = parsed.data[0].pts
                     document.getElementById("rebounds").innerText = parsed.data[0].reb
                     document.getElementById("assists").innerText = parsed.data[0].ast
