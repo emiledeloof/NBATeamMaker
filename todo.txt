@@ -1,0 +1,2 @@
+bugs: 
+- teamId is not being reset after a team gets deleted
