@@ -367,7 +367,7 @@ router.get("/users/:userId/leagues/:leagueId/teams/create", (req, res) => {
 router.post("/users/:userId/leagues/:leagueId/teams/:id/delete", async(req, res) => {
     await Team.findByIdAndDelete(req.params.id)
     let league = await League.findById(req.params.leagueId)
-    let index = league.users.findIndex(user => user.teamId == req.params.teamId)
+    let index = league.users.findIndex(user => user.teamId == req.params.id)
     try{
         league.users[index].teamId = null
         await league.save()
