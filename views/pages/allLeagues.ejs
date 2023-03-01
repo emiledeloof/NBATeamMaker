@@ -11,6 +11,10 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h1>Leagues</h1>
+        <form action="/pages/users/<%= userId %>/leagues/search" method="POST">
+            <input type="text" placeholder="Search league" id="league" name="league">
+            <button>Search</button>
+        </form>
         <% leagues.forEach(league => { %>
             <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>">
                 <div class="card">

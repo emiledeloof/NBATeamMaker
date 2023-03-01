@@ -441,11 +441,25 @@ router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
 
 // view all leagues
 router.get("/users/:userId/leagues", async(req, res) => {
-    // let leagues = await League.find({public: true}).limit(30).exec()
-    let leagues = await League.find({public: true})
+    let leagues = await League.find({public: true}).limit(30).exec()
+    // let leagues = await League.find({public: true})
     res.render("pages/allLeagues", {
         userId: req.params.userId,
         leagues: leagues,
+    })
+})
+
+// Search league POST
+router.post("/users/:userId/leagues/search", async(req, res) => {
+    console.log(req.body.league)
+    let leagues = await League.find({name: {$regex: req.body.league, $options: "i"}})
+    console.log(leagues)
+    res.render("pages/searchResults", {
+        userId: req.params.userId,
+        type: "league",
+        leagues: leagues,
+        search: req.body.league,
+        loggedIn: true
     })
 })
 
