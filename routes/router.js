@@ -12,10 +12,23 @@ const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 // const algorithm = "aes-256-cbc"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
+const schedule = require("node-schedule")
 // const initVector = crypto.randomBytes(16)
 // const securityKey = crypto.randomBytes(32)
 // const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
 // const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
+
+// check games every day
+schedule.scheduleJob("* * * * *", async () => {
+    let date = new Date(Date.now()).toISOString().split("T")[0]
+    let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
+    console.log(games.data.data)
+    games.data.data.forEach(game => {
+        if(game.status.toUpperCase() === "Final".toUpperCase()){
+            
+        }
+    })
+})
 
 // register
 router.get("/users/register", (req, res) => {
@@ -451,9 +464,7 @@ router.get("/users/:userId/leagues", async(req, res) => {
 
 // Search league POST
 router.post("/users/:userId/leagues/search", async(req, res) => {
-    console.log(req.body.league)
     let leagues = await League.find({name: {$regex: req.body.league, $options: "i"}})
-    console.log(leagues)
     res.render("pages/searchResults", {
         userId: req.params.userId,
         type: "league",
