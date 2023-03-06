@@ -24,7 +24,7 @@
         <% } else { %> 
             <h4>You don't have any friends yet.</h4>
         <% } %>
-        <h3>Incoming friend requests</h3>
+        <br><h3>Incoming friend requests</h3>
         <% if(user.friendRequestsReceived.length !== 0){ %>
             <% user.friendRequestsReceived.forEach(request => { %> 
                 <div class="card">
@@ -40,6 +40,20 @@
                 <% }) %>
         <% } else { %>
             <h4>No incoming friend requests</h4>
+        <% } %>
+        <br><h3>Outgoing friend requests</h3>
+        <% if(user.friendRequestsSent.length !== 0){ %>
+            <% user.friendRequestsSent.forEach(request => { %>
+                <div class="card">
+                    To: <%= request.username %>
+                    <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
+                </div>
+                <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/undo" method="POST">
+                    <button>Undo</button>
+                </form>
+            <% }) %>
+        <% } else { %>
+            <h4>No outgoing friend requests</h4>
         <% } %>
     </div>
 </body>
