@@ -116,12 +116,9 @@
                 await fetch(`<%= url %>/pages/teams/users/<%= userId %>/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST"
                 })
+                .then(response => response.json())
                 .then((response) => {
-                    if(response.status == 200){
-                        // alert("Player added to team!")
-                    } else{
-                        alert("Something went wrong. Please try again.")
-                    }
+                    alert(response.message)
                 })
             }
             if(e.target.id == "createTeamName"){
@@ -157,9 +154,9 @@
         })
         function search(){
             let resultsWrapper = document.getElementById("searchResults")
-            resultsWrapper.childNodes.forEach(child => {
-                child.remove()
-            })
+            while (resultsWrapper.firstChild) {
+                resultsWrapper.removeChild(resultsWrapper.firstChild);
+            }
             let input = document.getElementById("searchInput").value
             fetch(`https://www.balldontlie.io/api/v1/players?search=${input}`)
             .then(response => response.text())
