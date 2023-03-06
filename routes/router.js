@@ -452,13 +452,20 @@ router.post("/users/:userId/leagues/create", async (req, res) => {
 router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let isJoined = false
+    let hasTeam = false
+    let userIndex
     if(league.users.findIndex(element => element.id == req.params.userId) != -1){
         isJoined = true
+        userIndex = league.users.findIndex(element => element.id == req.params.userId)
+    }
+    if(league.users[userIndex].teamId != null){
+        hasTeam = true
     }
     res.render("pages/showLeague", {
         league: league, 
         userId: req.params.userId,
-        isJoined: isJoined
+        isJoined: isJoined,
+        hasTeam: hasTeam
     })
 })
 

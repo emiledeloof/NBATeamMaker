@@ -13,7 +13,9 @@
         <h1><%= league.name %></h1>
         <% if(isJoined == true){ %>
             <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/settings">League settings</a>
+            <% if(hasTeam == false){ %>
             <br><br><a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/teams/create">Create team</a>
+            <% } %>
         <% } %>
         <h3>users:</h3>
         <% league.users.forEach(user => { %>
