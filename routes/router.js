@@ -24,7 +24,7 @@ schedule.scheduleJob("* * * * *", async () => {
     let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
     console.log(games.data.data)
     games.data.data.forEach(game => {
-        if(game.status.toUpperCase() === "Final".toUpperCase()){
+        if(game.status === "Final".toUpperCase()){
             
         }
     })
