@@ -263,8 +263,9 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
         team.leagueId = req.params.leagueId
         league.users[index].teamId = team._id.toString()
         league.markModified("users")
+        isAuthenticated = true
     }
-    // addScores(req.params.id, team)
+    addScores(req.params.id, team)
     try{
         if(isAuthenticated == true){
             switch(req.body.position || req.query.position){
@@ -300,7 +301,7 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
 router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let team = await Team.findById(req.params.teamId)
-    // addScores(req.params.id, team)
+    addScores(req.params.id, team)
     switch(req.body.position || req.query.position){
         case "C":
             team.center = player.data
@@ -372,11 +373,18 @@ router.get("/users/:userId/leagues/:leagueId/teams/:id/view-other", async(req, r
     } catch(e){
         console.log(e)
     }
-    res.render("pages/viewOtherTeam", {
+    let url = process.env.URL
+    let params = {
         team: team,
         userId: req.params.userId,
-        leagueId: req.params.leagueId
-    })
+        leagueId: req.params.leagueId,
+        url: url
+    }
+    if(req.params.userId == team.userId){
+        res.render("pages/team", params)
+    } else {
+        res.render("pages/viewOtherTeam", params)
+    }
 })
 
 // create new team

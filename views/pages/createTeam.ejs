@@ -106,6 +106,10 @@
                 searchPlayer.style.display = "block"
             }
             if(e.target.classList.contains("addPlayer")){
+                let resultsWrapper = document.getElementById("searchResults")
+                while (resultsWrapper.firstChild) {
+                    resultsWrapper.removeChild(resultsWrapper.firstChild);
+                }
                 let searchInput = document.getElementById("searchInput")
                 let playerName = e.target.parentNode.childNodes[0].innerText
                 let playerId = e.target.parentNode.childNodes[2].innerText
