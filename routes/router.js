@@ -106,17 +106,9 @@ router.post("/users/:userId/friends/:friendId/add", async (req, res) => {
 router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
     let user = await User.findById(req.params.id)
     let friend = await User.findById(req.params.friendId)
-    let dataToSend = {
-        username: friend.username,
-        id: friend._id
-    }
-    let sent = {
-        username: user.username,
-        id: user._id
-    }
-    let indexOfRequest = user.friendRequestsReceived.findIndex(request => request.id == dataToSend.id)
+    let indexOfRequest = user.friendRequestsReceived.findIndex(request => request.id == friend._id)
     user.friendRequestsReceived.splice(indexOfRequest, 1)
-    let indexOfSent = friend.friendRequestsSent.findIndex(request => request.id == sent.id)
+    let indexOfSent = friend.friendRequestsSent.findIndex(request => request.id == user._id)
     friend.friendRequestsSent.splice(indexOfSent, 1)
     dataToSend.date = Date.now()
     user.friends.push(dataToSend)
@@ -135,17 +127,9 @@ router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
 router.post("/users/:id/friends/:friendId/reject", async(req, res) => {
     let user = await User.findById(req.params.id)
     let friend = await User.findById(req.params.friendId)
-    let dataToSend = {
-        username: friend.username,
-        id: friend._id
-    }
-    let sent = {
-        username: user.username,
-        id: user._id
-    }
-    let indexOfRequest = user.friendRequestsReceived.findIndex(request => request.id == dataToSend.id)
+    let indexOfRequest = user.friendRequestsReceived.findIndex(request => request.id == friend._id)
     user.friendRequestsReceived.splice(indexOfRequest, 1)
-    let indexOfSent = friend.friendRequestsSent.findIndex(request => request.id == sent.id)
+    let indexOfSent = friend.friendRequestsSent.findIndex(request => request.id == user._id)
     friend.friendRequestsSent.splice(indexOfSent, 1)
     try{
         await user.save()
@@ -160,17 +144,9 @@ router.post("/users/:id/friends/:friendId/reject", async(req, res) => {
 router.post("/users/:id/friends/:friendId/remove", async (req, res) => {
     let user = await User.findById(req.params.id)
     let friend = await User.findById(req.params.friendId)
-    let data = {
-        username: friend.username,
-        id: req.params.friendId
-    }
-    let friendData = {
-        username: user.username,
-        id: req.params.id
-    }
-    let index = user.friends.findIndex(friend => friend.id == data.id)
+    let index = user.friends.findIndex(friend => friend.id == req.params.friendId)
     user.friends.splice(index, 1)
-    let friendIndex = friend.friends.findIndex(friend => friend.id == friendData.id)
+    let friendIndex = friend.friends.findIndex(friend => friend.id == req.params.id)
     friend.friends.splice(friendIndex, 1)
     try{
         await user.save()
@@ -185,7 +161,17 @@ router.post("/users/:id/friends/:friendId/remove", async (req, res) => {
 router.post("/users/:id/friends/:requestId/undo", async (req, res) => {
     let user = await User.findById(req.params.id)
     let friend = await User.findById(req.params.requestId)
-
+    let userIndex = friend.friendRequestsReceived.findIndex(request => request.id == req.params.id)
+    friend.friendRequestsReceived.splice(userIndex, 1)
+    let friendIndex = user.friendRequestsSent.findIndex(request => request.id == req.params.requestId)
+    user.friendRequestsSent.splice(friendIndex, 1)
+    try{
+        await user.save()
+        await friend.save()
+    } catch(e){
+        console.log(e)
+    }
+    res.redirect(`/pages/users/${req.params.id}/profile`)
 })
 
 // profile
