@@ -521,6 +521,25 @@ router.get("/users/:userId/leagues/:leagueId/settings", async (req, res) => {
     })
 })
 
+// Leave league
+router.post("/users/:userId/leagues/:leagueId/leave", async (req, res) => {
+    let user = await User.findById(req.params.userId)
+    let league = await League.findById(req.params.leagueId)
+    let userIndex = user.leagues.findIndex(league => league.id == req.params.leagueId)
+    user.leagues.splice(userIndex, 1)
+    let leagueIndex = league.users.findIndex(user => user.id == req.params.userId)
+    league.users.splice(leagueIndex, 1)
+    try{
+        user.markModified("leagues")
+        league.markModified("users")
+        await user.save()
+        await league.save()
+    } catch(e){
+        console.log(e)
+    }
+    res.redirect(`/pages/users/${req.params.userId}`)
+})
+
 // Accept request to join league
 router.post("/users/:userId/leagues/:leagueId/request/:requestId/accept", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
