@@ -294,7 +294,7 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
                     break;
             }
         } else{
-            throw new Error("A team with this name already exists!")
+            throw new Error("A team with this name already exists! \nPlease refresh the page to create another team.")
         }
         await team.save()
         await league.save()
@@ -409,6 +409,7 @@ router.post("/users/:userId/leagues/:leagueId/teams/:id/delete", async(req, res)
     console.log(index)
     try{
         league.users[index].teamId = null
+        league.markModified("users")
         await league.save()
     } catch (e) {
         console.log(e)
