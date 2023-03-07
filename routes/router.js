@@ -12,10 +12,23 @@ const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 // const algorithm = "aes-256-cbc"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
+const schedule = require("node-schedule")
 // const initVector = crypto.randomBytes(16)
 // const securityKey = crypto.randomBytes(32)
 // const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
 // const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
+
+// check games every day
+// schedule.scheduleJob("* * * * *", async () => {
+//     let date = new Date(Date.now()).toISOString().split("T")[0]
+//     let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
+//     console.log(games.data.data)
+//     games.data.data.forEach(game => {
+//         if(game.status === "Final".toUpperCase()){
+            
+//         }
+//     })
+// })
 
 // register
 router.get("/users/register", (req, res) => {
@@ -243,9 +256,13 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let league = await League.findById(req.params.leagueId)
     let index = league.users.findIndex(user => user.id == req.params.userId)
+    let isAuthenticated = false
     let team
     if(await Team.findOne({name: req.query.teamName})){
         team = await Team.findOne({name: req.query.teamName})
+        if(team.userId == req.params.userId){
+            isAuthenticated = true
+        }
     } else {
         req.team = new Team()
         team = req.team
@@ -254,38 +271,45 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
         team.leagueId = req.params.leagueId
         league.users[index].teamId = team._id.toString()
         league.markModified("users")
+        isAuthenticated = true
     }
-    // league.users[0].teamId = "this is a teamId"
-    switch(req.body.position || req.query.position){
-        case "C":
-            team.center = player.data
-            break;
-        case "PF":
-            team.powerForward = player.data
-            break;
-        case "SF":
-            team.smallForward = player.data
-            break;
-        case "SG":
-            team.shootingGuard = player.data
-            break;
-        case "PG":
-            team.pointGuard = player.data
-            break;
-    }
+    addScores(req.params.id, team)
     try{
+        if(isAuthenticated == true){
+            switch(req.body.position || req.query.position){
+                case "C":
+                    team.center = player.data
+                    break;
+                case "PF":
+                    team.powerForward = player.data
+                    break;
+                case "SF":
+                    team.smallForward = player.data
+                    break;
+                case "SG":
+                    team.shootingGuard = player.data
+                    break;
+                case "PG":
+                    team.pointGuard = player.data
+                    break;
+            }
+        } else{
+            throw new Error("A team with this name already exists!")
+        }
         await team.save()
         await league.save()
-    } catch(e){
+        res.end()
+    } catch (e){
         console.log(e)
+        res.status(406).json({message: e.toString()})
     }
-    res.end()
 })
 
 // edit player on team POST
 router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let team = await Team.findById(req.params.teamId)
+    addScores(req.params.id, team)
     switch(req.body.position || req.query.position){
         case "C":
             team.center = player.data
@@ -320,6 +344,19 @@ router.get("/users/:userId/teams/show", async(req, res) => {
 // view team
 router.get("/users/:userId/leagues/:leagueId/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
+    // if(team.pointGuard && team.shootingGuard && team.powerForward && team.smallForward && team.center){
+    //     team.pointGuard.scoreData = await calculateScore(team.pointGuard.id)
+    //     team.shootingGuard.scoreData = await calculateScore(team.shootingGuard.id)
+    //     team.powerForward.scoreData = await calculateScore(team.powerForward.id)
+    //     team.smallForward.scoreData = await calculateScore(team.smallForward.id)
+    //     team.center.scoreData = await calculateScore(team.center.id)
+    //     team.totalScore = parseInt(team.pointGuard.score) + parseInt(team.shootingGuard.score) + parseInt(team.powerForward.score) + parseInt(team.smallForward.score) + parseInt(team.center.score)
+    // }
+    try{
+        await team.save()
+    } catch(e){
+        console.log(e)
+    }
     let url = process.env.URL
     res.render("pages/team", {
         team: team, 
@@ -332,11 +369,30 @@ router.get("/users/:userId/leagues/:leagueId/teams/:id/view", async(req, res) =>
 // view other team
 router.get("/users/:userId/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
     let team = await Team.findById(req.params.id)
-    res.render("pages/viewOtherTeam", {
+    // if(team.pointGuard && team.shootingGuard && team.powerForward && team.smallForward && team.center){
+    //     team.pointGuard.score = await calculateScore(team.pointGuard.id)
+    //     team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
+    //     team.powerForward.score = await calculateScore(team.powerForward.id)
+    //     team.smallForward.score = await calculateScore(team.smallForward.id)
+    //     team.center.score = await calculateScore(team.center.id)
+    // }
+    try{
+        await team.save()
+    } catch(e){
+        console.log(e)
+    }
+    let url = process.env.URL
+    let params = {
         team: team,
         userId: req.params.userId,
-        leagueId: req.params.leagueId
-    })
+        leagueId: req.params.leagueId,
+        url: url
+    }
+    if(req.params.userId == team.userId){
+        res.render("pages/team", params)
+    } else {
+        res.render("pages/viewOtherTeam", params)
+    }
 })
 
 // create new team
@@ -349,9 +405,10 @@ router.get("/users/:userId/leagues/:leagueId/teams/create", (req, res) => {
 router.post("/users/:userId/leagues/:leagueId/teams/:id/delete", async(req, res) => {
     await Team.findByIdAndDelete(req.params.id)
     let league = await League.findById(req.params.leagueId)
-    let index = league.users.findIndex(user => user.teamId == req.params.teamId)
-    league.users[index].teamId = null
+    let index = league.users.findIndex(user => user.teamId == req.params.id)
+    console.log(index)
     try{
+        league.users[index].teamId = null
         await league.save()
     } catch (e) {
         console.log(e)
@@ -362,18 +419,10 @@ router.post("/users/:userId/leagues/:leagueId/teams/:id/delete", async(req, res)
 // view player when logged in
 router.get("/users/:userId/players/:playerId", async(req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.playerId}`)
-    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.playerId}`)
     let allPlayers = await axios.get(nbaURL)
     let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
-    let statsVar = stats.data.data[0]
-    let ppgScore = 1000 * statsVar.pts * statsVar.fg_pct
-    let apgScore = 750 * statsVar.ast
-    let spgScore = 1250 * statsVar.stl
-    let blkScore = 1250 * statsVar.blk
-    let rpgScore = 750 * statsVar.reb
-    let turnoverScore = 1250 * statsVar.turnover
-    let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
-    score = score.toFixed(0)
+    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.playerId}`)
+    let score = await calculateScore(req.params.playerId, stats.data.data[0])
     res.render("pages/playerDetails", {
         player: player.data,
         stats: stats.data.data[0],
@@ -419,23 +468,42 @@ router.post("/users/:userId/leagues/create", async (req, res) => {
 router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let isJoined = false
+    let hasTeam = false
+    let userIndex
     if(league.users.findIndex(element => element.id == req.params.userId) != -1){
         isJoined = true
+        userIndex = league.users.findIndex(element => element.id == req.params.userId)
+    }
+    if(league.users[userIndex].teamId != null){
+        hasTeam = true
     }
     res.render("pages/showLeague", {
         league: league, 
         userId: req.params.userId,
-        isJoined: isJoined
+        isJoined: isJoined,
+        hasTeam: hasTeam
     })
 })
 
 // view all leagues
 router.get("/users/:userId/leagues", async(req, res) => {
-    // let leagues = await League.find({public: true}).limit(30).exec()
-    let leagues = await League.find({public: true})
+    let leagues = await League.find({public: true}).limit(30).exec()
+    // let leagues = await League.find({public: true})
     res.render("pages/allLeagues", {
         userId: req.params.userId,
         leagues: leagues,
+    })
+})
+
+// Search league POST
+router.post("/users/:userId/leagues/search", async(req, res) => {
+    let leagues = await League.find({name: {$regex: req.body.league, $options: "i"}})
+    res.render("pages/searchResults", {
+        userId: req.params.userId,
+        type: "league",
+        leagues: leagues,
+        search: req.body.league,
+        loggedIn: true
     })
 })
 
@@ -509,5 +577,36 @@ router.post("/users/:userId/leagues/:leagueId/request/:requestId/reject", async 
     }
     res.redirect(`/pages/users/${req.params.userId}/leagues/${req.params.leagueId}/settings`)
 })
+
+async function calculateScore(playerId, statsVar = null){
+    if(statsVar == null){
+        let stats = await axios.get(`${URL}/season_averages?player_ids[]=${playerId}`)
+        statsVar = stats.data.data[0]
+    }
+    let ppgScore = 1000 * statsVar.pts * statsVar.fg_pct
+    let apgScore = 750 * statsVar.ast
+    let spgScore = 1250 * statsVar.stl
+    let blkScore = 1250 * statsVar.blk
+    let rpgScore = 750 * statsVar.reb
+    let turnoverScore = 1250 * statsVar.turnover
+    let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
+    score = score.toFixed(0)
+    let scoreData = {
+        score: score,
+        game: statsVar.games_played,
+        dateUpdated: Date.now()
+    }
+    return scoreData
+}
+
+async function addScores(playerId, team){
+    if(team.shootingGuard && team.pointGuard && team.powerForward && team.smallForward && team.center){
+        team.center.scoreData = await calculateScore(playerId)
+        team.powerForward.scoreData = await calculateScore(playerId)
+        team.smallForward.scoreData = await calculateScore(playerId)
+        team.shootingGuard.scoreData = await calculateScore(playerId)
+        team.pointGuard.scoreData = await calculateScore(playerId)
+    }
+}
 
 module.exports = router

@@ -106,6 +106,10 @@
                 searchPlayer.style.display = "block"
             }
             if(e.target.classList.contains("addPlayer")){
+                let resultsWrapper = document.getElementById("searchResults")
+                while (resultsWrapper.firstChild) {
+                    resultsWrapper.removeChild(resultsWrapper.firstChild);
+                }
                 let searchInput = document.getElementById("searchInput")
                 let playerName = e.target.parentNode.childNodes[0].innerText
                 let playerId = e.target.parentNode.childNodes[2].innerText
@@ -116,12 +120,9 @@
                 await fetch(`<%= url %>/pages/teams/users/<%= userId %>/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST"
                 })
-                .then(response, () =>{
-                    if(response.status == 200){
-                        alert("Player added to team!")
-                    } else{
-                        alert("Something went wrong. Please try again.")
-                    }
+                .then(response => response.json())
+                .then((response) => {
+                    alert(response.message)
                 })
             }
             if(e.target.id == "createTeamName"){
@@ -146,7 +147,7 @@
                     let parsed = JSON.parse(text)
                     document.getElementById("gamesPlayed").innerText = parsed.data[0].games_played
                     document.getElementById("minutes").innerText = parsed.data[0].min
-                    document.getElementById("fgPct").innerText = parsed.data[0].fg_pct * 100
+                    document.getElementById("fgPct").innerText = (parsed.data[0].fg_pct * 100).toFixed(1)
                     document.getElementById("points").innerText = parsed.data[0].pts
                     document.getElementById("rebounds").innerText = parsed.data[0].reb
                     document.getElementById("assists").innerText = parsed.data[0].ast
@@ -157,9 +158,9 @@
         })
         function search(){
             let resultsWrapper = document.getElementById("searchResults")
-            resultsWrapper.childNodes.forEach(child => {
-                child.remove()
-            })
+            while (resultsWrapper.firstChild) {
+                resultsWrapper.removeChild(resultsWrapper.firstChild);
+            }
             let input = document.getElementById("searchInput").value
             fetch(`https://www.balldontlie.io/api/v1/players?search=${input}`)
             .then(response => response.text())
