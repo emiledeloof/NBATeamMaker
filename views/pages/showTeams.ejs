@@ -10,18 +10,26 @@
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
+        <h2>My teams</h2>
         <div id="teamsWrapper">
-            <% teams.forEach(team => { %>
-                <div class="teamCardWrapper">    
-                    <a href="/pages/users/<%= userId %>/leagues/<%= team.leagueId %>/teams/<%= team._id %>/view">
-                        <div class="teamCard">
-                            <%= team.name %>
-                        </div>
-                    </a>
-                    <form action="/pages/users/<%= userId %>/leagues/<%= team.leagueId %>/teams/<%= team._id %>/delete" method="POST">                        <button>Delete</button>
-                    </form>
-                </div>
-            <% }) %>
+            <% if(teams.length !== 0){ %>
+                <% teams.forEach(team => { %>
+                    <div class="teamCardWrapper">    
+                        <a href="/pages/users/<%= userId %>/leagues/<%= team.leagueId %>/teams/<%= team._id %>/view">
+                            <div class="teamCard">
+                                <%= team.name %>
+                            </div>
+                        </a>
+                        <form action="/pages/users/<%= userId %>/leagues/<%= team.leagueId %>/teams/<%= team._id %>/delete" method="POST">                        <button>Delete</button>
+                        </form>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <h4>
+                    You don't have any teams yet.
+                    <br>Join or create a league to create a team.
+                </h4>
+            <% } %>
         </div>
     </div>
 </body>
