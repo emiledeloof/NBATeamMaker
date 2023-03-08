@@ -24,8 +24,11 @@
         <%- include("_navbar.ejs") %>
         <h2>Dashboard</h2>
         <form action="/pages/users/<%= userId %>/search-user" method="POST">
-            <input type="text" id="searchUser" name="searchUser" placeholder="Search User">
-            <button>Search</button>
+            <div class="inputsWrapper">
+                <input type="text" id="searchUser" name="searchUser" required class="inputs" onfocusout="checkElement('searchUser', 'searchUserLabel')">
+                <label for="searchUser" id="searchUserLabel" class="inputLabel">Search user</label>
+            </div>
+            <button class="submitButton">Search</button>
         </form>
         <!-- <form action="/pages/users/<%= // userId %>/players/search" method="POST">
             <input type="text" name="search" id="search" placeholder="Search player">
@@ -35,7 +38,11 @@
         <% if(leagues.length !== 0){ %>
             <% leagues.forEach(league => { %>
                 <div class="card">
-                    <a href="/pages/users/<%= userId %>/leagues/<%= league.id %>"><%= league.name %></a>
+                    <a href="/pages/users/<%= userId %>/leagues/<%= league.id %>" class="leagueCards">
+                        <label><%= league.name %></label>
+                        <label>Current team score: 000000</label>
+                        <label>Current league rank: 1</label>
+                    </a>
                 </div>
             <% }) %>
         <% } else{ %>
@@ -45,5 +52,6 @@
            </div> 
         <% } %>
     </div>
+    <script src="/checkInput.js"></script>
 </body>
 </html>
