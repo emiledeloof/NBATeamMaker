@@ -24,14 +24,18 @@
         <%- include("_navbar.ejs") %>
         <h2>Create league</h2>
         <form action="/pages/users/<%= userId %>/leagues/create" method="POST">
-            <input type="text" id="name" name="name" placeholder="Name">
-            <br><label>Availability</label>
+            <div class="inputsWrapper">
+                <input type="text" id="name" name="name" class="inputs" onfocusout="checkElement('name', 'nameLabel')" maxlength="35" required>
+                <label for="name" class="inputLabel" id="nameLabel">Name</label>
+            </div>
+            <label>Availability</label>
             <select name="public" id="public">
                 <option value="true">Public</option>
                 <option value="false">Private</option>
             </select>
-            <br><button>Create</button>
+            <br><button class="submitButton">Create</button>
         </form>
     </div>
+    <script src="/checkInput.js"></script>
 </body>
 </html>
