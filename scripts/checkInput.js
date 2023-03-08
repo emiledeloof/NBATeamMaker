@@ -1,6 +1,11 @@
-function username(){
-    let usernameValue = document.getElementById("username")
-    if(usernameValue.value.trim() == ""){
-        username.classList.add("outFocus")
+function checkElement(inputId, labelId){
+    let input = document.getElementById(inputId)
+    input.classList.remove("outFocus")
+    let label = document.getElementById(labelId)
+    if(input.value.trim() == ""){
+        input.classList.add("outFocus")
+    } else{
+        label.style.top = "2px"
+        label.style.fontSize = "12px"
     }
 }

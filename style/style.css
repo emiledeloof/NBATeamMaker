@@ -124,6 +124,7 @@ nav ul li{
     margin-bottom: 15px;
     background-color: #0e1624;
     color: white;
+    transition: box-shadow 0.2s;
 }
 
 .inputs:focus + .inputLabel{
@@ -132,7 +133,7 @@ nav ul li{
 
 .inputs:focus{
     border: 0.5px solid #0e6eff;
-    box-shadow: 0 0 5px #0e6eff;
+    box-shadow: 0 0 7px #0e6eff;
     outline: none;
 }
 
@@ -189,5 +190,8 @@ nav ul li{
 @media screen and (max-width: 600px){
     nav{
         width: 100%;
+    }
+    .inputs{
+        width: 70%
     }
 }
