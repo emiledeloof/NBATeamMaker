@@ -9,25 +9,30 @@
     <link rel="stylesheet" href="/style.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3971663632813827"
      crossorigin="anonymous"></script>
+     <!-- Google tag (gtag.js) -->
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MJ05FTYNYB"></script>
+     <script>
+       window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments);}
+       gtag('js', new Date());
+     
+       gtag('config', 'G-MJ05FTYNYB');
+     </script>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MJ05FTYNYB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-MJ05FTYNYB');
-</script>
 <body>
     <div class="container">
         <%- include("_notLoggedNav.ejs") %>
-        <h1>register</h1>
+        <h1>Register</h1>
         <form action="/pages/users/register" method="POST">
-            <input type="text" name="username" id="username" placeholder="username">
-            <!-- <input type="email" name="email" id="email" placeholder="email"> -->
-            <input type="password" name="password" id="password" placeholder="password">
-            <button>Register</button>
+            <div class="inputsWrapper">
+                <input type="text" id="username" name="username" class="inputs" onfocusout="checkUsername()" maxlength="35">
+                <label for="username" class="inputLabel" id="usernameLabel">Username</label>
+            </div>
+            <div class="inputsWrapper">
+                <input type="password" id="password" name="password" class="inputs" onfocusout="checkPassword()">
+                <label for="password" class="inputLabel" id="passwordLabel">Password</label>
+            </div>
+            <button class="submitButton">Login</button>
         </form>
     </div>
 </body>
