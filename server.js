@@ -13,6 +13,7 @@ mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryW
 app.set("view engine", "ejs")
 app.use(express.static("style"))
 app.use(express.static("statics"))
+app.use(express.static("scripts"))
 app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
