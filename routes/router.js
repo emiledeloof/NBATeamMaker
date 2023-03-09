@@ -190,7 +190,7 @@ router.get("/users/:id/profile", async (req, res) => {
 
 // view other profile
 router.get("/users/:id/view-profile/:otherUser", async(req, res) => {
-    let user = await User.findById(req.params.id)
+    let user = await User.findById(req.params.otherUser)
     res.render("pages/viewProfile", {
         user: user,
         userId: req.params.id

@@ -27,9 +27,12 @@
         <% if(user.friends.length !== 0){ %>
             <% user.friends.forEach(friend => { %>
                 <div class="card">
-                    <a href="/pages/users/<%= userId %>/view-profile/<%= friend.id %>"><%= friend.username %></a>
+                    <div class="textWrapper">
+                        <a href="/pages/users/<%= userId %>/view-profile/<%= friend.id %>"><%= friend.username %></a>
+                        <br> Since: <%= new Date(friend.date).toLocaleString("en-GB") %>
+                    </div>
                     <form action="/pages/users/<%= userId %>/friends/<%= friend.id %>/remove" method="POST">
-                        <button class="deleteButton">Remove friend</button>
+                        <button class="delete actionButton">Remove friend</button>
                     </form>
                 </div>
             <% }) %>
@@ -40,15 +43,17 @@
         <% if(user.friendRequestsReceived.length !== 0){ %>
             <% user.friendRequestsReceived.forEach(request => { %> 
                 <div class="card">
-                    From: <%= request.username %>
-                    <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
+                    <div class="textWrapper">
+                        From: <a href="/pages/users/<%= userId %>/view-profile/<%= request.id %>"><%= request.username %></a>
+                        <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
+                    </div>
+                    <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/accept" method="POST">
+                        <button class="accept actionButton">Accept</button>
+                    </form>
+                    <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/reject" method="POST">
+                        <button class="delete actionButton">Reject</button>
+                    </form>
                 </div>
-                <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/accept" method="POST">
-                    <button>Accept</button>
-                </form>
-                <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/reject" method="POST">
-                    <button>Reject</button>
-                </form>
                 <% }) %>
         <% } else { %>
             <h4>No incoming friend requests</h4>
@@ -57,12 +62,14 @@
         <% if(user.friendRequestsSent.length !== 0){ %>
             <% user.friendRequestsSent.forEach(request => { %>
                 <div class="card">
-                    To: <%= request.username %>
-                    <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
+                    <div class="textWrapper">
+                        To: <%= request.username %>
+                        <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
+                    </div>
+                    <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/undo" method="POST">
+                        <button class="delete actionButton">Undo</button>
+                    </form>
                 </div>
-                <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/undo" method="POST">
-                    <button>Undo</button>
-                </form>
             <% }) %>
         <% } else { %>
             <h4>No outgoing friend requests</h4>

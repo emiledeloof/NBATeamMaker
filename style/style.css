@@ -206,6 +206,51 @@ nav ul li{
     cursor: pointer;
 }
 
+.actionButton{
+    font-size: 15px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 5px;
+    width: 130px;
+    border: 0px;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.delete{
+    background-color: rgb(255, 50, 50);
+}
+
+.delete:hover{
+    background-color: rgb(223, 2, 2);
+    cursor: pointer;
+}
+
+.accept{
+    background-color: #0e6eff;
+}
+
+.accept:hover{
+    background-color: #004ec4;
+    cursor: pointer;
+}
+
+.card{
+    display: flex;
+    width: 70vw;
+    border-bottom: 1px solid grey;
+    padding: 10px 5px 10px 5px;
+}
+
+.textWrapper{
+    flex: 3;
+}
+
+.card form{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
 @media screen and (max-width: 600px){
     nav{
         width: 100%;
