@@ -9,16 +9,16 @@
     <link rel="stylesheet" href="/style.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3971663632813827"
      crossorigin="anonymous"></script>
+     <!-- Google tag (gtag.js) -->
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MJ05FTYNYB"></script>
+     <script>
+       window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments);}
+       gtag('js', new Date());
+     
+       gtag('config', 'G-MJ05FTYNYB');
+     </script>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MJ05FTYNYB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-MJ05FTYNYB');
-</script>
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
@@ -29,7 +29,7 @@
                 <div class="card">
                     <a href="/pages/users/<%= userId %>/view-profile/<%= friend.id %>"><%= friend.username %></a>
                     <form action="/pages/users/<%= userId %>/friends/<%= friend.id %>/remove" method="POST">
-                        <button>Remove friend</button>
+                        <button class="deleteButton">Remove friend</button>
                     </form>
                 </div>
             <% }) %>
