@@ -37,7 +37,7 @@
         <h3>Your leagues:</h3>
         <% if(leagues.length !== 0){ %>
             <% leagues.forEach(league => { %>
-                <div class="card">
+                <div>
                     <a href="/pages/users/<%= userId %>/leagues/<%= league.id %>" class="leagueCards">
                         <label><%= league.name %></label>
                         <label>Current team score: 000000</label>

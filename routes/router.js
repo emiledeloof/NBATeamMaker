@@ -439,7 +439,8 @@ router.post("/users/:userId/leagues/create", async (req, res) => {
     let userData = {
         username: user.username,
         id: req.params.userId,
-        date: Date.now()
+        date: Date.now(),
+        teamId: null
     }
     let league = new League()
     league.name = req.body.name
@@ -468,9 +469,9 @@ router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
     if(league.users.findIndex(element => element.id == req.params.userId) != -1){
         isJoined = true
         userIndex = league.users.findIndex(element => element.id == req.params.userId)
-    }
-    if(league.users[userIndex].teamId != null){
-        hasTeam = true
+        if(league.users[userIndex].teamId != null){
+            hasTeam = true
+        }
     }
     res.render("pages/showLeague", {
         league: league, 
@@ -557,7 +558,8 @@ router.post("/users/:userId/leagues/:leagueId/request/:requestId/accept", async 
     let user = await User.findById(req.params.requestId)
     let dataToSend = {
         username: user.username,
-        id: req.params.requestId
+        id: req.params.requestId,
+        teamId: null
     }
     let leagueData = {
         id: req.params.leagueId,

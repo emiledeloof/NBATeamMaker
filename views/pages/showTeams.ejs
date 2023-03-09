@@ -32,7 +32,8 @@
                                 <%= team.name %>
                             </div>
                         </a>
-                        <form action="/pages/users/<%= userId %>/leagues/<%= team.leagueId %>/teams/<%= team._id %>/delete" method="POST">                        <button>Delete</button>
+                        <form action="/pages/users/<%= userId %>/leagues/<%= team.leagueId %>/teams/<%= team._id %>/delete" method="POST">                        
+                            <button class="delete actionButton">Delete</button>
                         </form>
                     </div>
                 <% }) %>

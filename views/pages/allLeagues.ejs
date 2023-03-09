@@ -31,10 +31,10 @@
             <button class="submitButton">Search</button>
         </form><br>
         <% leagues.forEach(league => { %>
-            <div class="card">
-            <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>" class="leagueCards">
+            <div>
+                <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>" class="leagueCards">
                     <label><%= league.name %></label>
-                    <label><%= league.usersAmount %></label>
+                    <label><%= league.usersAmount %>/50</label>
                 </a>
             </div>
         <% }) %>

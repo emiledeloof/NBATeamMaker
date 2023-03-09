@@ -8,7 +8,11 @@ const schema = new mongoose.Schema({
     public: {
         type: Boolean
     },
-    requests: []
+    requests: [],
+    maxUsers: {
+        type: Number,
+        max: 50
+    }
 })
 
 module.exports = mongoose.model("league", schema)
