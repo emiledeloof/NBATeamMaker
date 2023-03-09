@@ -106,6 +106,14 @@ router.post("/users/:userId/friends/:friendId/add", async (req, res) => {
 router.post("/users/:id/friends/:friendId/accept", async(req, res) => {
     let user = await User.findById(req.params.id)
     let friend = await User.findById(req.params.friendId)
+    let dataToSend = {
+        username: friend.username,
+        id: friend._id
+    }
+    let sent = {
+        username: user.username,
+        id: user._id
+    }
     let indexOfRequest = user.friendRequestsReceived.findIndex(request => request.id == friend._id)
     user.friendRequestsReceived.splice(indexOfRequest, 1)
     let indexOfSent = friend.friendRequestsSent.findIndex(request => request.id == user._id)
@@ -475,6 +483,9 @@ router.get("/users/:userId/leagues/:leagueId", async (req, res) => {
 // view all leagues
 router.get("/users/:userId/leagues", async(req, res) => {
     let leagues = await League.find({public: true}).limit(30).exec()
+    leagues.forEach(league => {
+        league.usersAmount = league.users.length
+    })
     // let leagues = await League.find({public: true})
     res.render("pages/allLeagues", {
         userId: req.params.userId,

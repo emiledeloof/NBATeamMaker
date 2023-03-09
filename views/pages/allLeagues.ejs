@@ -24,16 +24,21 @@
         <%- include("_navbar.ejs") %>
         <h2>Leagues</h2>
         <form action="/pages/users/<%= userId %>/leagues/search" method="POST">
-            <input type="text" placeholder="Search league" id="league" name="league">
-            <button>Search</button>
-        </form>
+            <div class="inputsWrapper">
+                <input type="text" id="league" name="league" class="inputs" onfocusout="checkElement('league', 'searchUserLabel')">
+                <label for="league" id="searchUserLabel" class="inputLabel">Search league</label>
+            </div>
+            <button class="submitButton">Search</button>
+        </form><br>
         <% leagues.forEach(league => { %>
-            <br><a href="/pages/users/<%= userId %>/leagues/<%= league._id %>">
-                <div class="card">
-                    <%= league.name %>
-                </div>
-            </a>
+            <div class="card">
+            <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>" class="leagueCards">
+                    <label><%= league.name %></label>
+                    <label><%= league.usersAmount %></label>
+                </a>
+            </div>
         <% }) %>
     </div>
+    <script src="/checkInput.js"></script>
 </body>
 </html>
