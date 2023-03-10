@@ -32,7 +32,7 @@
                 <% if(team.pointGuard){ %>
                     <a href="/pages/users/<%= userId %>/players/<%= team.pointGuard.id %>"><%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> </a><br>
                 <% } if(team.pointGuard.score){ %>
-                    <%= team.pointGuard.score %>
+                    <%= team.pointGuard.score.score %>
                 <% } %>
                 </label>
             </div>
@@ -47,7 +47,7 @@
                 <% if(team.shootingGuard){ %>
                     <a href="/pages/users/<%= userId %>/players/<%= team.shootingGuard.id %>"><%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %></a> <br>
                 <% } if(team.shootingGuard.score){ %>
-                    <%= team.shootingGuard.score %>
+                    <%= team.shootingGuard.score.score %>
                 <% } %>
                 </label>
             </div>
@@ -62,7 +62,7 @@
                 <% if(team.smallForward){ %>
                     <a href="/pages/users/<%= userId %>/players/<%= team.smallForward.id %>"><%= team.smallForward.first_name %> <%= team.smallForward.last_name %></a> <br>
                 <% } if(team.smallForward.score){ %>
-                    <%= team.smallForward.score %>
+                    <%= team.smallForward.score.score %>
                 <% } %>
                 </label>
             </div>
@@ -77,7 +77,7 @@
                 <% if(team.powerForward){ %>
                     <a href="/pages/users/<%= userId %>/players/<%= team.powerForward.id %>"><%= team.powerForward.first_name %> <%= team.powerForward.last_name %></a> <br>
                 <% } if(team.powerForward.score){ %>
-                    <%= team.powerForward.score %>
+                    <%= team.powerForward.score.score %>
                 <% } %>
                 </label>
             </div>
@@ -92,7 +92,7 @@
                 <% if(team.center){ %>
                     <a href="/pages/users/<%= userId %>/players/<%= team.center.id %>"><%= team.center.first_name %> <%= team.center.last_name %></a> <br>
                 <% } if(team.center.score){ %>
-                    <%= team.center.score %>
+                    <%= team.center.score.score %>
                 <% } %>
                 </label>
             </div>
@@ -103,7 +103,7 @@
                 Total score:
             </div>
             <div class="gridItem">
-                <%= team.totalScore %>
+                <%= team.teamScore %>
             </div>
         </div>
         <div id="searchPlayer">

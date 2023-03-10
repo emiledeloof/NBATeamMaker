@@ -11,7 +11,8 @@ const schema = new mongoose.Schema({
     shootingGuard: {},
     pointGuard: {},
     userId:{},
-    league: {}
+    league: {},
+    teamScore: {}
 })
 
 module.exports = mongoose.model("team", schema)

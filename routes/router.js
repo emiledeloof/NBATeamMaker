@@ -252,6 +252,8 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
     let league = await League.findById(req.params.leagueId)
     let index = league.users.findIndex(user => user.id == req.params.userId)
     let isAuthenticated = false
+    let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
+    let statsVar = stats.data.data[0]
     let team
     if(await Team.findOne({name: req.query.teamName})){
         team = await Team.findOne({name: req.query.teamName})
@@ -271,32 +273,43 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
         league.markModified("users")
         isAuthenticated = true
     }
-    addScores(req.params.id, team)
     try{
         if(isAuthenticated == true){
             switch(req.body.position || req.query.position){
                 case "C":
                     team.center = player.data
+                    team.center.score = await calculateScore(team, statsVar)
                     break;
                 case "PF":
                     team.powerForward = player.data
+                    team.powerForward.score = await calculateScore(team, statsVar)
                     break;
                 case "SF":
                     team.smallForward = player.data
+                    team.smallForward.score = await calculateScore(team, statsVar)
                     break;
                 case "SG":
                     team.shootingGuard = player.data
+                    team.shootingGuard.score = await calculateScore(team, statsVar)
+                    console.log(team.shootingGuard.score)
                     break;
                 case "PG":
                     team.pointGuard = player.data
+                    team.pointGuard.score = await calculateScore(team, statsVar)
                     break;
             }
         } else{
             throw new Error("A team with this name already exists! \nPlease refresh the page to create another team.")
         }
+        addScores(req.params.id, team)
+        team.markModified("shootingGuard")
+        team.markModified("pointGuard")
+        team.markModified("powerForward")
+        team.markModified("smallForward")
+        team.markModified("center")
         await team.save()
         await league.save()
-        res.satus(200).json({message: "Succes"})
+        res.status(200).json({message: "Succes"})
     } catch (e){
         console.log(e)
         res.status(406).json({message: e.toString()})
@@ -307,30 +320,45 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
 router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let team = await Team.findById(req.params.teamId)
-    addScores(req.params.id, team)
+    // let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
+    // let statsVar = stats.data.data[0]
     switch(req.body.position || req.query.position){
         case "C":
             team.center = player.data
+            // team.center.score = await calculateScore(team, statsVar)
             break;
         case "PF":
             team.powerForward = player.data
+            // team.powerForward.score = await calculateScore(team, statsVar)
             break;
         case "SF":
             team.smallForward = player.data
+            // team.smallForward.score = await calculateScore(team, statsVar)
             break;
         case "SG":
             team.shootingGuard = player.data
+            // team.shootingGuard.score = await calculateScore(team, statsVar)
+            // console.log(team.shootingGuakrd.score)
             break;
         case "PG":
             team.pointGuard = player.data
+            // team.pointGuard.score = await calculateScore(team, statsVar)
             break;
     }
     try{
-        team = await team.save()
+        await addScores(req.params.id, team)
+        team.teamScore = team.shootingGuard.score.score + team.pointGuard.score.score + team.smallForward.score.score + team.powerForward.score.score + team.center.score.score 
+        team.markModified("shootingGuard")
+        team.markModified("pointGuard")
+        team.markModified("powerForward")
+        team.markModified("smallForward")
+        team.markModified("center")
+        await team.save()
+        res.end()
     } catch(e){
         console.log(e)
+        res.send(e)
     }
-    res.end()
 })
 
 // show all teams
@@ -614,7 +642,7 @@ async function calculateScore(playerId, statsVar = null){
     let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
     score = score.toFixed(0)
     let scoreData = {
-        score: score,
+        score: parseInt(score),
         game: statsVar.games_played,
         dateUpdated: Date.now()
     }
@@ -623,11 +651,11 @@ async function calculateScore(playerId, statsVar = null){
 
 async function addScores(playerId, team){
     if(team.shootingGuard && team.pointGuard && team.powerForward && team.smallForward && team.center){
-        team.center.scoreData = await calculateScore(playerId)
-        team.powerForward.scoreData = await calculateScore(playerId)
-        team.smallForward.scoreData = await calculateScore(playerId)
-        team.shootingGuard.scoreData = await calculateScore(playerId)
-        team.pointGuard.scoreData = await calculateScore(playerId)
+        team.center.score = await calculateScore(team.center.id)
+        team.powerForward.score = await calculateScore(team.powerForward.id)
+        team.smallForward.score = await calculateScore(team.smallForward.id)
+        team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
+        team.pointGuard.score = await calculateScore(team.pointGuard.id)
     }
 }
 

@@ -134,7 +134,9 @@
                 })
                 .then(response => response.json())
                 .then((response) => {
-                    alert(response.message)
+                    if(response.status == 406){
+                        alert(response.message)
+                    }
                 })
             }
             if(e.target.id == "createTeamName"){
