@@ -404,7 +404,6 @@ router.post("/users/:userId/leagues/:leagueId/teams/:id/delete", async(req, res)
     await Team.findByIdAndDelete(req.params.id)
     let league = await League.findById(req.params.leagueId)
     let index = league.users.findIndex(user => user.teamId == req.params.id)
-    console.log(index)
     try{
         league.users[index].teamId = null
         league.markModified("users")
