@@ -40,7 +40,7 @@
                 <div>
                     <a href="/pages/users/<%= userId %>/leagues/<%= league.id %>" class="leagueCards">
                         <label><%= league.name %></label>
-                        <label>Current team score: 000000</label>
+                        <label>Current team score: <%= league.users.filter(user => user.id == userId)[0].teamScore %></label>
                         <label>Current league rank: 1</label>
                     </a>
                 </div>
