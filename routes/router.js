@@ -246,6 +246,7 @@ router.get("/players/:id", async (req, res) => {
 })
 
 // add player to team POST
+// Create team
 router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let league = await League.findById(req.params.leagueId)
@@ -262,7 +263,10 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
         team = req.team
         team.name = req.query.teamName
         team.userId = req.params.userId
-        team.leagueId = req.params.leagueId
+        team.league = {
+            id: req.params.leagueId,
+            name: league.name
+        }
         league.users[index].teamId = team._id.toString()
         league.markModified("users")
         isAuthenticated = true
@@ -292,7 +296,7 @@ router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req
         }
         await team.save()
         await league.save()
-        res.end()
+        res.satus(200).json({message: "Succes"})
     } catch (e){
         console.log(e)
         res.status(406).json({message: e.toString()})

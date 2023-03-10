@@ -27,25 +27,6 @@ nav a{
     display: none;
 }
 
-.teamCardWrapper a{
-    color: white;
-    flex: 10;
-}
-
-.teamCardWrapper form{
-    flex: 1;
-}
-
-.teamCardWrapper{
-    display: flex;
-    width: 50%;
-    margin-left: 150px;
-    padding: 10px 10px 10px 10px;
-    border: 1px solid white;
-    border-radius: 7px;
-    margin-bottom: 10px;
-}
-
 .grid{
     display: grid;
     grid-template-columns: 150px 150px 150px;
@@ -246,6 +227,25 @@ nav ul li{
 }
 
 .card form{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.teamCard{
+    display: flex;
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding: 10px 5px 10px 5px;
+    width: 70vw;
+}
+
+.teamCard a{
+    text-decoration: none;
+    flex: 3;
+}
+
+.teamCard form{
     flex: 1;
     display: flex;
     justify-content: center;

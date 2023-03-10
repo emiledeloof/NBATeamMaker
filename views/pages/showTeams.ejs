@@ -23,16 +23,19 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h2>My teams</h2>
+        <div class="inputsWrapper">
+            <input type="text" id="searchTeams" name="searchTeams" class="inputs" onfocusout="checkElement('searchTeams', 'searchTeamLabel')" onkeyup="myFunction()">
+            <label for="searchTeams" id="searchTeamLabel" class="inputLabel">Search team</label>
+        </div>
         <div id="teamsWrapper">
             <% if(teams.length !== 0){ %>
                 <% teams.forEach(team => { %>
-                    <div class="teamCardWrapper">    
-                        <a href="/pages/users/<%= userId %>/leagues/<%= team.leagueId %>/teams/<%= team._id %>/view">
-                            <div class="teamCard">
-                                <%= team.name %>
-                            </div>
+                    <div class="teamCard">
+                        <a href="/pages/users/<%= userId %>/leagues/<%= team.league.id %>/teams/<%= team._id %>/view">
+                            <label><%= team.name %></label>
+                            <br>League: <%= team.league.name %>
                         </a>
-                        <form action="/pages/users/<%= userId %>/leagues/<%= team.leagueId %>/teams/<%= team._id %>/delete" method="POST">                        
+                        <form action="/pages/users/<%= userId %>/leagues/<%= team.league.id %>/teams/<%= team._id %>/delete" method="POST">                        
                             <button class="delete actionButton">Delete</button>
                         </form>
                     </div>
@@ -45,5 +48,28 @@
             <% } %>
         </div>
     </div>
+    <script src="/checkInput.js"></script>
+    <script>
+        function myFunction() {
+            // Declare variables
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById('searchTeams');
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("teamsWrapper");
+            li = ul.querySelectorAll(".teamCard");
+            
+            // Loop through all list items, and hide those who don't match the search query
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                label = a.getElementsByTagName("label")[0];
+                txtValue = label.textContent || label.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+        </script>
 </body>
 </html>
