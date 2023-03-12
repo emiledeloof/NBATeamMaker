@@ -1,15 +1,15 @@
 <nav>
     <ul>
-        <li><a href="/pages/users/<%= userId %>">Home</a></li>
-        <li><a href="/pages/users/<%= userId %>/teams/show">My teams</a></li>
-        <li><a href="/pages/users/<%= userId %>/leagues/create">Create league</a></li>
-        <li><a href="/pages/users/<%= userId %>/leagues">View all leagues</a></li>
+        <li><a href="/pages/dashboard">Home</a></li>
+        <li><a href="/pages/teams/show">My teams</a></li>
+        <li><a href="/pages/leagues/create">Create league</a></li>
+        <li><a href="/pages/leagues">View all leagues</a></li>
         <div class="profile">
             <a id="showProfile"><i class="fa-regular fa-user"></i> <%= username %></a>
             <ul id="profileUl" class="hide">
-                <li><a href="/pages/users/<%= userId %>/profile">Profile</a></li>
+                <li><a href="/pages/profile">Profile</a></li>
                 <li> 
-                    <form action="/pages/users/<%= userId %>/sign-out" method="POST">
+                    <form action="/pages/sign-out" method="POST">
                         <button>Sign out</button>
                     </form>
                 </li>
