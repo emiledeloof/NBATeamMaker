@@ -23,7 +23,7 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h2>Create league</h2>
-        <form action="/pages/users/<%= userId %>/leagues/create" method="POST">
+        <form action="/pages/leagues/create" method="POST">
             <div class="inputsWrapper">
                 <input type="text" id="name" name="name" class="inputs" onfocusout="checkElement('name', 'nameLabel')" maxlength="35" required>
                 <label for="name" class="inputLabel" id="nameLabel">Name</label>

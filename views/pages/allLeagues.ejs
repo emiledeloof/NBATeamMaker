@@ -23,7 +23,7 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h2>Leagues</h2>
-        <form action="/pages/users/<%= userId %>/leagues/search" method="POST">
+        <form action="/pages/leagues/search" method="POST">
             <div class="inputsWrapper">
                 <input type="text" id="league" name="league" class="inputs" onfocusout="checkElement('league', 'searchUserLabel')">
                 <label for="league" id="searchUserLabel" class="inputLabel">Search league</label>
@@ -32,7 +32,7 @@
         </form><br>
         <% leagues.forEach(league => { %>
             <div>
-                <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>" class="leagueCards">
+                <a href="/pages/leagues/<%= league._id %>" class="leagueCards">
                     <label><%= league.name %></label>
                     <label><%= league.usersAmount %>/50</label>
                 </a>

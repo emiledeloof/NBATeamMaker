@@ -23,7 +23,7 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h1><%= user.username %></h1>
-        <form action="/pages/users/<%= userId %>/friends/<%= user._id %>/add" method="POST">
+        <form action="/pages/friends/<%= user._id %>/add" method="POST">
             <button>Add friend</button>
         </form>
     </div>

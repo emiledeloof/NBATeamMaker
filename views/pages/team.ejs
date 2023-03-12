@@ -30,7 +30,7 @@
             <div class="gridItem">
                 <label id="PG">
                 <% if(team.pointGuard){ %>
-                    <a href="/pages/users/<%= userId %>/players/<%= team.pointGuard.id %>"><%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> </a><br>  
+                    <a href="/pages/players/<%= team.pointGuard.id %>"><%= team.pointGuard.first_name %> <%= team.pointGuard.last_name %> </a><br>  
                 <% } if(team.pointGuard.score){ %>
                     <%= team.pointGuard.score.score %>
                 <% } %>
@@ -45,7 +45,7 @@
             <div class="gridItem">
                 <label id="SG">
                 <% if(team.shootingGuard){ %>
-                    <a href="/pages/users/<%= userId %>/players/<%= team.shootingGuard.id %>"><%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %></a> <br>
+                    <a href="/pages/players/<%= team.shootingGuard.id %>"><%= team.shootingGuard.first_name %> <%= team.shootingGuard.last_name %></a> <br>
                 <% } if(team.shootingGuard.score){ %>
                     <%= team.shootingGuard.score.score %>
                 <% } %>
@@ -60,7 +60,7 @@
             <div class="gridItem">
                 <label id="SF">
                 <% if(team.smallForward){ %>
-                    <a href="/pages/users/<%= userId %>/players/<%= team.smallForward.id %>"><%= team.smallForward.first_name %> <%= team.smallForward.last_name %></a> <br>
+                    <a href="/pages/players/<%= team.smallForward.id %>"><%= team.smallForward.first_name %> <%= team.smallForward.last_name %></a> <br>
                 <% } if(team.smallForward.score){ %>
                     <%= team.smallForward.score.score %>
                 <% } %>
@@ -75,7 +75,7 @@
             <div class="gridItem">
                 <label id="PF">
                 <% if(team.powerForward){ %>
-                    <a href="/pages/users/<%= userId %>/players/<%= team.powerForward.id %>"><%= team.powerForward.first_name %> <%= team.powerForward.last_name %></a> <br>
+                    <a href="/pages/players/<%= team.powerForward.id %>"><%= team.powerForward.first_name %> <%= team.powerForward.last_name %></a> <br>
                 <% } if(team.powerForward.score){ %>
                     <%= team.powerForward.score.score %>
                 <% } %>
@@ -90,7 +90,7 @@
             <div class="gridItem">
                 <label id="C">
                 <% if(team.center){ %>
-                    <a href="/pages/users/<%= userId %>/players/<%= team.center.id %>"><%= team.center.first_name %> <%= team.center.last_name %></a> <br>
+                    <a href="/pages/players/<%= team.center.id %>"><%= team.center.first_name %> <%= team.center.last_name %></a> <br>
                 <% } if(team.center.score){ %>
                     <%= team.center.score.score %>
                 <% } %>

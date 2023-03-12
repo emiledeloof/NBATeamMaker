@@ -31,11 +31,11 @@
             <% if(teams.length !== 0){ %>
                 <% teams.forEach(team => { %>
                     <div class="teamCard">
-                        <a href="/pages/users/<%= userId %>/leagues/<%= team.league.id %>/teams/<%= team._id %>/view">
+                        <a href="/pages/leagues/<%= team.league.id %>/teams/<%= team._id %>/view">
                             <label><%= team.name %></label>
                             <br>League: <%= team.league.name %>
                         </a>
-                        <form action="/pages/users/<%= userId %>/leagues/<%= team.league.id %>/teams/<%= team._id %>/delete" method="POST">                        
+                        <form action="/pages/leagues/<%= team.league.id %>/teams/<%= team._id %>/delete" method="POST">                        
                             <button class="delete actionButton">Delete</button>
                         </form>
                     </div>

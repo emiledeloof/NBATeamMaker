@@ -28,10 +28,10 @@
             <% user.friends.forEach(friend => { %>
                 <div class="card">
                     <div class="textWrapper">
-                        <a href="/pages/users/<%= userId %>/view-profile/<%= friend.id %>"><%= friend.username %></a>
+                        <a href="/pages/view-profile/<%= friend.id %>"><%= friend.username %></a>
                         <br> Since: <%= new Date(friend.date).toLocaleString("en-GB") %>
                     </div>
-                    <form action="/pages/users/<%= userId %>/friends/<%= friend.id %>/remove" method="POST">
+                    <form action="/pages/friends/<%= friend.id %>/remove" method="POST">
                         <button class="delete actionButton">Remove friend</button>
                     </form>
                 </div>
@@ -44,13 +44,13 @@
             <% user.friendRequestsReceived.forEach(request => { %> 
                 <div class="card">
                     <div class="textWrapper">
-                        From: <a href="/pages/users/<%= userId %>/view-profile/<%= request.id %>"><%= request.username %></a>
+                        From: <a href="/pages/view-profile/<%= request.id %>"><%= request.username %></a>
                         <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
                     </div>
-                    <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/accept" method="POST">
+                    <form action="/pages/friends/<%= request.id %>/accept" method="POST">
                         <button class="accept actionButton">Accept</button>
                     </form>
-                    <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/reject" method="POST">
+                    <form action="/pages/friends/<%= request.id %>/reject" method="POST">
                         <button class="delete actionButton">Reject</button>
                     </form>
                 </div>
@@ -66,7 +66,7 @@
                         To: <%= request.username %>
                         <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
                     </div>
-                    <form action="/pages/users/<%= userId %>/friends/<%= request.id %>/undo" method="POST">
+                    <form action="/pages/friends/<%= request.id %>/undo" method="POST">
                         <button class="delete actionButton">Undo</button>
                     </form>
                 </div>

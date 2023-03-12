@@ -59,7 +59,7 @@ router.post("/users/register", async (req, res) => {
 router.get("/dashboard", async(req, res) => {
     let user = await User.findById(req.session.userId)
     let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}})
-    res.render("pages/dashboard", {userId: req.session.userId, leagues: leagues, username: user.username})
+    res.render("pages/dashboard", {leagues: leagues, username: user.username})
 })
 
 // search user POST
@@ -75,7 +75,7 @@ router.get("/search-user/:searchUser", async(req, res) => {
         type: "user",
         search: req.params.searchUser,
         loggedIn: true,
-        userId: req.session.userId
+        
     })
 })
 
@@ -188,7 +188,7 @@ router.post("/friends/:requestId/undo", async (req, res) => {
 // profile
 router.get("/profile", async (req, res) => {
     let user = await User.findById(req.session.userId)
-    res.render("pages/profile", {user: user, userId: req.session.userId})
+    res.render("pages/profile", {user: user, })
 })
 
 // view other profile
@@ -196,7 +196,7 @@ router.get("/view-profile/:otherUser", async(req, res) => {
     let user = await User.findById(req.params.otherUser)
     res.render("pages/viewProfile", {
         user: user,
-        userId: req.session.userId
+        
     })
 })
 
@@ -237,7 +237,7 @@ router.post("/players/search", async(req, res) => {
         results: request.data.data,
         loggedIn: false,
         type: "player",
-        userId: req.session.userId
+        
     })
 })
 
@@ -257,7 +257,7 @@ router.get("/players/:id", async (req, res) => {
 
 // add player to team POST
 // Create team
-router.post("/teams/users/:userId/leagues/:leagueId/add/players/:id", async (req, res) => {
+router.post("/teams/leagues/:leagueId/add/players/:id", async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let league = await League.findById(req.params.leagueId)
     let index = league.users.findIndex(user => user.id == req.session.userId)
@@ -363,8 +363,8 @@ router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
 
 // show all teams
 router.get("/teams/show", async(req, res) => {
-    let teams = await Team.find({userId: req.session.userId})
-    res.render("pages/showTeams", {teams: teams, userId: req.session.userId})
+    let teams = await Team.find({})
+    res.render("pages/showTeams", {teams: teams, })
 })
 
 // view team
@@ -387,7 +387,7 @@ router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
     res.render("pages/team", {
         team: team, 
         url: url, 
-        userId: req.session.userId, 
+        
         leagueId: req.params.leagueId
     })
 })
@@ -410,7 +410,6 @@ router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
     let url = process.env.URL
     let params = {
         team: team,
-        userId: req.session.userId,
         leagueId: req.params.leagueId,
         url: url
     }
@@ -424,7 +423,7 @@ router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
 // create new team
 router.get("/leagues/:leagueId/teams/create", (req, res) => {
     let url = process.env.URL
-    res.render("pages/createTeam", {userId: req.session.userId, url: url, leagueId: req.params.leagueId})
+    res.render("pages/createTeam", {url: url, leagueId: req.params.leagueId})
 })
 
 // delete team POST
@@ -453,7 +452,6 @@ router.get("/players/:playerId", async(req, res) => {
         player: player.data,
         stats: stats.data.data[0],
         personId: nbaPlayer.personId,
-        userId: req.session.userId,
         loggedIn: true,
         score: score
     })
@@ -461,7 +459,7 @@ router.get("/players/:playerId", async(req, res) => {
 
 // Create league
 router.get("/leagues/create", (req, res) => {
-    res.render("pages/createLeague", {userId: req.session.userId})
+    res.render("pages/createLeague", {})
 })
 
 // Create league POST
@@ -506,7 +504,6 @@ router.get("/leagues/:leagueId", async (req, res) => {
     }
     res.render("pages/showLeague", {
         league: league, 
-        userId: req.session.userId,
         isJoined: isJoined,
         hasTeam: hasTeam
     })
@@ -520,7 +517,6 @@ router.get("/leagues", async(req, res) => {
     })
     // let leagues = await League.find({public: true})
     res.render("pages/allLeagues", {
-        userId: req.session.userId,
         leagues: leagues,
     })
 })
@@ -529,7 +525,6 @@ router.get("/leagues", async(req, res) => {
 router.post("/leagues/search", async(req, res) => {
     let leagues = await League.find({name: {$regex: req.body.league, $options: "i"}})
     res.render("pages/searchResults", {
-        userId: req.session.userId,
         type: "league",
         leagues: leagues,
         search: req.body.league,
@@ -559,7 +554,6 @@ router.post("/leagues/:leagueId/join", async (req, res) => {
 router.get("/leagues/:leagueId/settings", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     res.render("pages/leagueSettings", {
-        userId: req.session.userId,
         league: league
     })
 })

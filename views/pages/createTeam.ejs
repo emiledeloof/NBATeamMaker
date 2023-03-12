@@ -129,7 +129,7 @@
                 document.getElementById(position).innerText = playerName
                 document.querySelector("." + position).remove()
                 document.getElementById("searchPlayer").style.display = "none"
-                await fetch(`<%= url %>/pages/teams/users/<%= userId %>/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
+                await fetch(`<%= url %>/pages/teams/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST"
                 })
                 .then(response => response.json())

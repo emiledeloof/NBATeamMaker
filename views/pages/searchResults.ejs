@@ -33,7 +33,7 @@
         </form> -->
         <% if(type == "player"){ %>
         <% results.forEach(result => { %>
-            <a href="/pages/users/<%= userId %>/players/<%= result.id %>">
+            <a href="/pages/players/<%= result.id %>">
                 <div class="card">
                     <%= result.first_name %> <%= result.last_name %>
                 </div>
@@ -43,8 +43,8 @@
             <% users.forEach(user => { %>
                 <% if(user._id != userId){ %>
                     <div class="card">
-                        <a href="/pages/users/<%= userId %>/view-profile/<%= user._id %>"><%= user.username %></a>
-                        <form action="/pages/users/<%= userId %>/friends/<%= user._id %>/add" method="POST">
+                        <a href="/pages/view-profile/<%= user._id %>"><%= user.username %></a>
+                        <form action="/pages/friends/<%= user._id %>/add" method="POST">
                             <button>Add Friend</button>
                         </form>
                     </div>
@@ -54,7 +54,7 @@
         <% if(type == "league") { %>
             <% leagues.forEach(league => { %>
                 <div class="card">
-                    <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>"><%= league.name %></a>
+                    <a href="/pages/leagues/<%= league._id %>"><%= league.name %></a>
                 </div>
             <% }) %>
         <% } %>

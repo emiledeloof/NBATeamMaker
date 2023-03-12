@@ -24,19 +24,19 @@
         <%- include("_navbar.ejs") %>
         <h1><%= league.name %></h1>
         <% if(isJoined == true){ %>
-            <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/settings">League settings</a>
+            <a href="/pages/leagues/<%= league._id %>/settings">League settings</a>
             <% if(hasTeam == false){ %>
-            <br><br><a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/teams/create">Create team</a>
+            <br><br><a href="/pages/leagues/<%= league._id %>/teams/create">Create team</a>
             <% } %>
         <% } %>
         <h3>users:</h3>
         <% league.users.forEach(user => { %>
             <div class="card">
-                <a href="/pages/users/<%= userId %>/view-profile/<%= user.id %>">
+                <a href="/pages/view-profile/<%= user.id %>">
                     <%= user.username %>
                 </a>
                 <% if(user.teamId){ %>
-                    <a href="/pages/users/<%= userId %>/leagues/<%= league._id %>/teams/<%= user.teamId %>/view-other" style="margin-left: 10px;">View team</a>
+                    <a href="/pages/leagues/<%= league._id %>/teams/<%= user.teamId %>/view-other" style="margin-left: 10px;">View team</a>
                 <% } %>
                 <% if(user.teamScore){ %>
                     <%= user.teamScore %>
@@ -44,7 +44,7 @@
             </div>
         <% }) %>
         <% if(isJoined == false){ %>
-            <form action="/pages/users/<%= userId %>/leagues/<%= league._id %>/join" method="POST">
+            <form action="/pages/leagues/<%= league._id %>/join" method="POST">
                 <button>Request to join</button>
             </form>
         <% } %>

@@ -23,7 +23,7 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h2>Dashboard</h2>
-        <form action="/pages/users/<%= userId %>/search-user" method="POST">
+        <form action="/pages/search-user" method="POST">
             <div class="inputsWrapper">
                 <input type="text" id="searchUser" name="searchUser" required class="inputs" onfocusout="checkElement('searchUser', 'searchUserLabel')">
                 <label for="searchUser" id="searchUserLabel" class="inputLabel">Search user</label>
@@ -38,7 +38,7 @@
         <% if(leagues.length !== 0){ %>
             <% leagues.forEach(league => { %>
                 <div>
-                    <a href="/pages/users/<%= userId %>/leagues/<%= league.id %>" class="leagueCards">
+                    <a href="/pages/leagues/<%= league.id %>" class="leagueCards">
                         <label><%= league.name %></label>
                         <label>Current team score: <%= league.users.filter(user => user.id == userId)[0].teamScore %></label>
                         <label>Current league rank: 1</label>
@@ -48,7 +48,7 @@
         <% } else{ %>
            <div>
                 You are currently not in any leagues.
-                <br><a href="/pages/users/<%= userId %>/leagues" style="color: white;">Click here to join one</a>
+                <br><a href="/pages/leagues" style="color: white;">Click here to join one</a>
            </div> 
         <% } %>
     </div>
