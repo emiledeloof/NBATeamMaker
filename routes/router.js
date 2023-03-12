@@ -55,11 +55,10 @@ router.post("/users/register", async (req, res) => {
 })
 
 // dashboard
-// router.get("/users/:id", async(req, res) => {
-router.get("/dashboard", async(req, res) => {
-    let user = await User.findById(req.session.userId)
-    let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}})
-    res.render("pages/dashboard", {leagues: leagues, username: user.username, userId: req.session.userId})
+router.get("/users/:id", async(req, res) => {
+    let user = await User.findById(req.params.id)
+    let leagues = await League.find({users: {$elemMatch: {id: req.params.id}}})
+    res.render("pages/dashboard", {userId: req.params.id, leagues: leagues})
 })
 
 // search user POST
@@ -221,12 +220,6 @@ router.post("/users/login", async (req, res) => {
         console.log(e)
         res.redirect("/pages/login")
     }
-})
-
-// Sign out POST
-router.post("/sign-out", async(req, res) => {
-    req.session.destroy()
-    res.redirect("/")
 })
 
 // search

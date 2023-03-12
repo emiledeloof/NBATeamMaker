@@ -38,9 +38,6 @@
                 <% if(user.teamId){ %>
                     <a href="/pages/leagues/<%= league._id %>/teams/<%= user.teamId %>/view-other" style="margin-left: 10px;">View team</a>
                 <% } %>
-                <% if(user.teamScore){ %>
-                    <%= user.teamScore %>
-                <% } %>
             </div>
         <% }) %>
         <% if(isJoined == false){ %>

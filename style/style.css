@@ -127,10 +127,6 @@ nav ul li{
     user-select: none;
 }
 
-.inputLabel:hover{
-    cursor: text;
-}
-
 .outFocus + .inputLabel{
     animation: inputOutFocus 0.5s forwards;
 }
@@ -253,27 +249,6 @@ nav ul li{
     flex: 1;
     display: flex;
     justify-content: center;
-}
-
-.profile{
-    position: relative;
-}
-
-#profileUl{
-    position: absolute;
-    margin-top: 5px;
-}
-
-#profileUl li{
-    margin-bottom: 5px;
-}
-
-.hide{
-    display: none;
-}
-
-.show{
-    display: block;
 }
 
 @media screen and (max-width: 600px){
