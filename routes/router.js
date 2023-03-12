@@ -59,7 +59,7 @@ router.post("/users/register", async (req, res) => {
 router.get("/dashboard", async(req, res) => {
     let user = await User.findById(req.session.userId)
     let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}})
-    res.render("pages/dashboard", {leagues: leagues, username: user.username})
+    res.render("pages/dashboard", {leagues: leagues, username: user.username, userId: req.session.userId})
 })
 
 // search user POST
