@@ -207,13 +207,16 @@ router.get("/login", (req, res) => {
 router.post("/users/login", async (req, res) => {
     let user
     try{
+        let confirmedUser
         user = await User.findOne({username: req.body.username})
         // let decryptedData = decipher.update(user.password, "hex", "utf-8");
         // decryptedData += decipher.final("utf-8");
         if(user.password == req.body.password){
             confirmedUser = user
+            res.redirect(`/pages/users/${confirmedUser._id}`)
+        } else {
+            throw new Error("Incorrect username or password")
         }
-        res.redirect(`/pages/users/${user._id}`)
     } catch (e){
         console.log(e)
         res.redirect("/pages/login")
