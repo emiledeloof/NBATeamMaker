@@ -6,7 +6,7 @@ const schema = new mongoose.Schema({
     },
     version: {
         type: String
-    }, 
+    },
     description: {},
     date: {
         type: Date,

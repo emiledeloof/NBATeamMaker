@@ -7,6 +7,7 @@ const axios = require("axios")
 const User = require("./../database/user")
 const Team = require("./../database/team")
 const League = require("./../database/league")
+const Changelog = require("./../database/changelog")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 // const algorithm = "aes-256-cbc"
@@ -81,9 +82,29 @@ router.post("/users/register", async (req, res) => {
 // dashboard
 router.get("/dashboard", async(req, res) => {
     let user = await User.findById(req.session.userId)
-    console.log(user)
+    let changelog = await Changelog.find().limit(15).exec()
     let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}})
-    res.render("pages/dashboard", {userId: req.session.userId, leagues: leagues, username: user.username})
+    res.render("pages/dashboard", {
+        userId: req.session.userId, 
+        leagues: leagues, 
+        username: user.username, 
+        changelog: changelog,
+        hasSeenChangelog: user.hasSeenChangelog,
+        URL: process.env.URL
+    })
+})
+
+// Change hasSeenChange state
+router.post("/dashboard/hasSeenChange/:userId", async(req, res) => {
+    let user = await User.findById(req.params.userId)
+    user.hasSeenChangelog = true
+    try{
+        user.save()
+        res.status(200).json({message: "Updated changeState"})
+    } catch (e){
+        console.log(e)
+        res.status(501).json({message: "Internal server error"})
+    }
 })
 
 // search user POST
@@ -243,7 +264,7 @@ router.post("/users/login", async (req, res) => {
                 
                 // store user information in session, typically a user id
                 req.session.userId = user._id.toString()
-                res.session.isAdmin = false
+                req.session.isAdmin = false
                 // save the session before redirection to ensure page
                 // load does not happen before session is saved
                 req.session.save(function (err) {

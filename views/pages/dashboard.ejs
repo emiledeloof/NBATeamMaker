@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NBA Fantasy control panel">
     <title>Dashboard</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" href="/basketball.png">
@@ -52,6 +53,39 @@
            </div> 
         <% } %>
     </div>
+    <% if(hasSeenChangelog == false){ %>
+        <div class="bigUpdateWrapper">
+            <div class="updateWrapper" id="updateWrapper">
+                <a id="closeWindow">X</a>
+                <h4 style="padding:0 0 10px 0; margin:0;">What's new</h4>
+                <% changelog.forEach(change => { %>
+                    <div class="changeWrapper">
+                        Version <%= change.version %> | <%= change.name %>
+                        <br><%= change.date.toLocaleDateString() %>
+                        <div class="changeDescription">
+                            <%= change.description %>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    <% } %>
     <script src="/checkInput.js"></script>
+    <script>
+        document.addEventListener("click", (e) => {
+            if(e.target.id == "closeWindow"){
+                fetch(`<%= URL %>/pages/dashboard/hasSeenChange/<%= userId %>`, {
+                    method: "POST"
+                })
+                .then(response => response.json())
+                .then(response => {
+                    if(response.stats == 501){
+                        alert(response.message)
+                    }
+                })
+                document.getElementById("updateWrapper").style.display = "none"
+            }
+        })
+    </script>
 </body>
 </html>
