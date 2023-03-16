@@ -4,8 +4,6 @@ if(process.env.NODE_ENV !== "production"){
 
 const express = require("express")
 const axios = require("axios")
-const crypto = require("crypto")
-const uuid = require("node-uuid")
 const User = require("./../database/user")
 const Team = require("./../database/team")
 const League = require("./../database/league")
@@ -245,7 +243,7 @@ router.post("/users/login", async (req, res) => {
                 
                 // store user information in session, typically a user id
                 req.session.userId = user._id.toString()
-                
+                res.session.isAdmin = false
                 // save the session before redirection to ensure page
                 // load does not happen before session is saved
                 req.session.save(function (err) {

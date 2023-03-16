@@ -10,14 +10,15 @@ const crypto = require("crypto")
 const uuid = require("node-uuid")
 const MongoDBStore = require('connect-mongodb-session')(sessions);
 const router = require("./routes/router")
+const backRouter = require("./routes/backRouter")
 const app = express()
 const PORT = process.env.PORT || 5001
 const day = 1000*60*60*24
 
-mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(process.env.DATABASE_URL)
 
 const store = new MongoDBStore({
-    uri: "mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority",
+    uri: process.env.DATABASE_URL,
     collection: 'sessions'
 });
 
@@ -35,7 +36,7 @@ app.use(new sessions({
     unset: 'destroy',
     store: store,
     cookie: {
-        maxAge: 60*100*24,
+        maxAge: 60*60*1000*24,
         // sameSite: 'none'
     },
     genid: (req) => {
@@ -58,5 +59,6 @@ app.get("/", (req, res) => {
 })
 
 app.use("/pages", router)
+app.use("/back", backRouter)
 
 app.listen(PORT, () => {console.log("Listening on port " + PORT)})

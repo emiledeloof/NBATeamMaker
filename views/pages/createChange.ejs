@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create new version</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/basketball.png">
+</head>
+<body>
+    <div class="container">
+        <%- include("_navbar.ejs") %>
+        <h1>Create new version</h1>
+        <form action="/back/change/create" method="POST">
+            <div class="inputsWrapper">
+                <input type="text" id="version" name="version" class="inputs" onfocusout="checkElement('version', 'versionLabel')">
+                <label for="version" class="inputLabel" id="versionLabel">Version</label>
+            </div>
+            <div class="inputsWrapper">
+                <input type="text" id="name" name="name" class="inputs" onfocusout="checkElement('name', 'nameLabel')">
+                <label for="name" class="inputLabel" id="nameLabel">Name</label>
+            </div>
+            <div class="inputsWrapper">
+                <textarea id="description" name="description" class="textarea" onfocusout="checkElement('description', 'descriptionLabel')"></textarea>
+                <label for="description" class="inputLabel" id="descriptionLabel">Description</label>
+            </div>
+            <button class="submitButton">Submit</button>
+        </form>
+    </div>
+    <script src="/checkInput.js"></script>
+</body>
+</html>

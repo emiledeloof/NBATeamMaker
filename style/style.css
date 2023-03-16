@@ -127,6 +127,23 @@ nav ul li{
     user-select: none;
 }
 
+.textarea{
+    padding: 15px 5px 3px 5px;
+    border: 0.5px solid grey;
+    border-radius: 5px;
+    font-size: 15px;
+    width: 35vw;
+    height: 20vh;
+    margin-bottom: 15px;
+    background-color: #0e1624;
+    color: white;
+    transition: box-shadow 0.2s;
+}
+
+.textarea:focus + .inputLabel{
+    animation: inputOnFocus 0.5s forwards;
+}
+
 .outFocus + .inputLabel{
     animation: inputOutFocus 0.5s forwards;
 }
