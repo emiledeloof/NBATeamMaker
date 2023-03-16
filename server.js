@@ -15,10 +15,10 @@ const app = express()
 const PORT = process.env.PORT || 5001
 const day = 1000*60*60*24
 
-mongoose.connect(process.env.DATABASE_URL)
+mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority")
 
 const store = new MongoDBStore({
-    uri: process.env.DATABASE_URL,
+    uri: "mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority",
     collection: 'sessions'
 });
 
