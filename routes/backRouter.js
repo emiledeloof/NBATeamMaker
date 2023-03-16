@@ -70,6 +70,8 @@ router.post("/change/create", async(req, res) => {
     change.description = req.body.description
     try{
         await change.save()
+        await User.updateMany({}, {hasSeenChangelog: false})
+
     } catch (e){
         console.log(e)
     }
