@@ -18,17 +18,30 @@ const schedule = require("node-schedule")
 // const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
 // const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
 
-// check games every day
-// schedule.scheduleJob("* * * * *", async () => {
-//     let date = new Date(Date.now()).toISOString().split("T")[0]
-//     let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
-//     console.log(games.data.data)
-//     games.data.data.forEach(game => {
-//         if(game.status === "Final".toUpperCase()){
-            
-//         }
-//     })
-// })
+schedule.scheduleJob("* * * * *", async () => {
+// schedule.scheduleJob("12 * * *", async () => {
+    // let date = new Date(Date.now()).toISOString().split("T")[0]
+    // let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
+    // games.data.data.forEach(game, async (game) => {
+    //     console.log(game)
+    //     let home = game.home_team.name
+    //     let visitors = game.visitor_team.name
+        
+    // })
+    let teams = await Team.find()
+    for(i=0; i<teams.length; i++){
+        if(i % 11 === 0){
+            sleep(7000)
+        }
+        console.log(teams[i])
+        addScores(teams[i])
+        console.log(`updating scores for team ${teams[i]._id.toString()}`)
+    }
+})
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 // register
 router.get("/users/register", (req, res) => {
