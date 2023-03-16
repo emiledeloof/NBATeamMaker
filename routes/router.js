@@ -13,10 +13,13 @@ const URL = "https://www.balldontlie.io/api/v1"
 // const algorithm = "aes-256-cbc"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
 const schedule = require("node-schedule")
+const fs = require("fs")
 // const initVector = crypto.randomBytes(16)
 // const securityKey = crypto.randomBytes(32)
 // const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
 // const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
+
+let notUpdatedTeams = []
 
 schedule.scheduleJob("* * * * *", async () => {
 // schedule.scheduleJob("12 * * *", async () => {
@@ -28,6 +31,15 @@ schedule.scheduleJob("* * * * *", async () => {
     //     let visitors = game.visitor_team.name
         
     // })
+    fs.writeFile("./../notUpdatedTeams.txt", notUpdatedTeams, (e) => {
+        if(e){
+            console.log(e)
+        } else {
+            console.log("wrote to notUpdatedTeams file")
+        }
+    })
+    console.log(notUpdatedTeams)
+    notUpdatedTeams = []
     let teams = await Team.find()
     for(i=0; i<teams.length; i++){
         if(i % 11 === 0){
@@ -35,7 +47,6 @@ schedule.scheduleJob("* * * * *", async () => {
         }
         console.log(teams[i])
         addScores(teams[i])
-        console.log(`updating scores for team ${teams[i]._id.toString()}`)
     }
 })
 
@@ -662,12 +673,17 @@ async function calculateScore(playerId, statsVar = null){
 }
 
 async function addScores(playerId, team){
-    if(team.shootingGuard && team.pointGuard && team.powerForward && team.smallForward && team.center){
-        team.center.score = await calculateScore(team.center.id)
-        team.powerForward.score = await calculateScore(team.powerForward.id)
-        team.smallForward.score = await calculateScore(team.smallForward.id)
-        team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
-        team.pointGuard.score = await calculateScore(team.pointGuard.id)
+    try{
+        if(team.shootingGuard && team.pointGuard && team.powerForward && team.smallForward && team.center){
+            team.center.score = await calculateScore(team.center.id)
+            team.powerForward.score = await calculateScore(team.powerForward.id)
+            team.smallForward.score = await calculateScore(team.smallForward.id)
+            team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
+            team.pointGuard.score = await calculateScore(team.pointGuard.id)
+        }
+    } catch (e){
+        notUpdatedTeams.push(team)
+        console.log(e)
     }
 }
 
