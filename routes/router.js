@@ -21,8 +21,8 @@ const fs = require("fs")
 
 let notUpdatedTeams = []
 
-schedule.scheduleJob("* * * * *", async () => {
-// schedule.scheduleJob("12 * * *", async () => {
+// schedule.scheduleJob("* * * * *", async () => {
+schedule.scheduleJob("12 * * *", async () => {
     // let date = new Date(Date.now()).toISOString().split("T")[0]
     // let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
     // games.data.data.forEach(game, async (game) => {
