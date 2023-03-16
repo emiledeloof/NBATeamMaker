@@ -31,8 +31,6 @@ const schedule = require("node-schedule")
 //     })
 // })
 
-let sessions = []
-
 // register
 router.get("/users/register", (req, res) => {
     res.render("pages/register")
@@ -59,7 +57,7 @@ router.post("/users/register", async (req, res) => {
 // dashboard
 router.get("/dashboard", async(req, res) => {
     let user = await User.findById(req.session.userId)
-    console.log(req.session)
+    console.log(user)
     let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}})
     res.render("pages/dashboard", {userId: req.session.userId, leagues: leagues, username: user.username})
 })
@@ -240,8 +238,10 @@ router.post("/users/login", async (req, res) => {
 
 // Sign out POST
 router.post("/sign-out", async(req, res) => {
-    req.session.destroy()
-    res.redirect("/")
+    req.session.destroy((e) => {
+        if(e) console.log(e)
+        else res.redirect("/")
+    })
 })
 
 // search

@@ -22,6 +22,7 @@ const store = new MongoDBStore({
 });
 
 app.set("view engine", "ejs")
+app.set("trust proxy", 1)
 app.use(express.static("style"))
 app.use(express.static("statics"))
 app.use(express.static("scripts"))
@@ -33,11 +34,12 @@ app.use(new sessions({
     saveUninitialized: true,
     unset: 'destroy',
     store: store,
+    cookie: {
+        maxAge: 60*100*24,
+        // sameSite: 'none'
+    },
     genid: (req) => {
         return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex");
-    },
-    cookie: {
-        maxAge: 60*100*24
     }
 }));
 
