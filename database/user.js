@@ -15,6 +15,12 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    lastSeenVersion: {
+        type: Number
+    },
+    hasSeenChangelog: {
+        type: Boolean
+    },
     friends: [],
     friendRequestsReceived: [],
     friendRequestsSent: [],
