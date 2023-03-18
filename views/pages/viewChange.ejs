@@ -12,6 +12,12 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h1><%= change.version %> | <%= change.name %></h1>
+        <ul>
+            <li><a href="/back/change/edit/<%= change._id %>">Edit</a></li>
+        </ul>
+        <h4><%= change.date.toLocaleDateString() %></h4>
+        <h4><%= change.createdBy %></h4>
+        <h4><%= change.description %></h4>
     </div>
 </body>
 </html>
