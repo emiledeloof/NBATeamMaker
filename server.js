@@ -36,7 +36,7 @@ app.use(new sessions({
     unset: 'destroy',
     store: store,
     cookie: {
-        maxAge: 60*60*1000*24,
+        maxAge: day,
         // sameSite: 'none'
     },
     genid: (req) => {

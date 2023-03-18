@@ -19,7 +19,6 @@ router.post("/login", async(req, res) => {
                 if (err) console.log(err)
                 req.session.isAdmin = true
                 req.session.userId = user._id.toString()
-                console.log(req.session)
                 req.session.save(function (err) {
                     if (err) return next(err)
                     res.redirect("/back/dashboard")
@@ -50,7 +49,8 @@ router.get("/dashboard", async (req, res) => {
 
 // View change
 router.get("/change/view/:id", async(req, res) => {
-
+    let change = await Changelog.findById(req.params.id)
+    res.render("pages/viewChange", {change: change})
 })
 
 // create change
@@ -68,6 +68,7 @@ router.post("/change/create", async(req, res) => {
     change.name = req.body.name
     change.version = req.body.version
     change.description = req.body.description
+    change.createdBy = req.session.userId
     try{
         await change.save()
         await User.updateMany({}, {hasSeenChangelog: false})
@@ -79,6 +80,25 @@ router.post("/change/create", async(req, res) => {
 })
 
 // Edit change
+router.get("/change/edit/:id", async(req, res) => {
+    let change = await Changelog.findById(req.params.id)
+    res.render("pages/editChange", {change: change})
+})
+
+// Edit change POST
+router.post("/change/edit/:id", async(req, res) => {
+    let change = await Changelog.findById(req.params.id)
+    change.version = req.body.version
+    change.name = req.body.name
+    change.description = req.body.description
+    change.createdBy = req.session.userId
+    try{
+        await change.save()
+    } catch(e){
+        console.log(e)
+    }
+    res.redirect(`/back/change/view/${req.params.id}`)
+})
 
 // Delete change
 

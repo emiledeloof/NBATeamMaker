@@ -32,13 +32,13 @@ schedule.scheduleJob("12 * * *", async () => {
     //     let visitors = game.visitor_team.name
         
     // })
-    fs.writeFile("./../notUpdatedTeams.txt", notUpdatedTeams, (e) => {
-        if(e){
-            console.log(e)
-        } else {
-            console.log("wrote to notUpdatedTeams file")
-        }
-    })
+    // fs.writeFile("./../notUpdatedTeams.txt", notUpdatedTeams, (e) => {
+    //     if(e){
+    //         console.log(e)
+    //     } else {
+    //         console.log("wrote to notUpdatedTeams file")
+    //     }
+    // })
     console.log(notUpdatedTeams)
     notUpdatedTeams = []
     let teams = await Team.find()

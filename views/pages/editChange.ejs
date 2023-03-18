@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= change.name %> | Edit change</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/basketball.png">
+</head>
+<body onload="checkInputs()">
+    <div class="container">
+        <%- include("_navbar.ejs") %>
+        <h1>Edit <%= change.name %></h1>
+        <form action="/back/change/edit/<%= change._id %>" method="POST">
+            <div class="inputsWrapper">
+                <input type="text" id="version" name="version" class="inputs" onfocusout="checkElement('version', 'versionLabel')" value="<%= change.version %>">
+                <label for="version" class="inputLabel" id="versionLabel">Version</label>
+            </div>
+            <div class="inputsWrapper">
+                <input type="text" id="name" name="name" class="inputs" onfocusout="checkElement('name', 'nameLabel')" value="<%= change.name %>">
+                <label for="name" class="inputLabel" id="nameLabel">Name</label>
+            </div>
+            <div class="inputsWrapper">
+                <textarea id="description" name="description" class="textarea" onfocusout="checkElement('description', 'descriptionLabel')"><%= change.description %></textarea>
+                <label for="description" class="inputLabel" id="descriptionLabel">Description</label>
+            </div>
+            <button class="submitButton">Submit</button>
+        </form>
+    </div>
+    <script src="/checkInput.js"></script>
+    <script>
+        function checkInputs(){
+            let elements = ["version", "name", "description"]
+            elements.forEach(element => {
+                let input = document.getElementById(element)
+                let label = document.getElementById(element + "Label")
+                if(input.value != ""){
+                    label.style.top = "2px"
+                    label.style.fontSize = "12px"
+                }
+            })
+        }
+    </script>
+</body>
+</html>

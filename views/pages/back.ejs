@@ -34,8 +34,10 @@
                 </div>
                 <div class="changelogsWrapper">
                     <% changelogs.forEach(change => { %>
-                        <%= change.version %> | <%= change.name %>
-                        <br><%= change.date.toLocaleDateString() %>
+                        <a href="/back/change/view/<%= change._id %>">
+                            <%= change.version %> | <%= change.name %>
+                            <br><%= change.date.toLocaleDateString() %>
+                        </a>
                     <% }) %>
                 </div>
             </div>
