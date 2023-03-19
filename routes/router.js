@@ -130,18 +130,22 @@ router.get("/search-user/:searchUser", async(req, res) => {
 router.post("/friends/:friendId/add", async (req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
-    let sentRequestTo = {
-        username: friend.username,
-        id: friend._id,
-        date: Date.now()
-    }   
-    let dataToSend = {
-        username: user.username,
-        id: user._id,
-        date: Date.now()
+    if(user.friendRequestsSent.filter(request => request.username == friend.username).length == 0){
+        let sentRequestTo = {
+            username: friend.username,
+            id: friend._id,
+            date: Date.now()
+        }   
+        let dataToSend = {
+            username: user.username,
+            id: user._id,
+            date: Date.now()
+        }
+        user.friendRequestsSent.push(sentRequestTo)
+        friend.friendRequestsReceived.push(dataToSend)
+    } else {
+        throw new Error("A friend request has already been sent.")
     }
-    user.friendRequestsSent.push(sentRequestTo)
-    friend.friendRequestsReceived.push(dataToSend)
     try{
         await user.save()
         await friend.save()
@@ -250,9 +254,10 @@ router.get("/profile", async (req, res) => {
 // view other profile
 router.get("/view-profile/:otherUser", async(req, res) => {
     let user = await User.findById(req.params.otherUser)
+    let currentUser = await User.findById(req.session.userId)
     res.render("pages/viewProfile", {
         user: user,
-        
+        currentUser: currentUser
     })
 })
 
