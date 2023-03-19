@@ -46,11 +46,11 @@
                         <a href="/pages/view-profile/<%= user._id %>"><%= user.username %></a>
                         <% if(currentUser.friendRequestsSent.filter(request => request.username == user.username).length == 0){ %>
                             <form action="/pages/friends/<%= user._id %>/add?redirect=search&search=<%= search %>" method="POST">
-                                <button>Add Friend</button>
+                                <button class="submitButton">Add Friend</button>
                             </form>
                         <% } else { %>
                             <form action="/pages/friends/<%= user._id %>/undo?redirect=search&search=<%= search %>" method="POST">
-                                <button>Remove request</button>
+                                <button class="submitButton">Remove request</button>
                             </form>
                         <% } %>
                     </div>
