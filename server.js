@@ -13,7 +13,6 @@ const router = require("./routes/router")
 const backRouter = require("./routes/backRouter")
 const app = express()
 const PORT = process.env.PORT || 5001
-const day = 1000*60*60*24
 
 mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority")
 
@@ -36,7 +35,7 @@ app.use(new sessions({
     unset: 'destroy',
     store: store,
     cookie: {
-        maxAge: day,
+        maxAge: 1000*60*60,
         // sameSite: 'none'
     },
     genid: (req) => {

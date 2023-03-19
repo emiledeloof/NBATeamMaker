@@ -41,12 +41,18 @@
         <% }) %>
         <% } if(type == "user") { %>
             <% users.forEach(user => { %>
-                <% if(user._id != userId){ %>
+                <% if(user._id != currentUser._id.toString()){ %>
                     <div class="card">
                         <a href="/pages/view-profile/<%= user._id %>"><%= user.username %></a>
-                        <form action="/pages/friends/<%= user._id %>/add" method="POST">
-                            <button>Add Friend</button>
-                        </form>
+                        <% if(currentUser.friendRequestsSent.filter(request => request.username == user.username).length == 0){ %>
+                            <form action="/pages/friends/<%= user._id %>/add?redirect=search&search=<%= search %>" method="POST">
+                                <button>Add Friend</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/pages/friends/<%= user._id %>/undo?redirect=search&search=<%= search %>" method="POST">
+                                <button>Remove request</button>
+                            </form>
+                        <% } %>
                     </div>
                 <% } %>
             <% }) %>

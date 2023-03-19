@@ -115,12 +115,13 @@ router.post("/search-user", async(req, res) => {
 // search user results
 router.get("/search-user/:searchUser", async(req, res) => {
     let users = await User.find({username: {$regex: req.params.searchUser, $options: "i"}})
+    let user = await User.findById(req.session.userId)
     res.render("pages/searchResults", {
         users: users,
         type: "user",
         search: req.params.searchUser,
         loggedIn: true,
-        
+        currentUser: user
     })
 })
 
@@ -147,7 +148,11 @@ router.post("/friends/:friendId/add", async (req, res) => {
     } catch(e){
         console.log(e)
     }
-    res.redirect(`/pages/dashboard`)
+    if(req.query.redirect == "search"){
+        res.redirect(`/pages/searh-user/${req.query.search}`)
+    } else {
+        res.redirect(`/pages/dashboard`)
+    }
 })
 
 // Accept friend request POST
@@ -215,7 +220,7 @@ router.post("/friends/:friendId/remove", async (req, res) => {
 
 // Undo friend request POST
 router.post("/friends/:requestId/undo", async (req, res) => {
-    let user = await User.findById(req.params.id)
+    let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.requestId)
     let userIndex = friend.friendRequestsReceived.findIndex(request => request.id == req.params.id)
     friend.friendRequestsReceived.splice(userIndex, 1)
@@ -227,7 +232,12 @@ router.post("/friends/:requestId/undo", async (req, res) => {
     } catch(e){
         console.log(e)
     }
-    res.redirect(`/pages/profile`)
+    console.log(req.query.redirect)
+    if(req.query.redirect == "search"){
+        res.redirect(`/pages/search-user/${req.query.search}`)
+    } else {
+        res.redirect(`/pages/profile`)
+    }
 })
 
 // profile
