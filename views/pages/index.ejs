@@ -23,7 +23,12 @@
 </script>
 <body>
     <div class="container">
-        <%- include("_notLoggedNav.ejs") %>
+        <% if(loggedIn == true){ %>
+            <%- include("_navbar.ejs") %>
+        <% } else { %>
+            <%- include("_notLoggedNav.ejs") %>
+                
+        <% } %>
         <h1>NBA Fantasy</h1>
     </div>
 </body>

@@ -55,8 +55,11 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-    res.render("pages/index")
-    // res.redirect("pages/teams")
+    if(req.session.userId){
+        res.render("pages/index", {loggedIn: true})
+    } else {
+        res.render("pages/index", {loggedIn: false})
+    }
 })
 
 app.use("/pages", router)
