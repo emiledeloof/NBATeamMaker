@@ -20,8 +20,6 @@ const version = 0.1
 // const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
 // const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
 
-let notUpdatedTeams = []
-
 // schedule.scheduleJob("* * * * *", async () => {
 schedule.scheduleJob("12 * * *", async () => {
     // let date = new Date(Date.now()).toISOString().split("T")[0]
@@ -32,15 +30,6 @@ schedule.scheduleJob("12 * * *", async () => {
     //     let visitors = game.visitor_team.name
         
     // })
-    // fs.writeFile("./../notUpdatedTeams.txt", notUpdatedTeams, (e) => {
-    //     if(e){
-    //         console.log(e)
-    //     } else {
-    //         console.log("wrote to notUpdatedTeams file")
-    //     }
-    // })
-    console.log(notUpdatedTeams)
-    notUpdatedTeams = []
     let teams = await Team.find()
     for(i=0; i<teams.length; i++){
         if(i % 11 === 0){
@@ -728,7 +717,6 @@ async function addScores(playerId, team){
             team.pointGuard.score = await calculateScore(team.pointGuard.id)
         }
     } catch (e){
-        notUpdatedTeams.push(team)
         console.log(e)
     }
 }

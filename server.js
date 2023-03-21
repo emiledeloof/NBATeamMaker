@@ -13,12 +13,14 @@ const router = require("./routes/router")
 const backRouter = require("./routes/backRouter")
 const app = express()
 const PORT = process.env.PORT || 5001
+const HOUR = 1000
 
 mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority")
 
 const store = new MongoDBStore({
     uri: "mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority",
-    collection: 'sessions'
+    collection: 'sessions',
+    expires: HOUR
 });
 
 app.set("view engine", "ejs")
@@ -35,7 +37,7 @@ app.use(new sessions({
     unset: 'destroy',
     store: store,
     cookie: {
-        maxAge: 1000*60*60,
+        maxAge: HOUR,
         // sameSite: 'none'
     },
     genid: (req) => {
