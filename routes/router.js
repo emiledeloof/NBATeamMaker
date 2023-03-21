@@ -13,7 +13,6 @@ const URL = "https://www.balldontlie.io/api/v1"
 // const algorithm = "aes-256-cbc"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
 const schedule = require("node-schedule")
-const fs = require("fs")
 const version = 0.1
 // const initVector = crypto.randomBytes(16)
 // const securityKey = crypto.randomBytes(32)
@@ -66,6 +65,49 @@ router.post("/users/register", async (req, res) => {
         console.log(e)
         res.redirect("/pages/users/register")
     }
+})
+
+// login
+router.get("/login", (req, res) => {
+    res.render("pages/login")
+})
+
+// login POST
+router.post("/users/login", async (req, res) => {
+    let user
+    try{
+        user = await User.findOne({username: req.body.username})
+        // let decryptedData = decipher.update(user.password, "hex", "utf-8");
+        // decryptedData += decipher.final("utf-8");
+        if(user.password == req.body.password){
+            // req.session.regenerate(function (err) {
+                // if (err) console.log(err)
+                
+                // store user information in session, typically a user id
+                req.session.userId = user._id.toString()
+                req.session.isAdmin = false
+                // save the session before redirection to ensure page
+                // load does not happen before session is saved
+                // req.session.save(function (err) {
+                //     if (err) return next(err)
+                    res.redirect('/pages/dashboard')
+                // })
+            //   })
+        } else {
+            throw new Error("Incorrect username or password")
+        }
+    } catch (e){
+        console.log(e)
+        res.redirect("/pages/login")
+    }
+})
+
+// Sign out POST
+router.post("/sign-out", async(req, res) => {
+    req.session.destroy((e) => {
+        if(e) console.log(e)
+        else res.redirect("/")
+    })
 })
 
 // dashboard
@@ -225,7 +267,6 @@ router.post("/friends/:requestId/undo", async (req, res) => {
     } catch(e){
         console.log(e)
     }
-    console.log(req.query.redirect)
     if(req.query.redirect == "search"){
         res.redirect(`/pages/search-user/${req.query.search}`)
     } else {
@@ -237,7 +278,7 @@ router.post("/friends/:requestId/undo", async (req, res) => {
 router.get("/profile", async (req, res) => {
     // let user = await User.findById(req.params.id)
     let user = await User.findById(req.session.userId)
-    res.render("pages/profile", {user: user, })
+    res.render("pages/profile", {user: user})
 })
 
 // view other profile
@@ -247,49 +288,6 @@ router.get("/view-profile/:otherUser", async(req, res) => {
     res.render("pages/viewProfile", {
         user: user,
         currentUser: currentUser
-    })
-})
-
-// login
-router.get("/login", (req, res) => {
-    res.render("pages/login")
-})
-
-// login POST
-router.post("/users/login", async (req, res) => {
-    let user
-    try{
-        user = await User.findOne({username: req.body.username})
-        // let decryptedData = decipher.update(user.password, "hex", "utf-8");
-        // decryptedData += decipher.final("utf-8");
-        if(user.password == req.body.password){
-            req.session.regenerate(function (err) {
-                if (err) console.log(err)
-                
-                // store user information in session, typically a user id
-                req.session.userId = user._id.toString()
-                req.session.isAdmin = false
-                // save the session before redirection to ensure page
-                // load does not happen before session is saved
-                req.session.save(function (err) {
-                    if (err) return next(err)
-                    res.redirect('/pages/dashboard')
-                })
-              })
-        } else {
-            throw new Error("Incorrect username or password")
-        }
-    } catch (e){
-        console.log(e)
-        res.redirect("/pages/login")
-    }
-})
-
-// Sign out POST
-router.post("/sign-out", async(req, res) => {
-    req.session.destroy((e) => {
-        if(e) console.log(e)
-        else res.redirect("/")
     })
 })
 

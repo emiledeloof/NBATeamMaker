@@ -13,7 +13,7 @@ const router = require("./routes/router")
 const backRouter = require("./routes/backRouter")
 const app = express()
 const PORT = process.env.PORT || 5001
-const HOUR = 1000
+const HOUR = 1000 * 60 * 60
 
 mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority")
 
@@ -33,7 +33,7 @@ app.use(cookieParser())
 app.use(new sessions({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     unset: 'destroy',
     store: store,
     cookie: {
