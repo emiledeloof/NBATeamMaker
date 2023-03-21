@@ -23,13 +23,13 @@ const store = new MongoDBStore({
     expires: HOUR
 });
 
+app.use(cookieParser())
 app.set("view engine", "ejs")
 app.set("trust proxy", 1)
 app.use(express.static("style"))
 app.use(express.static("statics"))
 app.use(express.static("scripts"))
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser())
 app.use(new sessions({
     secret: process.env.SESSION_SECRET,
     resave: false,

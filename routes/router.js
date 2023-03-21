@@ -276,9 +276,12 @@ router.post("/friends/:requestId/undo", async (req, res) => {
 
 // profile
 router.get("/profile", async (req, res) => {
-    // let user = await User.findById(req.params.id)
     let user = await User.findById(req.session.userId)
-    res.render("pages/profile", {user: user})
+    if(user !== null){
+        res.render("pages/profile", {user: user})
+    } else {
+        res.redirect("/")
+    }
 })
 
 // view other profile
@@ -320,30 +323,30 @@ router.get("/players/:id", async (req, res) => {
 // add player to team POST
 // Create team
 router.post("/teams/leagues/:leagueId/add/players/:id", async (req, res) => {
-    let player = await axios.get(`${URL}/players/${req.params.id}`)
-    let league = await League.findById(req.params.leagueId)
-    let index = league.users.findIndex(user => user.id == req.session.userId)
-    let isAuthenticated = false
-    let team
-    if(await Team.findOne({name: req.query.teamName})){
-        team = await Team.findOne({name: req.query.teamName})
-        if(team.userId == req.session.userId){
+    try{
+        let player = await axios.get(`${URL}/players/${req.params.id}`)
+        let league = await League.findById(req.params.leagueId)
+        let index = league.users.findIndex(user => user.id == req.session.userId)
+        let isAuthenticated = false
+        let team
+        if(await Team.findOne({name: req.query.teamName})){
+            team = await Team.findOne({name: req.query.teamName})
+            if(team.userId == req.session.userId){
+                isAuthenticated = true
+            }
+        } else {
+            req.team = new Team()
+            team = req.team
+            team.name = req.query.teamName
+            team.userId = req.session.userId
+            team.league = {
+                id: req.params.leagueId,
+                name: league.name
+            }
+            league.users[index].teamId = team._id.toString()
+            league.markModified("users")
             isAuthenticated = true
         }
-    } else {
-        req.team = new Team()
-        team = req.team
-        team.name = req.query.teamName
-        team.userId = req.session.userId
-        team.league = {
-            id: req.params.leagueId,
-            name: league.name
-        }
-        league.users[index].teamId = team._id.toString()
-        league.markModified("users")
-        isAuthenticated = true
-    }
-    try{
         if(isAuthenticated == true){
             switch(req.body.position || req.query.position){
                 case "C":
