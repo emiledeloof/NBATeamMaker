@@ -131,7 +131,10 @@
                 document.getElementById("searchPlayer").style.display = "none"
                 await fetch(`<%= url %>/pages/teams/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST",
-                    credentials: "include"
+                    credentials: "include",
+                    headers: {
+                        "access-control-allow-credentials": true
+                    }
                 })
                 .then(response => response.json())
                 .then((response) => {

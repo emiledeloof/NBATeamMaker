@@ -9,6 +9,7 @@ const sessions = require("express-session")
 const crypto = require("crypto")
 const uuid = require("node-uuid")
 const MongoDBStore = require('connect-mongodb-session')(sessions);
+const cors = require("cors")
 const router = require("./routes/router")
 const backRouter = require("./routes/backRouter")
 const app = express()
@@ -22,6 +23,11 @@ const store = new MongoDBStore({
     collection: 'sessions',
     expires: HOUR
 });
+
+app.use(cors({
+    origin: "http://localhost:5001",
+    credentials: true
+}))
 
 app.use(cookieParser())
 app.set("view engine", "ejs")
@@ -45,14 +51,15 @@ app.use(new sessions({
     }
 }));
 
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    next();
-});
+// app.use((req, res, next) => {
+//     // res.setHeader("Access-Control-Allow-Origin", "*");
+//     res.setHeader("Access-Control-Allow-Origin", "http://localhost:5001");
+//     res.header(
+//         "Access-Control-Allow-Headers",
+//         "Origin, X-Requested-With, Content-Type, Accept"
+//     );
+//     next();
+// });
 
 app.get("/", (req, res) => {
     if(req.session.userId){
