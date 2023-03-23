@@ -558,6 +558,7 @@ router.post("/leagues/create", async (req, res) => {
 //view league
 router.get("/leagues/:leagueId", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
+    let teams = await Team.find({"league.id": req.params.leagueId})
     let isJoined = false
     let hasTeam = false
     let userIndex
@@ -571,7 +572,8 @@ router.get("/leagues/:leagueId", async (req, res) => {
     res.render("pages/showLeague", {
         league: league, 
         isJoined: isJoined,
-        hasTeam: hasTeam
+        hasTeam: hasTeam,
+        teams: teams
     })
 })
 

@@ -33,8 +33,11 @@
         <% league.users.forEach(user => { %>
             <div class="card">
                 <a href="/pages/view-profile/<%= user.id %>">
-                    <%= user.username %>
+                    <%= user.username %>  
                 </a>
+                <span style="margin-left: 10px;">
+                    <%= teams.filter(team => team.userId == user.id)[0].teamScore %>
+                </span>
                 <% if(user.teamId){ %>
                     <a href="/pages/leagues/<%= league._id %>/teams/<%= user.teamId %>/view-other" style="margin-left: 10px;">View team</a>
                 <% } %>
