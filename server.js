@@ -72,4 +72,8 @@ app.get("/", (req, res) => {
 app.use("/pages", router)
 app.use("/back", backRouter)
 
+app.all("*", (req, res) => {
+    res.render("pages/error")
+})
+
 app.listen(PORT, () => {console.log("Listening on port " + PORT)})
