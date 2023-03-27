@@ -80,19 +80,9 @@ router.post("/users/login", async (req, res) => {
         // let decryptedData = decipher.update(user.password, "hex", "utf-8");
         // decryptedData += decipher.final("utf-8");
         if(user.password == req.body.password){
-            // req.session.regenerate(function (err) {
-                // if (err) console.log(err)
-                
-                // store user information in session, typically a user id
                 req.session.userId = user._id.toString()
                 req.session.isAdmin = false
-                // save the session before redirection to ensure page
-                // load does not happen before session is saved
-                // req.session.save(function (err) {
-                //     if (err) return next(err)
-                    res.redirect('/pages/dashboard')
-                // })
-            //   })
+                res.redirect('/pages/dashboard')
         } else {
             throw new Error("Incorrect username or password")
         }
