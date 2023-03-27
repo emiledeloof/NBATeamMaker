@@ -3,6 +3,10 @@ const User = require("./../database/user")
 const Changelog = require("./../database/changelog")
 const router = express.Router()
 
+router.get("/", (req, res) => {
+    res.redirect("/back/login")
+})
+
 // Backend
 router.get("/login", async(req, res) => {
     res.render("pages/back", {loggedIn: false})
@@ -14,19 +18,18 @@ router.post("/login", async(req, res) => {
     let password = req.body.password
     let user = await User.findOne({username: username, isAdmin: true})
     try{
-        if(user.password == password){
-            req.session.regenerate(function (err) {
-                if (err) console.log(err)
+        console.log(req.session)
+        if(req.session.isAdmin == true){
+            res.redirect("/back/dashboard")
+        } else{
+            if(user.password == password){
                 req.session.isAdmin = true
                 req.session.userId = user._id.toString()
-                req.session.save(function (err) {
-                    if (err) return next(err)
-                    res.redirect("/back/dashboard")
-                })
-            })
-        } else {
-            console.log(user.password, password)
-            res.redirect("/back/login")
+                res.redirect("/back/dashboard")
+            } else {
+                console.log(user.password, password)
+                res.redirect("/back/login")
+            }
         }
     } catch(e){
         console.log(e)
