@@ -327,7 +327,7 @@ nav ul li{
     transition: 0.2s;
 }
 
-#signUpNow:hover{
+.signUpNow:hover{
     background-color: #a56000;
 }
 
