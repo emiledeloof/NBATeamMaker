@@ -43,8 +43,16 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+router.get("/", async (req, res) => {
+    if(req.session.userId){
+        res.redirect("/pages/dashboard")
+    } else{
+        res.redirect("/pages/login")
+    }
+})
+
 // register
-router.get("/users/register", (req, res) => {
+router.get("/register", (req, res) => {
     res.render("pages/register")
 })
 
