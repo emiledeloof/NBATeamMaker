@@ -150,8 +150,8 @@ nav ul li{
 
 .submitButton{
     font-size: 15px;
-    padding: 5px 5px 5px 5px;
-    border-radius: 5px;
+    padding: 8px 10px;
+    border-radius: 10px;
     width: 100px;
     background-color: #0e6eff;
     border: 0px;
@@ -349,15 +349,50 @@ nav ul li{
 }
 
 #loginWrapper{
-    flex: 1;
+    flex: 3;
+    display: grid;
+    place-content: center;
 }
 
 #loginSVGWrapper{
-    flex: 1;
+    flex: 4;
+    background-color: #b2b2b2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #mainLoginWrapper{
     display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+#line{
+    margin-top: 20px;
+    border-top: 0.5px solid white;
+}
+
+#registerButton{
+    padding: 10px 10px;
+    text-decoration: none;
+    background-color: #c67400;
+    width: fit-content;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+#registerButton:hover{
+    background-color: #a56000;
+}
+
+#homeButton{
+    position: absolute;
+    top: 5%;
+    right: 30%;
 }
 
 /* Mobile compatibility */
