@@ -7,10 +7,17 @@
     <title>Oops something went wrong!</title>
     <link rel="stylesheet" href="/style.css">
 </head>
-<body>
-    <div class="container">
-        <%- include("_notLoggedNav") %>
-        <h1>Oops looks like something went wrong!</h1>
+<body style="overflow: hidden;">
+    <div class="container" id="errorContainer">
+        <% if(loggedIn == true){ %>
+            <%- include("_navbar") %>
+        <% } else{ %>
+            <%- include("_notLoggedNav") %>
+        <% } %>
+        <div id="errorWrapper"> 
+            <h1>Oops something went wrong!</h1>
+            <img src="/404.svg" alt="" id="404SVG" width="800">
+        </div>
     </div>
 </body>
 </html>

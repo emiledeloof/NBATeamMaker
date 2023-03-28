@@ -73,7 +73,15 @@ app.use("/pages", router)
 app.use("/back", backRouter)
 
 app.all("*", (req, res) => {
-    res.render("pages/error")
+    try{
+        if(req.session.userId){
+            res.render("pages/error", {loggedIn: true})
+        } else{
+            res.render("pages/error", {loggedIn: false})
+        }
+    } catch(e){
+        res.redirect("/")
+    }
 })
 
 app.listen(PORT, () => {console.log("Listening on port " + PORT)})

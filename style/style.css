@@ -164,6 +164,17 @@ nav ul li{
     background-color: #004ec4;
 }
 
+#errorWrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#errorContainer{
+    overflow: hidden;
+}
+
 @keyframes inputOnFocus{
     from{
         top: 9px;
