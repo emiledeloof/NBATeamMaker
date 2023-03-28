@@ -348,6 +348,20 @@ nav ul li{
     display: none;
 }
 
+#loginWrapper{
+    flex: 1;
+}
+
+#loginSVGWrapper{
+    flex: 1;
+}
+
+#mainLoginWrapper{
+    display: flex;
+}
+
+/* Mobile compatibility */
+
 @media screen and (max-width: 600px){
     body{
         font-size: 12px;

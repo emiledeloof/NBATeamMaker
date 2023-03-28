@@ -22,18 +22,25 @@
 <body>
     <div class="container">
         <%- include("_notLoggedNav.ejs") %>
-        <h1>Login</h1>
-        <form action="/pages/users/login" method="POST">
-            <div class="inputsWrapper">
-                <input type="text" id="username" name="username" class="inputs" onfocusout="checkElement('username', 'usernameLabel')" maxlength="35" required>
-                <label for="username" class="inputLabel" id="usernameLabel">Username</label>
+        <div id="mainLoginWrapper">
+            <div id="loginSVGWrapper">
+                <img src="/login.svg" alt="loginSVG" width="500px">
             </div>
-            <div class="inputsWrapper">
-                <input type="password" id="password" name="password" class="inputs" onfocusout="checkElement('password', 'passwordLabel')" required>
-                <label for="password" class="inputLabel" id="passwordLabel">Password</label>
+            <div id="loginWrapper">
+                <h1>Login</h1>
+                <form action="/pages/users/login" method="POST">
+                    <div class="inputsWrapper">
+                        <input type="text" id="username" name="username" class="inputs" onfocusout="checkElement('username', 'usernameLabel')" maxlength="35" required>
+                        <label for="username" class="inputLabel" id="usernameLabel">Username</label>
+                    </div>
+                    <div class="inputsWrapper">
+                        <input type="password" id="password" name="password" class="inputs" onfocusout="checkElement('password', 'passwordLabel')" required>
+                        <label for="password" class="inputLabel" id="passwordLabel">Password</label>
+                    </div>
+                    <button class="submitButton">Login</button>
+                </form>
             </div>
-            <button class="submitButton">Login</button>
-        </form>
+        </div>
     </div>
     <script src="/checkInput.js"></script>
 </body>
