@@ -350,17 +350,18 @@ nav ul li{
 
 #loginWrapper{
     flex: 3;
-    display: grid;
+    display: grid; 
     place-content: center;
 }
 
-#loginSVGWrapper{
+.loginSVGWrapper{
     flex: 4;
     background-color: #b2b2b2;
-    height: 100%;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 #mainLoginWrapper{
@@ -387,12 +388,6 @@ nav ul li{
 
 #registerButton:hover{
     background-color: #a56000;
-}
-
-#homeButton{
-    position: absolute;
-    top: 5%;
-    right: 30%;
 }
 
 /* Mobile compatibility */
@@ -444,6 +439,9 @@ nav ul li{
     }
     #mainContent .textWrapper{
         padding-bottom: 0;
+    }
+    .loginSVGWrapper{
+        display: none;
     }
 }
 
