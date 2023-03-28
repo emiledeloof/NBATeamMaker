@@ -308,7 +308,8 @@ nav ul li{
 
 .textWrapper{
     flex: 1;
-    padding: 100px 300px;
+    padding: 0 300px 100px 300px;
+    margin-top: 100px;
     align-self: center;
     transform: translateY(-70px);
 }
@@ -364,7 +365,13 @@ nav ul li{
         padding: 50px 50px;
     }
     #titleWrapper .homeSlides{
-        margin-bottom: 30px;
+        margin-bottom: 0px;
+        margin-top: 30px;
+        display: flex;
+        /* align-items: center; */
+    }
+    #titleWrapper .textWrapper{
+        align-self: center;
     }
     #signUpNow{
         font-size: 10px;
@@ -375,5 +382,35 @@ nav ul li{
     }
     .Desktop{
         display: none;
+    }
+    #lastSVG{
+        display: none;
+    }
+    #mainContent .homeSlides{
+        flex-direction: column;
+    }
+    #mainContent .svgWrapper{
+        max-width: 90%;
+        margin-bottom: 50px;
+    }
+    #mainContent .textWrapper{
+        padding-bottom: 0;
+    }
+}
+
+@media screen and (max-width: 1300px){
+    .homeSlides{
+        padding-right: 0;
+    }
+    .Mobile{
+        display: block;
+        width: fit-content;
+    }
+    .Desktop{
+        display: none;
+    }
+    .textWrapper{
+        padding: 0 50px 50px 50px;
+        margin-top: 50px;
     }
 }
