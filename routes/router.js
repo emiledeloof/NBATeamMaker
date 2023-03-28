@@ -66,6 +66,7 @@ router.post("/users/register", async (req, res) => {
     // let encryptedData = cipher.update(req.body.password, "utf-8", "hex");
     // user.password = encryptedData + cipher.final("hex");
     user.password = req.body.password
+    req.session.userId = user._id.toString()
     try{
         await user.save()
         res.redirect(`/pages/dashboard`)
