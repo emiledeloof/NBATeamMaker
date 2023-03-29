@@ -14,6 +14,11 @@
         <h1><%= change.version %> | <%= change.name %></h1>
         <ul>
             <li><a href="/back/change/edit/<%= change._id %>">Edit</a></li>
+            <li>
+                <form action="/back/change/delete/<%= change._id %>" method="POST">
+                    <button>Delete change</button>
+                </form>
+            </li>
         </ul>
         <h4><%= change.date.toLocaleDateString() %></h4>
         <h4><%= change.createdBy %></h4>

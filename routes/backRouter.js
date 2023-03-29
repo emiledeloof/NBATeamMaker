@@ -114,5 +114,14 @@ router.post("/change/edit/:id", async(req, res) => {
 })
 
 // Delete change
+router.post("/change/delete/:id", async (req, res) => {
+    try{    
+        await Changelog.findByIdAndDelete(req.params.id)
+        res.redirect("/back/dashboard")
+    } catch(e){
+        res.send(e)
+        console.log(e)
+    }
+})
 
 module.exports = router
