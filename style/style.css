@@ -401,6 +401,39 @@ nav ul li{
     background-color: #a56000;
 }
 
+#usernameWrapper{
+    text-decoration: underline;
+}
+
+#usernameWrapper:hover{
+    cursor: pointer;
+}
+
+#profileUl{
+    position: absolute;
+    margin-top: 5px;
+    background-color: #b2b2b2;
+    width: 150px;
+    padding-left: 10px;
+}
+
+#profileUl li{
+    margin-bottom: 5px;
+    padding: 5px 5px;
+}
+
+#profileUl a, #profileUl button{
+    color: #333;
+}
+
+.hidden{
+    display: none;
+}
+
+.visible{
+    display: block;
+}
+
 /* Mobile compatibility */
 
 @media screen and (max-width: 600px){

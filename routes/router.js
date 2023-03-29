@@ -91,6 +91,7 @@ router.post("/users/login", async (req, res) => {
         if(user.password == req.body.password){
                 req.session.userId = user._id.toString()
                 req.session.isAdmin = false
+                req.session.username = user.username
                 res.redirect('/pages/dashboard')
         } else {
             throw new Error("Incorrect username or password")
@@ -120,7 +121,8 @@ router.get("/dashboard", async(req, res) => {
         username: user.username, 
         changelog: changelog,
         hasSeenChangelog: user.hasSeenChangelog,
-        URL: process.env.URL
+        URL: process.env.URL,
+        username: req.session.username
     })
 })
 
@@ -151,7 +153,8 @@ router.get("/search-user/:searchUser", async(req, res) => {
         type: "user",
         search: req.params.searchUser,
         loggedIn: true,
-        currentUser: user
+        currentUser: user,
+        username: req.session.username
     })
 })
 
@@ -277,7 +280,7 @@ router.post("/friends/:requestId/undo", async (req, res) => {
 router.get("/profile", async (req, res) => {
     let user = await User.findById(req.session.userId)
     if(user !== null){
-        res.render("pages/profile", {user: user})
+        res.render("pages/profile", {user: user, username: user.username})
     } else {
         res.redirect("/")
     }
@@ -289,7 +292,8 @@ router.get("/view-profile/:otherUser", async(req, res) => {
     let currentUser = await User.findById(req.session.userId)
     res.render("pages/viewProfile", {
         user: user,
-        currentUser: currentUser
+        currentUser: currentUser,
+        username: user.username
     })
 })
 
@@ -301,7 +305,7 @@ router.post("/players/search", async(req, res) => {
         results: request.data.data,
         loggedIn: false,
         type: "player",
-        
+        username: req.session.username
     })
 })
 
@@ -315,7 +319,8 @@ router.get("/players/:id", async (req, res) => {
         player: player.data,
         stats: stats.data.data[0],
         personId: nbaPlayer.personId,
-        loggedIn: false
+        loggedIn: false,
+        username: req.session.username
     })
 })
 
@@ -429,7 +434,10 @@ router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
 // show all teams
 router.get("/teams/show", async(req, res) => {
     let teams = await Team.find({userId: req.session.userId})
-    res.render("pages/showTeams", {teams: teams, })
+    res.render("pages/showTeams", {
+        teams: teams, 
+        username: req.session.username
+    })
 })
 
 // view team
@@ -452,7 +460,8 @@ router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
     res.render("pages/team", {
         team: team, 
         url: url, 
-        leagueId: req.params.leagueId
+        leagueId: req.params.leagueId,
+        username: req.session.username
     })
 })
 
@@ -476,7 +485,8 @@ router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
         team: team,
         userId: req.session.userId,
         leagueId: req.params.leagueId,
-        url: url
+        url: url,
+        username: req.session.username
     }
     if(req.session.userId == team.userId){
         res.render("pages/team", params)
@@ -488,7 +498,11 @@ router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
 // create new team
 router.get("/leagues/:leagueId/teams/create", (req, res) => {
     let url = process.env.URL
-    res.render("pages/createTeam", {url: url, leagueId: req.params.leagueId})
+    res.render("pages/createTeam", {
+        url: url, 
+        leagueId: req.params.leagueId,
+        username: req.session.username
+    })
 })
 
 // delete team POST
@@ -518,13 +532,16 @@ router.get("/players/:playerId", async(req, res) => {
         stats: stats.data.data[0],
         personId: nbaPlayer.personId,
         loggedIn: true,
-        score: score
+        score: score,
+        username: req.session.username
     })
 })
 
 // Create league
 router.get("/leagues/create", (req, res) => {
-    res.render("pages/createLeague", {})
+    res.render("pages/createLeague", {
+        username: req.session.username
+    })
 })
 
 // Create league POST
@@ -572,7 +589,8 @@ router.get("/leagues/:leagueId", async (req, res) => {
         league: league, 
         isJoined: isJoined,
         hasTeam: hasTeam,
-        teams: teams
+        teams: teams,
+        username: req.session.username
     })
 })
 
@@ -585,6 +603,7 @@ router.get("/leagues", async(req, res) => {
     // let leagues = await League.find({public: true})
     res.render("pages/allLeagues", {
         leagues: leagues,
+        username: req.session.username
     })
 })
 
@@ -595,7 +614,8 @@ router.post("/leagues/search", async(req, res) => {
         type: "league",
         leagues: leagues,
         search: req.body.league,
-        loggedIn: true
+        loggedIn: true,
+        username: req.session.username
     })
 })
 
@@ -621,7 +641,8 @@ router.post("/leagues/:leagueId/join", async (req, res) => {
 router.get("/leagues/:leagueId/settings", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     res.render("pages/leagueSettings", {
-        league: league
+        league: league,
+        username: req.session.username
     })
 })
 

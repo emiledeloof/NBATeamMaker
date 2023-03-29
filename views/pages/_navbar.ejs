@@ -5,11 +5,22 @@
         <li><a href="/pages/teams/show">My teams</a></li>
         <li><a href="/pages/leagues/create">Create league</a></li>
         <li><a href="/pages/leagues">View all leagues</a></li>
-        <li><a href="/pages/profile">Profile</a></li>
         <li>
-            <form action="/pages/sign-out" method="POST">
-                <button>Sign out</button>
-            </form>
+            <a id="usernameWrapper"><%= username %></a>
+            <ul id="profileUl" class="hidden">
+                <li><a href="/pages/profile">Profile</a></li>
+                <li>
+                    <form action="/pages/sign-out" method="POST">
+                        <button>Sign out</button>
+                    </form>
+                </li>
+            </ul>
         </li>
     </ul>
 </nav>
+<script>
+    document.getElementById("usernameWrapper").addEventListener("click", (event) => {
+        document.getElementById("profileUl").classList.toggle("visible")
+        document.getElementById("profileUl").classList.toggle("hidden")
+    })
+</script>
