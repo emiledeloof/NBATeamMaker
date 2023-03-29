@@ -9,7 +9,11 @@ router.get("/", (req, res) => {
 
 // Backend
 router.get("/login", async(req, res) => {
-    res.render("back/back", {loggedIn: false})
+    if(req.session.isAdmin == true){
+        res.redirect("/back/dashboard")
+    } else {
+        res.render("back/back", {loggedIn: false})
+    }
 })
 
 // Login backend
@@ -18,19 +22,14 @@ router.post("/login", async(req, res) => {
     let password = req.body.password
     let user = await User.findOne({username: username, isAdmin: true})
     try{
-        console.log(req.session)
-        if(req.session.isAdmin == true){
+        if(user.password == password){
+            req.session.isAdmin = true
+            req.session.userId = user._id.toString()
+            req.session.username = user.username
             res.redirect("/back/dashboard")
-        } else{
-            if(user.password == password){
-                req.session.isAdmin = true
-                req.session.userId = user._id.toString()
-                req.session.username = user.username
-                res.redirect("/back/dashboard")
-            } else {
-                console.log(user.password, password)
-                res.redirect("/back/login")
-            }
+        } else {
+            console.log(user.password, password)
+            res.redirect("/back/login")
         }
     } catch(e){
         console.log(e)
