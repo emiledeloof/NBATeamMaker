@@ -92,6 +92,7 @@ router.post("/users/login", async (req, res) => {
                 req.session.userId = user._id.toString()
                 req.session.isAdmin = false
                 req.session.username = user.username
+                req.session.sessionId = req.sessionID
                 res.redirect('/pages/dashboard')
         } else {
             throw new Error("Incorrect username or password")
@@ -333,7 +334,7 @@ router.post("/teams/leagues/:leagueId/add/players/:id", async (req, res) => {
         let index = league.users.findIndex(user => user.id == req.session.userId)
         let isAuthenticated = false
         let team
-        console.log(req.cookies)
+        console.log(req.cookies.currentSession)
         if(await Team.findOne({name: req.query.teamName})){
             team = await Team.findOne({name: req.query.teamName})
             if(team.userId == req.session.userId){
@@ -498,6 +499,11 @@ router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
 // create new team
 router.get("/leagues/:leagueId/teams/create", (req, res) => {
     let url = process.env.URL
+    console.log(req.session)
+    res.cookie("currentSession", req.sessionID, {
+        sameSite:"none",
+        "secure": true
+    })
     res.render("pages/createTeam", {
         url: url, 
         leagueId: req.params.leagueId,
