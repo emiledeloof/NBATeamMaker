@@ -25,7 +25,7 @@ const store = new MongoDBStore({
 });
 
 app.use(cors({
-    origin: "http://localhost:5001",
+    origin: "https://nbafantasy.games",
     credentials: true
 }))
 
