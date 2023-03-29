@@ -63,7 +63,7 @@ app.use(new sessions({
 
 app.get("/", (req, res) => {
     if(req.session.userId){
-        res.render("pages/index", {loggedIn: true})
+        res.render("pages/index", {loggedIn: true, username: req.session.username})
     } else {
         res.render("pages/index", {loggedIn: false})
     }
@@ -75,7 +75,7 @@ app.use("/back", backRouter)
 app.all("*", (req, res) => {
     try{
         if(req.session.userId){
-            res.render("pages/error", {loggedIn: true})
+            res.render("pages/error", {loggedIn: true, username: req.session.username})
         } else{
             res.render("pages/error", {loggedIn: false})
         }

@@ -10,7 +10,7 @@
 </head>
 <body onload="checkInputs()">
     <div class="container">
-        <%- include("_navbar.ejs") %>
+        <%- include("_backnav.ejs") %>
         <h1>Edit <%= change.name %></h1>
         <form action="/back/change/edit/<%= change._id %>" method="POST">
             <div class="inputsWrapper">

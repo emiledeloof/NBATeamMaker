@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <% if(loggedIn == false){ %>
-            <%- include("_notLoggedNav.ejs") %>
+            <%- include("./../pages/_notLoggedNav.ejs") %>
             <h1>Login Back</h1>
             <form action="/back/login" method="POST">
                 <div class="inputsWrapper">
@@ -25,7 +25,7 @@
                 <button class="submitButton">Login</button>
             </form>
         <% } if(loggedIn == true){ %>
-            <%- include("_navbar.ejs") %>
+            <%- include("_backnav.ejs") %>
             <h1>Backend dashboard</h1>
             <h3>Changelogs</h3>
             <div class="changelogs">

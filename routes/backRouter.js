@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
 
 // Backend
 router.get("/login", async(req, res) => {
-    res.render("pages/back", {loggedIn: false})
+    res.render("back/back", {loggedIn: false})
 })
 
 // Login backend
@@ -25,6 +25,7 @@ router.post("/login", async(req, res) => {
             if(user.password == password){
                 req.session.isAdmin = true
                 req.session.userId = user._id.toString()
+                req.session.username = user.username
                 res.redirect("/back/dashboard")
             } else {
                 console.log(user.password, password)
@@ -41,9 +42,10 @@ router.post("/login", async(req, res) => {
 router.get("/dashboard", async (req, res) => {
     let changelogs = await Changelog.find()
     if(req.session.isAdmin == true){
-        res.render("pages/back", {
+        res.render("back/back", {
             loggedIn: true,
-            changelogs: changelogs
+            changelogs: changelogs,
+            username: req.session.username
         })
     } else {
         res.redirect("/back/login")
@@ -53,13 +55,18 @@ router.get("/dashboard", async (req, res) => {
 // View change
 router.get("/change/view/:id", async(req, res) => {
     let change = await Changelog.findById(req.params.id)
-    res.render("pages/viewChange", {change: change})
+    res.render("back/viewChange", {
+        change: change,
+        username: req.session.username
+    })
 })
 
 // create change
 router.get("/change/create", async(req, res) => {
     if(req.session.isAdmin == true){
-        res.render("pages/createChange")
+        res.render("back/createChange", {
+            username: req.session.username
+        })
     } else {
         res.redirect("/back/login")
     }
@@ -75,7 +82,6 @@ router.post("/change/create", async(req, res) => {
     try{
         await change.save()
         await User.updateMany({}, {hasSeenChangelog: false})
-
     } catch (e){
         console.log(e)
     }
@@ -85,7 +91,10 @@ router.post("/change/create", async(req, res) => {
 // Edit change
 router.get("/change/edit/:id", async(req, res) => {
     let change = await Changelog.findById(req.params.id)
-    res.render("pages/editChange", {change: change})
+    res.render("back/editChange", {
+        change: change,
+        username: req.session.username
+    })
 })
 
 // Edit change POST
@@ -97,6 +106,7 @@ router.post("/change/edit/:id", async(req, res) => {
     change.createdBy = req.session.userId
     try{
         await change.save()
+        await User.updateMany({}, {hasSeenChangelog: false})
     } catch(e){
         console.log(e)
     }
