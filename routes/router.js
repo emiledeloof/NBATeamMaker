@@ -334,7 +334,8 @@ router.post("/teams/leagues/:leagueId/add/players/:id", async (req, res) => {
         let index = league.users.findIndex(user => user.id == req.session.userId)
         let isAuthenticated = false
         let team
-        console.log(req.cookies.currentSession)
+        console.log(req.session)
+        // console.log(req.cookies.currentSession)
         if(await Team.findOne({name: req.query.teamName})){
             team = await Team.findOne({name: req.query.teamName})
             if(team.userId == req.session.userId){
