@@ -35,7 +35,7 @@
                 <a href="/pages/view-profile/<%= user.id %>">
                     <%= user.username %>  
                 </a>
-                <% if(teams.filter(team => team.userId == user.id).length !== 0){ %>
+                <% if(teams.filter(team => team.userId == user.id).teamScore !== undefined){ %>
                     <span style="margin-left: 10px;">
                         <%= teams.filter(team => team.userId == user.id)[0].teamScore %>
                     </span>
