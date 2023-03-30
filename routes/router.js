@@ -378,7 +378,7 @@ router.post("/teams/leagues/:leagueId/add/players/:id", async (req, res) => {
         } else{
             throw new Error("A team with this name already exists! \nPlease refresh the page to create another team.")
         }
-        addScores(req.params.id, team)
+        addScores(team)
         team.markModified("shootingGuard")
         team.markModified("pointGuard")
         team.markModified("powerForward")
@@ -417,15 +417,12 @@ router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
             break;
     }
     try{
-        await addScores(req.params.id, team)
-        let teamScore =  team.shootingGuard.score.score + team.pointGuard.score.score + team.smallForward.score.score + team.powerForward.score.score + team.center.score.score 
-        team.teamScore = teamScore
+        await addScores(team)
         team.markModified("shootingGuard")
         team.markModified("pointGuard")
         team.markModified("powerForward")
         team.markModified("smallForward")
         team.markModified("center")
-        league.users[index].teamScore = teamScore
         league.markModified("users")
         await team.save()
         await league.save()
@@ -477,19 +474,6 @@ router.get("/teams/show", async(req, res) => {
 // view team
 router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
-    // if(team.pointGuard && team.shootingGuard && team.powerForward && team.smallForward && team.center){
-    //     team.pointGuard.scoreData = await calculateScore(team.pointGuard.id)
-    //     team.shootingGuard.scoreData = await calculateScore(team.shootingGuard.id)
-    //     team.powerForward.scoreData = await calculateScore(team.powerForward.id)
-    //     team.smallForward.scoreData = await calculateScore(team.smallForward.id)
-    //     team.center.scoreData = await calculateScore(team.center.id)
-    //     team.totalScore = parseInt(team.pointGuard.score) + parseInt(team.shootingGuard.score) + parseInt(team.powerForward.score) + parseInt(team.smallForward.score) + parseInt(team.center.score)
-    // }
-    try{
-        await team.save()
-    } catch(e){
-        console.log(e)
-    }
     let url = process.env.URL
     res.render("pages/team", {
         team: team, 
@@ -719,6 +703,18 @@ router.post("/leagues/:leagueId/request/:requestId/reject", async (req, res) => 
     res.redirect(`/pages/leagues/${req.params.leagueId}/settings`)
 })
 
+// recalculate team score
+router.post("/league/:leagueId/teams/:teamId/calculateScore", async(req, res) => {
+    let team = await Team.findById(req.params.teamId)
+    await addScores(team)
+    try{
+        await team.save()
+    } catch(e){
+        console.log(e)
+    }
+    res.redirect(`/pages/leagues/${req.params.leagueId}/teams/${req.params.teamId}/view`)
+})
+
 async function calculateScore(playerId, statsVar = null){
     if(statsVar == null){
         let stats = await axios.get(`${URL}/season_averages?player_ids[]=${playerId}`)
@@ -732,15 +728,11 @@ async function calculateScore(playerId, statsVar = null){
     let turnoverScore = 1250 * statsVar.turnover
     let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
     score = score.toFixed(0)
-    let scoreData = {
-        score: parseInt(score),
-        game: statsVar.games_played,
-        dateUpdated: Date.now()
-    }
+    let scoreData = parseInt(score)
     return scoreData
 }
 
-async function addScores(playerId, team){
+async function addScores(team){
     try{
         if(team.shootingGuard && team.pointGuard && team.powerForward && team.smallForward && team.center){
             team.center.score = await calculateScore(team.center.id)
@@ -748,6 +740,8 @@ async function addScores(playerId, team){
             team.smallForward.score = await calculateScore(team.smallForward.id)
             team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
             team.pointGuard.score = await calculateScore(team.pointGuard.id)
+            team.teamScore = parseInt(team.center.score + team.powerForward.score + team.smallForward.score + team.shootingGuard.score + team.pointGuard.score)
+            return team
         }
     } catch (e){
         console.log(e)
