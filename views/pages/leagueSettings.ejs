@@ -39,9 +39,15 @@
         <% } else { %>
             <h4>No requests to join this league.</h4>
         <% } %>
-        <form action="/pages/leagues/<%= league._id %>/leave" method="POST">
-            <button>Leave league</button>
-        </form>
+        <% if(league.users.length === 1){ %>
+            <form action="/pages/leagues/<%= league._id %>/delete" method="POST">
+                <button>Delete league</button>
+            </form>
+        <% } else { %>
+            <form action="/pages/leagues/<%= league._id %>/leave" method="POST">
+                <button>Leave league</button>
+            </form>
+        <% } %>
     </div>
 </body>
 </html>

@@ -658,6 +658,27 @@ router.post("/leagues/:leagueId/leave", async (req, res) => {
     res.redirect(`/pages/dashboard`)
 })
 
+// Delete league
+router.post("/leagues/:leagueId/delete", async(req, res) => {
+    try{
+        let league = await League.findById(req.params.leagueId)
+        let user = await User.findById(req.session.userId)
+        let team = await Team.findById(league.users[0].teamId)
+        if(team != null){
+            team.league = null
+            await team.save()
+        }
+        user.leagues.splice(user.leagues.findIndex(league => league.id == req.params.leagueId), 1)
+        await league.delete()
+        user.markModified("leagues")
+        await user.save()
+        res.redirect("/pages/dashboard")
+    } catch(e){
+        console.log(e)
+        res.redirect("/error")
+    }
+})
+
 // Accept request to join league
 router.post("/leagues/:leagueId/request/:requestId/accept", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
