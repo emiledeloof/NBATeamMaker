@@ -433,6 +433,35 @@ router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
     }
 })
 
+// create new team
+router.get("/leagues/:leagueId/teams/create", (req, res) => {
+    let url = process.env.URL
+    console.log(req.session)
+    res.cookie("currentSession", req.sessionID, {
+        sameSite:"lax"
+    })
+    res.render("pages/createTeam", {
+        url: url, 
+        leagueId: req.params.leagueId,
+        username: req.session.username
+    })
+})
+
+// delete team POST
+router.post("/leagues/:leagueId/teams/:id/delete", async(req, res) => {
+    await Team.findByIdAndDelete(req.params.id)
+    let league = await League.findById(req.params.leagueId)
+    let index = league.users.findIndex(user => user.teamId == req.params.id)
+    try{
+        league.users[index].teamId = null
+        league.markModified("users")
+        await league.save()
+    } catch (e) {
+        console.log(e)
+    }
+    res.redirect(`/pages/teams/show`)
+})
+
 // show all teams
 router.get("/teams/show", async(req, res) => {
     let teams = await Team.find({userId: req.session.userId})
@@ -495,36 +524,6 @@ router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
     } else {
         res.render("pages/viewOtherTeam", params)
     }
-})
-
-// create new team
-router.get("/leagues/:leagueId/teams/create", (req, res) => {
-    let url = process.env.URL
-    console.log(req.session)
-    res.cookie("currentSession", req.sessionID, {
-        sameSite:"none",
-        "secure": true
-    })
-    res.render("pages/createTeam", {
-        url: url, 
-        leagueId: req.params.leagueId,
-        username: req.session.username
-    })
-})
-
-// delete team POST
-router.post("/leagues/:leagueId/teams/:id/delete", async(req, res) => {
-    await Team.findByIdAndDelete(req.params.id)
-    let league = await League.findById(req.params.leagueId)
-    let index = league.users.findIndex(user => user.teamId == req.params.id)
-    try{
-        league.users[index].teamId = null
-        league.markModified("users")
-        await league.save()
-    } catch (e) {
-        console.log(e)
-    }
-    res.redirect(`/pages/teams/show`)
 })
 
 // view player when logged in
