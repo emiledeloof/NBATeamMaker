@@ -10,16 +10,16 @@
     <link rel="icon" href="/basketball.png">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3971663632813827"
      crossorigin="anonymous"></script>
+     <!-- Google tag (gtag.js) -->
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MJ05FTYNYB"></script>
+     <script>
+       window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments);}
+       gtag('js', new Date());
+     
+       gtag('config', 'G-MJ05FTYNYB');
+     </script>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MJ05FTYNYB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-MJ05FTYNYB');
-</script>
 <body>
     <div class="container">
         <%- include("_navbar.ejs") %>
@@ -31,10 +31,6 @@
             </div>
             <button class="submitButton">Search</button>
         </form>
-        <!-- <form action="/pages/users/<%= // userId %>/players/search" method="POST">
-            <input type="text" name="search" id="search" placeholder="Search player">
-            <button>Search</button>
-        </form> -->
         <h3>Your leagues:</h3>
         <% if(leagues.length !== 0){ %>
             <% leagues.forEach(league => { %>
@@ -42,7 +38,7 @@
                     <a href="/pages/leagues/<%= league.id %>" class="leagueCards">
                         <label><%= league.name %></label>
                         <label>Current team score: <%= league.users.filter(user => user.id == userId)[0].teamScore %></label>
-                        <label>Current league rank: 1</label>
+                        <label>Current league rank: <%= league.users.findIndex(user => user.id == userId) + 1 %></label>
                     </a>
                 </div>
             <% }) %>

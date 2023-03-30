@@ -118,9 +118,8 @@ router.get("/dashboard", async(req, res) => {
     let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}}).limit(20).exec()
     leagues.forEach(league => {
         league.users.sort(function(a, b){
-            return a.teamScore - b.teamScore
+            return b.teamScore - a.teamScore
         })
-        console.log(league.users)
     })
     res.render("pages/dashboard", {
         userId: req.session.userId, 
