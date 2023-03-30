@@ -115,7 +115,13 @@ router.post("/sign-out", async(req, res) => {
 router.get("/dashboard", async(req, res) => {
     let user = await User.findById(req.session.userId)
     let changelog = await Changelog.find().limit(15).exec()
-    let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}})
+    let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}}).limit(20).exec()
+    leagues.forEach(league => {
+        league.users.sort(function(a, b){
+            return a.teamScore - b.teamScore
+        })
+        console.log(league.users)
+    })
     res.render("pages/dashboard", {
         userId: req.session.userId, 
         leagues: leagues, 
