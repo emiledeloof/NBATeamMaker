@@ -723,7 +723,7 @@ router.post("/league/:leagueId/teams/:teamId/calculateScore", async(req, res) =>
     let team = await Team.findById(req.params.teamId)
     let league = await League.findById(req.params.leagueId)
     let index = league.users.findIndex(user => user.id == req.session.userId)
-    league.users[index].teamScore = await addScores(team).teamScore
+    league.users[index].teamScore = await addScores(team)
     try{
         await team.save()
         league.markModified("users")
@@ -760,7 +760,7 @@ async function addScores(team){
             team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
             team.pointGuard.score = await calculateScore(team.pointGuard.id)
             team.teamScore = parseInt(team.center.score + team.powerForward.score + team.smallForward.score + team.shootingGuard.score + team.pointGuard.score)
-            return team
+            return team.teamScore
         }
     } catch (e){
         console.log(e)
