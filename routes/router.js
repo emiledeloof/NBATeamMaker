@@ -721,9 +721,13 @@ router.post("/leagues/:leagueId/request/:requestId/reject", async (req, res) => 
 // recalculate team score
 router.post("/league/:leagueId/teams/:teamId/calculateScore", async(req, res) => {
     let team = await Team.findById(req.params.teamId)
-    await addScores(team)
+    let league = await League.findById(req.params.leagueId)
+    let index = league.users.findIndex(user => user.id == req.session.userId)
+    league.users[index].teamScore = await addScores(team)
     try{
         await team.save()
+        league.markModified("users")
+        await league.save()
     } catch(e){
         console.log(e)
     }
