@@ -384,6 +384,7 @@ router.post("/teams/leagues/:leagueId/add/players/:id", async (req, res) => {
         team.markModified("powerForward")
         team.markModified("smallForward")
         team.markModified("center")
+        league.users[index].teamScore = team.teamScore
         await team.save()
         await league.save()
         res.status(200).json({message: "Succes"})
