@@ -486,18 +486,6 @@ router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
 // view other team
 router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
     let team = await Team.findById(req.params.id)
-    // if(team.pointGuard && team.shootingGuard && team.powerForward && team.smallForward && team.center){
-    //     team.pointGuard.score = await calculateScore(team.pointGuard.id)
-    //     team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
-    //     team.powerForward.score = await calculateScore(team.powerForward.id)
-    //     team.smallForward.score = await calculateScore(team.smallForward.id)
-    //     team.center.score = await calculateScore(team.center.id)
-    // }
-    try{
-        await team.save()
-    } catch(e){
-        console.log(e)
-    }
     let url = process.env.URL
     let params = {
         team: team,
@@ -570,6 +558,7 @@ router.get("/leagues/:leagueId", async (req, res) => {
     let teams = await Team.find({"league.id": req.params.leagueId})
     let isJoined = false
     let hasTeam = false
+    let hasRequested = false
     let userIndex
     if(league.users.findIndex(element => element.id == req.session.userId) != -1){
         isJoined = true
@@ -578,12 +567,16 @@ router.get("/leagues/:leagueId", async (req, res) => {
             hasTeam = true
         }
     }
+    if(league.requests.findIndex(request => request.id == req.session.userId) != -1){
+        hasRequested = true
+    }
     res.render("pages/showLeague", {
         league: league, 
         isJoined: isJoined,
         hasTeam: hasTeam,
         teams: teams,
-        username: req.session.username
+        username: req.session.username,
+        hasRequested: hasRequested
     })
 })
 
@@ -612,7 +605,7 @@ router.post("/leagues/search", async(req, res) => {
     })
 })
 
-// request to join a league
+// request to join league
 router.post("/leagues/:leagueId/join", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.session.userId)

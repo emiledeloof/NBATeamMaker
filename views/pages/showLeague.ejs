@@ -46,9 +46,13 @@
             </div>
         <% }) %>
         <% if(isJoined == false){ %>
-            <form action="/pages/leagues/<%= league._id %>/join" method="POST">
-                <button>Request to join</button>
-            </form>
+            <% if(hasRequested == false){ %>
+                <form action="/pages/leagues/<%= league._id %>/join" method="POST">
+                    <button>Request to join</button>
+                </form>
+            <% } else { %>
+                <span>Request sent</span>
+            <% } %>
         <% } %>
     </div>
 </body>
