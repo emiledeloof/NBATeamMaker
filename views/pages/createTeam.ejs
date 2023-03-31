@@ -130,7 +130,7 @@
                 document.querySelector("." + position).remove()
                 document.getElementById("searchPlayer").style.display = "none"
                 // await fetch(`https://nbafantasy.games/pages/teams/leagues/<%= //leagueId%>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
-                await fetch(`<%= url %>>/pages/teams/leagues/<%= leagueId%>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
+                await fetch(`<%= url %>/pages/teams/leagues/<%= leagueId%>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST",
                     credentials: "include",
                     headers: {
