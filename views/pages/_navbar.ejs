@@ -8,10 +8,10 @@
         <li>
             <a id="usernameWrapper"><%= username %></a>
             <ul id="profileUl" class="hidden">
-                <li><a href="/pages/profile">Profile</a></li>
+                <li><a href="/pages/profile" id="profileLink" style="display: flex;"><img src="/user-solid.svg" width="20px"> <span>Profile</span></a></li>
                 <li>
                     <form action="/pages/sign-out" method="POST">
-                        <button>Sign out</button>
+                        <button id="signOutButton" style="display: flex;"><img src="/signOut.svg" width="20px"><span> Sign out</span></button>
                     </form>
                 </li>
             </ul>
