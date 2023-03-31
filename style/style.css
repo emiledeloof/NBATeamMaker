@@ -291,16 +291,21 @@ nav ul li{
     justify-content: center;
 }
 
-.updateWrapper{
+.bigUpdateWrapper{
     position: absolute;
     top: 40vh;
     left: 50%;
     background-color: #222222;
-    padding: 50px 50px 50px 50px;
     border-radius: 5px;
     opacity: 0;
     animation: popupOnLoad 0.8s forwards;
     z-index: 11;
+}
+
+.updateWrapper{
+    height: 30vh;
+    overflow-y: scroll;
+    padding: 50px 50px 50px 50px;
 }
 
 @keyframes popupOnLoad{
@@ -315,9 +320,9 @@ nav ul li{
 }
 
 #closeWindow{
-    position: absolute;
-    right: 10px;
-    top: 5px;
+    position: fixed;
+    right: 30px;
+    top: 20px;
 }
 
 #closeWindow:hover{

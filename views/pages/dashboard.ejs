@@ -51,8 +51,8 @@
     </div>
     <% if(hasSeenChangelog == false){ %>
         <div class="bigUpdateWrapper">
+            <a id="closeWindow">X</a>
             <div class="updateWrapper" id="updateWrapper">
-                <a id="closeWindow">X</a>
                 <h4 style="padding:0 0 10px 0; margin:0;">What's new</h4>
                 <% changelog.forEach(change => { %>
                     <div class="changeWrapper">
