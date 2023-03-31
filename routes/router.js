@@ -321,12 +321,18 @@ router.get("/players/:id", async (req, res) => {
     let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
     let allPlayers = await axios.get(nbaURL)
     let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
+    let score = await calculateScore(req.params.id, stats.data.data[0])
+    let loggedIn = false
+    if(req.session.userId){
+        loggedIn = true
+    }
     res.render("pages/playerDetails", {
         player: player.data,
         stats: stats.data.data[0],
         personId: nbaPlayer.personId,
-        loggedIn: false,
-        username: req.session.username
+        loggedIn: loggedIn,
+        username: req.session.username,
+        score: score
     })
 })
 
