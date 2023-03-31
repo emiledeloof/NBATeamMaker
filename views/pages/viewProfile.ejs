@@ -32,6 +32,10 @@
                 <button class="submitButton">Remove request</button>
             </form>
         <% } %>
+        <div class="content">
+            Best team:
+            <a href="/pages/leagues/<%= teams[0].league.id %>/teams/<%= teams[0]._id %>/view-other"><%= teams[0].name %> | <%= teams[0].teamScore %></a>
+        </div>
     </div>
 </body>
 </html>

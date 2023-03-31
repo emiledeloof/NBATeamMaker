@@ -286,7 +286,10 @@ router.post("/friends/:requestId/undo", async (req, res) => {
 router.get("/profile", async (req, res) => {
     let user = await User.findById(req.session.userId)
     if(user !== null){
-        res.render("pages/profile", {user: user, username: user.username})
+        res.render("pages/profile", {
+            user: user, 
+            username: user.username
+        })
     } else {
         res.redirect("/")
     }
@@ -296,10 +299,15 @@ router.get("/profile", async (req, res) => {
 router.get("/view-profile/:otherUser", async(req, res) => {
     let user = await User.findById(req.params.otherUser)
     let currentUser = await User.findById(req.session.userId)
+    let teams = await Team.find({userId: user._id.toString()})
+    teams.sort((a, b) => {
+        b.teamScore - a.teamScore
+    })
     res.render("pages/viewProfile", {
         user: user,
         currentUser: currentUser,
-        username: user.username
+        username: user.username,
+        teams: teams
     })
 })
 
@@ -443,7 +451,6 @@ router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
 // create new team
 router.get("/leagues/:leagueId/teams/create", (req, res) => {
     let url = process.env.URL
-    console.log(req.session)
     res.cookie("currentSession", req.sessionID, {
         sameSite:"lax"
     })
@@ -539,7 +546,8 @@ router.post("/leagues/create", async (req, res) => {
         username: user.username,
         id: req.session.userId,
         date: Date.now(),
-        teamId: null
+        teamId: null,
+        isOwner: true
     }
     let league = new League()
     league.name = req.body.name
