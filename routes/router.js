@@ -577,6 +577,9 @@ router.get("/leagues/:leagueId", async (req, res) => {
     if(league.requests.findIndex(request => request.id == req.session.userId) != -1){
         hasRequested = true
     }
+    league.users.sort(function(a, b){
+        return b.teamScore - a.teamScore
+    })
     res.render("pages/showLeague", {
         league: league, 
         isJoined: isJoined,
