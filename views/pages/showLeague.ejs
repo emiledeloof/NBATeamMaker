@@ -31,13 +31,13 @@
         <% } %>
         <h3>users:</h3>
         <% league.users.forEach(user => { %>
-            <div class="card">
-                <a href="/pages/view-profile/<%= user.id %>">
+            <div class="leagueUserCard">
+                <a href="/pages/view-profile/<%= user.id %>" class="flex1">
                     <%= user.username %>  
                 </a>
                 <% if(user.teamId){ %>
-                    <label class="teamScore">Team score: <%= user.teamScore %></label>
-                    <a href="/pages/leagues/<%= league._id %>/teams/<%= user.teamId %>/view-other" style="margin-left: 10px;">View team</a>
+                    <label class="teamScore flex1">Team score: <%= user.teamScore %></label>
+                    <a href="/pages/leagues/<%= league._id %>/teams/<%= user.teamId %>/view-other" style="margin-left: 10px;" class="flex1">View team</a>
                 <% } %>
             </div>
         <% }) %>

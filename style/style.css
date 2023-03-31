@@ -250,6 +250,17 @@ nav ul li{
     padding: 10px 5px 10px 5px;
 }
 
+.leagueUserCard{
+    display: flex;
+    width: 50vw;
+    border-bottom: 1px solid grey;
+    padding: 10px 5px 10px 5px;
+}
+
+.leagueUserCard a, .leagueUserCard label{
+    flex: 1;
+}
+
 .textWrapper{
     flex: 3;
 }
