@@ -489,12 +489,16 @@ router.get("/teams/show", async(req, res) => {
 router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
     let url = process.env.URL
-    res.render("pages/team", {
-        team: team, 
-        url: url, 
-        leagueId: req.params.leagueId,
-        username: req.session.username
-    })
+    if(req.session.userId == team.userId){
+        res.render("pages/team", {
+            team: team, 
+            url: url, 
+            leagueId: req.params.leagueId,
+            username: req.session.username
+        })
+    } else {
+        res.redirect(`/pages/leagues/${req.params.leagueId}/teams/${req.params.id}/view-other`)
+    }
 })
 
 // view other team
