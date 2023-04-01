@@ -39,7 +39,7 @@
         <% } else { %>
             <h4>No requests to join this league.</h4>
         <% } %>
-        <% if(league.users.length === 1){ %>
+        <% if(league.users.length === 1 || league.users.find(lUser => lUser.id == userId).isOwner == true){ %>
             <form action="/pages/leagues/<%= league._id %>/delete" method="POST">
                 <button>Delete league</button>
             </form>

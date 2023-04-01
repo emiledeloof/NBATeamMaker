@@ -578,6 +578,7 @@ router.get("/leagues/:leagueId", async (req, res) => {
     let isJoined = false
     let hasTeam = false
     let hasRequested = false
+    let isMax = false
     let userIndex
     if(league.users.findIndex(element => element.id == req.session.userId) != -1){
         isJoined = true
@@ -592,13 +593,17 @@ router.get("/leagues/:leagueId", async (req, res) => {
     league.users.sort(function(a, b){
         return b.teamScore - a.teamScore
     })
+    if(league.users.length >= 50){
+        isMax = true
+    }
     res.render("pages/showLeague", {
         league: league, 
         isJoined: isJoined,
         hasTeam: hasTeam,
         teams: teams,
         username: req.session.username,
-        hasRequested: hasRequested
+        hasRequested: hasRequested,
+        isMax: isMax
     })
 })
 
@@ -627,7 +632,7 @@ router.post("/leagues/search", async(req, res) => {
     })
 })
 
-// request to join league
+// request to join league POST
 router.post("/leagues/:leagueId/join", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.session.userId)
@@ -650,7 +655,8 @@ router.get("/leagues/:leagueId/settings", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     res.render("pages/leagueSettings", {
         league: league,
-        username: req.session.username
+        username: req.session.username,
+        userId: req.session.userId
     })
 })
 

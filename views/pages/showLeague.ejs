@@ -41,7 +41,7 @@
                 <% } %>
             </div>
         <% }) %>
-        <% if(isJoined == false){ %>
+        <% if(isJoined == false && isMax == false){ %>
             <% if(hasRequested == false){ %>
                 <form action="/pages/leagues/<%= league._id %>/join" method="POST">
                     <button>Request to join</button>
