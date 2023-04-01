@@ -9,6 +9,7 @@
     <link rel="icon" href="/basketball.png">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3971663632813827"
      crossorigin="anonymous"></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-MJ05FTYNYB"></script>
@@ -29,11 +30,23 @@
             <br><br><a href="/pages/leagues/<%= league._id %>/teams/create">Create team</a>
             <% } %>
         <% } %>
+        <% if(isJoined == false && isMax == false){ %>
+            <% if(hasRequested == false){ %>
+                <form action="/pages/leagues/<%= league._id %>/join" method="POST">
+                    <button class="submitButton" style="width: 150px;">Request to join</button>
+                </form>
+            <% } else { %>
+                <span>Request sent</span>
+            <% } %>
+        <% } %>
         <h3>users:</h3>
         <% league.users.forEach(user => { %>
             <div class="leagueUserCard">
                 <a href="/pages/view-profile/<%= user.id %>" class="flex1">
-                    <%= user.username %>  
+                    <%= user.username %>
+                    <% if(user.isOwner){ %>
+                        <i class="fa-solid fa-crown" style="color: #fff;"></i>
+                    <% } %>
                 </a>
                 <% if(user.teamId){ %>
                     <label class="teamScore flex1">Team score: <%= user.teamScore %></label>
@@ -41,15 +54,6 @@
                 <% } %>
             </div>
         <% }) %>
-        <% if(isJoined == false && isMax == false){ %>
-            <% if(hasRequested == false){ %>
-                <form action="/pages/leagues/<%= league._id %>/join" method="POST">
-                    <button>Request to join</button>
-                </form>
-            <% } else { %>
-                <span>Request sent</span>
-            <% } %>
-        <% } %>
     </div>
 </body>
 </html>
