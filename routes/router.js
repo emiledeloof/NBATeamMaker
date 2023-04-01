@@ -121,15 +121,18 @@ router.get("/dashboard", async(req, res) => {
             return b.teamScore - a.teamScore
         })
     })
-    res.render("pages/dashboard", {
-        userId: req.session.userId, 
-        leagues: leagues, 
-        username: user.username, 
-        changelog: changelog,
-        hasSeenChangelog: user.hasSeenChangelog,
-        URL: process.env.URL,
-        username: req.session.username
-    })
+    try{
+        res.render("pages/dashboard", {
+            userId: req.session.userId, 
+            leagues: leagues,
+            changelog: changelog,
+            hasSeenChangelog: user.hasSeenChangelog,
+            URL: process.env.URL,
+            username: req.session.username
+        })
+    } catch(e){
+        res.redirect("/error")
+    }
 })
 
 // Change hasSeenChange state
@@ -636,12 +639,14 @@ router.post("/leagues/search", async(req, res) => {
 router.post("/leagues/:leagueId/join", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.session.userId)
-    let dataToSend = {
-        username: user.username,
-        id: req.session.userId,
-        date: Date.now()
+    if(league.users.length < 50){
+        let dataToSend = {
+            username: user.username,
+            id: req.session.userId,
+            date: Date.now()
+        }
+        league.requests.push(dataToSend)
     }
-    league.requests.push(dataToSend)
     try{
         await league.save()
     } catch (e){

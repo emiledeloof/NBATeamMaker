@@ -44,22 +44,11 @@ app.use(new sessions({
     store: store,
     cookie: {
         maxAge: HOUR,
-        // sameSite: 'none'
     },
     genid: (req) => {
         return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex");
     }
 }));
-
-// app.use((req, res, next) => {
-//     // res.setHeader("Access-Control-Allow-Origin", "*");
-//     res.setHeader("Access-Control-Allow-Origin", "http://localhost:5001");
-//     res.header(
-//         "Access-Control-Allow-Headers",
-//         "Origin, X-Requested-With, Content-Type, Accept"
-//     );
-//     next();
-// });
 
 app.get("/", (req, res) => {
     if(req.session.userId){
