@@ -24,6 +24,11 @@ const store = new MongoDBStore({
     expires: HOUR
 });
 
+app.use('/robots.txt', function (req, res, next) {
+    res.type('text/plain')
+    res.send("User-agent: *\nAllow: /");
+});
+
 app.use(cors({
     origin: "https://nbafantasy.games",
     credentials: true
