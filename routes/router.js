@@ -19,6 +19,12 @@ const version = 0.1
 // const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
 // const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
 
+let cachedPlayers
+
+async function cachePlayers(){
+    cachedPlayers = await axios.get(nbaURL)
+}
+
 // schedule.scheduleJob("* * * * *", async () => {
 schedule.scheduleJob("0 0 12 * * *", async () => {
     // let date = new Date(Date.now()).toISOString().split("T")[0]
@@ -457,11 +463,17 @@ router.get("/leagues/:leagueId/teams/create", (req, res) => {
     res.cookie("currentSession", req.sessionID, {
         sameSite:"lax"
     })
+    cachePlayers()
     res.render("pages/createTeam", {
         url: url, 
         leagueId: req.params.leagueId,
         username: req.session.username
     })
+})
+
+router.get("/teams/findPerson/:firstName/:lastName", async(req, res) => {
+    let personId = cachedPlayers.data.league.standard.find(firstName => firstName.firstName == req.params.firstName, lastName => lastName.lastName == req.params.lastName).personId
+    res.send({personId: personId})
 })
 
 // delete team POST

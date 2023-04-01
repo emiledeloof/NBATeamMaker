@@ -175,7 +175,7 @@
                 })
             }
         })
-        function search(){
+        async function search(){
             let resultsWrapper = document.getElementById("searchResults")
             while (resultsWrapper.firstChild) {
                 resultsWrapper.removeChild(resultsWrapper.firstChild);
@@ -185,17 +185,24 @@
             .then(response => response.text())
             .then(text => {
                 let parsed = JSON.parse(text);
-                parsed.data.forEach(player => {
+                parsed.data.forEach(async (player) => {
                     let createdLabel = document.createElement("label");
                     let createdButton = document.createElement("button")
                     let createdDiv = document.createElement("div")
                     let idLabel = document.createElement("label")
+                    let createdImg = document.createElement("img")
+                    await fetch(`http://127.0.0.1:5001/pages/teams/findPerson/${player.first_name}/${player.last_name}`)
+                    .then(response => response.json())
+                    .then((response) => {
+                        createdImg.src = `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${response.personId}.png` 
+                    })
                     createdButton.innerText = "Add player"
                     createdButton.classList.add("addPlayer")
                     createdLabel.innerText = player.first_name + " " + player.last_name + "    "
                     createdLabel.classList.add("playerLabel")
                     idLabel.innerText = player.id
                     idLabel.style.display = "none"
+                    createdDiv.append(createdImg)
                     createdDiv.append(createdLabel)
                     createdDiv.append(createdButton)
                     createdDiv.append(idLabel)
