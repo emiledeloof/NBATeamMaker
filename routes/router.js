@@ -472,8 +472,13 @@ router.get("/leagues/:leagueId/teams/create", (req, res) => {
 })
 
 router.get("/teams/findPerson/:firstName/:lastName", async(req, res) => {
-    let personId = cachedPlayers.data.league.standard.find(firstName => firstName.firstName == req.params.firstName, lastName => lastName.lastName == req.params.lastName).personId
-    res.send({personId: personId})
+    try{
+        let personId = cachedPlayers.data.league.standard.find(firstName => firstName.firstName.toUpperCase() == req.params.firstName.toUpperCase(), lastName => lastName.lastName.toUpperCase() == req.params.lastName.toUpperCase())
+        console.log(personId.personId)
+        res.send({personId: personId.personId})
+    } catch(e){
+        res.send({personId: null})
+    }
 })
 
 // delete team POST
