@@ -8,7 +8,6 @@ const User = require("./../database/user")
 const Team = require("./../database/team")
 const League = require("./../database/league")
 const Changelog = require("./../database/changelog")
-const Notification = require("./../database/notification")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 // const algorithm = "aes-256-cbc"
@@ -181,7 +180,6 @@ router.get("/search-user/:searchUser", async(req, res) => {
 router.post("/friends/:friendId/add", async (req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
-    let notification = new Notification()
     if(user.friendRequestsSent.filter(request => request.username == friend.username).length == 0){
         let sentRequestTo = {
             username: friend.username,
@@ -220,7 +218,7 @@ router.post("/friends/:friendId/add", async (req, res) => {
 
 // Accept friend request POST
 router.post("/friends/:friendId/accept", async(req, res) => {
-    let user = await User.findById(req.params.id)
+    let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
     let dataToSend = {
         username: friend.username,
@@ -249,7 +247,7 @@ router.post("/friends/:friendId/accept", async(req, res) => {
 
 // Reject friend request POST
 router.post("/friends/:friendId/reject", async(req, res) => {
-    let user = await User.findById(req.params.id)
+    let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
     let indexOfRequest = user.friendRequestsReceived.findIndex(request => request.id == friend._id)
     user.friendRequestsReceived.splice(indexOfRequest, 1)

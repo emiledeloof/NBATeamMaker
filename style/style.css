@@ -470,8 +470,13 @@ nav ul li{
     background-color: #8a8a8a;
 }
 
-/* Mobile compatibility */
+#notificationWrapper{
+    position: absolute;
+    z-index: 15;
+    width: 500px;
+}
 
+/* Mobile compatibility */
 @media screen and (max-width: 600px){
     body{
         font-size: 12px;

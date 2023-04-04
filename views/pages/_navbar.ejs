@@ -17,13 +17,14 @@
             </ul>
         </li>
         <li>
-            <span>Notifications</span>
-            <div>
+            <span id="notificationButton">Notifications</span>
+            <div id="notificationWrapper" class="hidden">
                 <% notifications.forEach(notification => { %>
                     <% if(notification.type == 1){ %>
                         Friend request from: 
                         <%= notification.data.username %>
-                        
+                        <form action="/pages/friends/<%= notification.data.id %>/accept" method="POST"><button>Accept</button></form>
+                        <form action="/pages/friends/<%= notification.data.id %>/reject" method="POST"><button>Reject</button></form>
                     <% } %>
                 <% }) %>
             </div>
@@ -34,5 +35,9 @@
     document.getElementById("usernameWrapper").addEventListener("click", (event) => {
         document.getElementById("profileUl").classList.toggle("visible")
         document.getElementById("profileUl").classList.toggle("hidden")
+    })
+    document.getElementById("notificationButton").addEventListener("click", (event) => {
+        document.getElementById("notificationWrapper").classList.toggle("visible")
+        document.getElementById("notificationWrapper").classList.toggle("hidden")
     })
 </script>
