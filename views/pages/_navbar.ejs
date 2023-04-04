@@ -19,7 +19,13 @@
         <li>
             <span>Notifications</span>
             <div>
-                
+                <% notifications.forEach(notification => { %>
+                    <% if(notification.type == 1){ %>
+                        Friend request from: 
+                        <%= notification.data.username %>
+                        
+                    <% } %>
+                <% }) %>
             </div>
         </li>
     </ul>

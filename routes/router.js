@@ -8,6 +8,7 @@ const User = require("./../database/user")
 const Team = require("./../database/team")
 const League = require("./../database/league")
 const Changelog = require("./../database/changelog")
+const Notification = require("./../database/notification")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 // const algorithm = "aes-256-cbc"
@@ -49,6 +50,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// redirect dead route
 router.get("/", async (req, res) => {
     if(req.session.userId){
         res.redirect("/pages/dashboard")
@@ -134,7 +136,8 @@ router.get("/dashboard", async(req, res) => {
             changelog: changelog,
             hasSeenChangelog: user.hasSeenChangelog,
             URL: process.env.URL,
-            username: req.session.username
+            username: req.session.username,
+            notifications: user.notifications
         })
     } catch(e){
         res.redirect("/error")
@@ -178,25 +181,33 @@ router.get("/search-user/:searchUser", async(req, res) => {
 router.post("/friends/:friendId/add", async (req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
+    let notification = new Notification()
     if(user.friendRequestsSent.filter(request => request.username == friend.username).length == 0){
         let sentRequestTo = {
             username: friend.username,
-            id: friend._id,
+            id: friend._id.toString(),
             date: Date.now()
         }   
         let dataToSend = {
             username: user.username,
-            id: user._id,
+            id: user._id.toString(),
             date: Date.now()
         }
         user.friendRequestsSent.push(sentRequestTo)
         friend.friendRequestsReceived.push(dataToSend)
+        let notification = {
+            type: 1,
+            userId: user._id.toString(),
+            data: dataToSend
+        }
+        friend.notifications.push(notification)
     } else {
         throw new Error("A friend request has already been sent.")
     }
     try{
         await user.save()
         await friend.save()
+        // await notification.save()
     } catch(e){
         console.log(e)
     }
@@ -297,7 +308,8 @@ router.get("/profile", async (req, res) => {
     if(user !== null){
         res.render("pages/profile", {
             user: user, 
-            username: user.username
+            username: user.username,
+            notifications: user.notifications
         })
     } else {
         res.redirect("/")
@@ -316,7 +328,8 @@ router.get("/view-profile/:otherUser", async(req, res) => {
         user: user,
         currentUser: currentUser,
         username: user.username,
-        teams: teams
+        teams: teams,
+        notifications: currentUser.notifications
     })
 })
 
@@ -595,6 +608,7 @@ router.post("/leagues/create", async (req, res) => {
 router.get("/leagues/:leagueId", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let teams = await Team.find({"league.id": req.params.leagueId})
+    let user = await User.findById(req.session.userId)
     let isJoined = false
     let hasTeam = false
     let hasRequested = false
@@ -623,7 +637,8 @@ router.get("/leagues/:leagueId", async (req, res) => {
         teams: teams,
         username: req.session.username,
         hasRequested: hasRequested,
-        isMax: isMax
+        isMax: isMax,
+        notifications: user.notifications
     })
 })
 

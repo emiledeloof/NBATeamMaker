@@ -22,7 +22,8 @@ const schema = new mongoose.Schema({
     friendRequestsReceived: [],
     friendRequestsSent: [],
     leagues: [],
-    leagueInvites: []
+    leagueInvites: [],
+    notifications: []
 })
 
 module.exports = mongoose.model("user", schema)
