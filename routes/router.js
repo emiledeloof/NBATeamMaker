@@ -40,7 +40,7 @@ schedule.scheduleJob("0 0 12 * * *", async () => {
         if(i % 11 === 0){
             sleep(7000)
         }
-        console.log(teams[i])
+        // console.log(teams[i])
         addScores(teams[i])
     }
 })
@@ -123,6 +123,10 @@ router.get("/dashboard", async(req, res) => {
     let user = await User.findById(req.session.userId)
     let changelog = await Changelog.find().limit(15).exec()
     let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}}).limit(20).exec()
+    let hasNotifications = false
+    if(user.notifications.length !== 0){
+        hasNotifications = true
+    }
     leagues.forEach(league => {
         league.users.sort(function(a, b){
             return b.teamScore - a.teamScore
@@ -136,7 +140,8 @@ router.get("/dashboard", async(req, res) => {
             hasSeenChangelog: user.hasSeenChangelog,
             URL: process.env.URL,
             username: req.session.username,
-            notifications: user.notifications
+            notifications: user.notifications,
+            hasNotifications: hasNotifications
         })
     } catch(e){
         res.redirect("/error")
@@ -324,11 +329,16 @@ router.post("/friends/:requestId/undo", async (req, res) => {
 // profile
 router.get("/profile", async (req, res) => {
     let user = await User.findById(req.session.userId)
+    let hasNotifications = false
+    if(user.notifications.length !== 0){
+        hasNotifications = true
+    }
     if(user !== null){
         res.render("pages/profile", {
             user: user, 
             username: user.username,
-            notifications: user.notifications
+            notifications: user.notifications,
+            hasNotifications: hasNotifications
         })
     } else {
         res.redirect("/")
@@ -348,7 +358,8 @@ router.get("/view-profile/:otherUser", async(req, res) => {
         currentUser: currentUser,
         username: user.username,
         teams: teams,
-        notifications: currentUser.notifications
+        notifications: currentUser.notifications,
+        hasNotifications: false
     })
 })
 
@@ -633,6 +644,8 @@ router.get("/leagues/:leagueId", async (req, res) => {
     let hasRequested = false
     let isMax = false
     let userIndex
+    let hasNotifications = false
+    if(user.notifications.length !== 0) hasNotifications = true
     if(league.users.findIndex(element => element.id == req.session.userId) != -1){
         isJoined = true
         userIndex = league.users.findIndex(element => element.id == req.session.userId)
@@ -657,7 +670,8 @@ router.get("/leagues/:leagueId", async (req, res) => {
         username: req.session.username,
         hasRequested: hasRequested,
         isMax: isMax,
-        notifications: user.notifications
+        notifications: user.notifications,
+        hasNotifications: hasNotifications
     })
 })
 

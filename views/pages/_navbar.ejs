@@ -17,7 +17,12 @@
             </ul>
         </li>
         <li>
-            <span id="notificationButton">Notifications</span>
+            <span id="notificationButton">
+                Notifications
+                <% if(hasNotifications == true){ %>
+                    <span id="dot"></span>
+                <% } %>
+            </span>
             <div id="notificationWrapper" class="hidden">
                 <% notifications.forEach(notification => { %>
                     <% if(notification.type == 1){ %>

@@ -476,6 +476,19 @@ nav ul li{
     width: 500px;
 }
 
+#notificationButton{
+    position: relative;
+}
+
+#dot{
+    background-color: red;
+    border-radius: 50%;
+    height: 7px;
+    width: 7px;
+    display: inline-block;
+    position: absolute;;
+}
+
 /* Mobile compatibility */
 @media screen and (max-width: 600px){
     body{
