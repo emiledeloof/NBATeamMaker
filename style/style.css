@@ -470,6 +470,10 @@ nav ul li{
     background-color: #8a8a8a;
 }
 
+.profileCard{
+    
+}
+
 /* Mobile compatibility */
 
 @media screen and (max-width: 600px){

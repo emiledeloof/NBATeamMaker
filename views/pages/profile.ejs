@@ -27,7 +27,7 @@
         <% if(user.friends.length !== 0){ %>
             <% user.friends.forEach(friend => { %>
                 <div class="card">
-                    <div class="textWrapper">
+                    <div class="profileTextWrapper">
                         <a href="/pages/view-profile/<%= friend.id %>"><%= friend.username %></a>
                         <br> Since: <%= new Date(friend.date).toLocaleString("en-GB") %>
                     </div>
@@ -43,7 +43,7 @@
         <% if(user.friendRequestsReceived.length !== 0){ %>
             <% user.friendRequestsReceived.forEach(request => { %> 
                 <div class="card">
-                    <div class="textWrapper">
+                    <div class="profileTextWrapper">
                         From: <a href="/pages/view-profile/<%= request.id %>"><%= request.username %></a>
                         <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
                     </div>
@@ -62,7 +62,7 @@
         <% if(user.friendRequestsSent.length !== 0){ %>
             <% user.friendRequestsSent.forEach(request => { %>
                 <div class="card">
-                    <div class="textWrapper">
+                    <div class="profileTextWrapper">
                         To: <%= request.username %>
                         <br> Sent at: <%= new Date(request.date).toLocaleString("en-GB") %>
                     </div>
