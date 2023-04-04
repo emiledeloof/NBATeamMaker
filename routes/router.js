@@ -471,10 +471,10 @@ router.get("/leagues/:leagueId/teams/create", (req, res) => {
     })
 })
 
+// Find personId
 router.get("/teams/findPerson/:firstName/:lastName", async(req, res) => {
     try{
-        let personId = cachedPlayers.data.league.standard.find(firstName => firstName.firstName.toUpperCase() == req.params.firstName.toUpperCase(), lastName => lastName.lastName.toUpperCase() == req.params.lastName.toUpperCase())
-        console.log(personId.personId)
+        let personId = cachedPlayers.data.league.standard.find(player => player.firstName.toUpperCase() == req.params.firstName.toUpperCase() && player.lastName.toUpperCase() == req.params.lastName.toUpperCase())
         res.send({personId: personId.personId})
     } catch(e){
         res.send({personId: null})

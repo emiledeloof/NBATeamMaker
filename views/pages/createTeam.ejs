@@ -194,11 +194,14 @@
                     await fetch(`http://127.0.0.1:5001/pages/teams/findPerson/${player.first_name}/${player.last_name}`)
                     .then(response => response.json())
                     .then((response) => {
-                        createdImg = document.createElement("img")
-                        createdImg.src = `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${response.personId}.png` 
-                        createdImg.alt = "No picture"
-                        createdImg.onerror = "this.remove()"
-                        createdImg.style.width = "100px" 
+                        if(response.personId !== null){
+                            createdImg = document.createElement("img")
+                            createdImg.src = `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${response.personId}.png` 
+                            createdImg.alt = "No picture"
+                            createdImg.onerror = "this.remove()"
+                            createdImg.style.width = "100px" 
+                            createdDiv.append(createdImg)
+                        }
                     })
                     createdButton.innerText = "Add player"
                     createdButton.classList.add("addPlayer")
@@ -206,7 +209,6 @@
                     createdLabel.classList.add("playerLabel")
                     idLabel.innerText = player.id
                     idLabel.style.display = "none"
-                    createdDiv.append(createdImg)
                     createdDiv.append(createdLabel)
                     createdDiv.append(createdButton)
                     createdDiv.append(idLabel)
