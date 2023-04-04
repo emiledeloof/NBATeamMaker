@@ -477,8 +477,6 @@ nav ul li{
 }
 
 /* Mobile compatibility */
-
-/* Mobile compatibility */
 @media screen and (max-width: 600px){
     body{
         font-size: 12px;
