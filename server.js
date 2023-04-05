@@ -12,6 +12,7 @@ const MongoDBStore = require('connect-mongodb-session')(sessions);
 const cors = require("cors")
 const router = require("./routes/router")
 const backRouter = require("./routes/backRouter")
+const apiRouter = require("./routes/apiRouter")
 const app = express()
 const PORT = process.env.PORT || 5001
 const HOUR = 1000 * 60 * 60
@@ -65,6 +66,7 @@ app.get("/", (req, res) => {
 
 app.use("/pages", router)
 app.use("/back", backRouter)
+app.use("/api", apiRouter)
 
 app.all("*", (req, res) => {
     try{
