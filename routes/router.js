@@ -255,7 +255,7 @@ router.post("/friends/:friendId/accept", async(req, res) => {
     } catch (e){
         console.log(e)
     }
-    if(req.query.fromNotif == true){
+    if(req.query.fromNotif == "true"){
         res.redirect("back")
     } else {
         res.redirect(`/pages/profile`)
@@ -282,7 +282,11 @@ router.post("/friends/:friendId/reject", async(req, res) => {
     } catch (e){
         console.log(e)
     }
-    res.redirect(`/pages/profile`)
+    if(req.query.fromNotif == "true"){
+        res.redirect("back")
+    } else {
+        res.redirect(`/pages/profile`)
+    }
 })
 
 // Remove friend POST
