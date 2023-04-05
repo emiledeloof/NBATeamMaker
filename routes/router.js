@@ -119,10 +119,6 @@ router.get("/dashboard", async(req, res) => {
     let user = await User.findById(req.session.userId)
     let changelog = await Changelog.find().limit(15).exec()
     let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}}).limit(20).exec()
-    let hasNotifications = false
-    if(user.notifications.length !== 0){
-        hasNotifications = true
-    }
     leagues.forEach(league => {
         league.users.sort(function(a, b){
             return b.teamScore - a.teamScore
@@ -137,14 +133,14 @@ router.get("/dashboard", async(req, res) => {
             URL: process.env.URL,
             username: req.session.username,
             notifications: user.notifications,
-            hasNotifications: hasNotifications
+            hasNotifications: checkNotifications(user)
         })
     } catch(e){
         res.redirect("/error")
     }
 })
 
-// Change hasSeenChange state
+// Change hasSeenChange state POST
 router.post("/dashboard/hasSeenChange/:userId", async(req, res) => {
     let user = await User.findById(req.params.userId)
     user.hasSeenChangelog = true
@@ -172,7 +168,9 @@ router.get("/search-user/:searchUser", async(req, res) => {
         search: req.params.searchUser,
         loggedIn: true,
         currentUser: user,
-        username: req.session.username
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
@@ -329,16 +327,12 @@ router.post("/friends/:requestId/undo", async (req, res) => {
 // profile
 router.get("/profile", async (req, res) => {
     let user = await User.findById(req.session.userId)
-    let hasNotifications = false
-    if(user.notifications.length !== 0){
-        hasNotifications = true
-    }
     if(user !== null){
         res.render("pages/profile", {
             user: user, 
             username: user.username,
             notifications: user.notifications,
-            hasNotifications: hasNotifications
+            hasNotifications: checkNotifications(user)
         })
     } else {
         res.redirect("/")
@@ -359,19 +353,22 @@ router.get("/view-profile/:otherUser", async(req, res) => {
         username: user.username,
         teams: teams,
         notifications: currentUser.notifications,
-        hasNotifications: false
+        hasNotifications: checkNotifications(currentUser)
     })
 })
 
 // search
 router.post("/players/search", async(req, res) => {
     let request = await axios.get(`${URL}/players?search=${req.body.search}`)
+    let user = await User.findById(req.session.userId)
     res.render("pages/searchResults", {
         search: req.body.search, 
         results: request.data.data,
         loggedIn: false,
         type: "player",
-        username: req.session.username
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
@@ -382,6 +379,7 @@ router.get("/players/:id", async (req, res) => {
     let allPlayers = await axios.get(nbaURL)
     let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
     let score = await calculateScore(req.params.id, stats.data.data[0])
+    let user = await User.findById(req.session.userId)
     let loggedIn = false
     if(req.session.userId){
         loggedIn = true
@@ -392,7 +390,9 @@ router.get("/players/:id", async (req, res) => {
         personId: nbaPlayer.personId,
         loggedIn: loggedIn,
         username: req.session.username,
-        score: score
+        score: score,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
@@ -501,8 +501,9 @@ router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
 })
 
 // create new team
-router.get("/leagues/:leagueId/teams/create", (req, res) => {
+router.get("/leagues/:leagueId/teams/create", async (req, res) => {
     let url = process.env.URL
+    let user = await User.findById(req.session.userId)
     res.cookie("currentSession", req.sessionID, {
         sameSite:"lax"
     })
@@ -510,7 +511,9 @@ router.get("/leagues/:leagueId/teams/create", (req, res) => {
     res.render("pages/createTeam", {
         url: url, 
         leagueId: req.params.leagueId,
-        username: req.session.username
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
@@ -542,9 +545,12 @@ router.post("/leagues/:leagueId/teams/:id/delete", async(req, res) => {
 // show all teams
 router.get("/teams/show", async(req, res) => {
     let teams = await Team.find({userId: req.session.userId})
+    let user = await User.findById(req.session.userId)
     res.render("pages/showTeams", {
         teams: teams, 
-        username: req.session.username
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
@@ -552,12 +558,15 @@ router.get("/teams/show", async(req, res) => {
 router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
     let team = await Team.findById(req.params.id)
     let url = process.env.URL
+    let user = await User.findById(req.session.userId)
     if(req.session.userId == team.userId){
         res.render("pages/team", {
             team: team, 
             url: url, 
             leagueId: req.params.leagueId,
-            username: req.session.username
+            username: req.session.username,
+            notifications: user.notifications,
+            hasNotifications: checkNotifications(user)
         })
     } else {
         res.redirect(`/pages/leagues/${req.params.leagueId}/teams/${req.params.id}/view-other`)
@@ -567,13 +576,16 @@ router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
 // view other team
 router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
     let team = await Team.findById(req.params.id)
+    let user = await User.findById(req.session.userId)
     let url = process.env.URL
     let params = {
         team: team,
         userId: req.session.userId,
         leagueId: req.params.leagueId,
         url: url,
-        username: req.session.username
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     }
     if(req.session.userId == team.userId){
         res.render("pages/team", params)
@@ -584,6 +596,7 @@ router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
 
 // view player when logged in
 router.get("/players/:playerId", async(req, res) => {
+    let user = await User.findById(req.session.userId)
     let player = await axios.get(`${URL}/players/${req.params.playerId}`)
     let allPlayers = await axios.get(nbaURL)
     let nbaPlayer = allPlayers.data.league.standard.find(firstName => firstName.firstName == player.data.first_name, lastName => lastName.lastName == player.data.last_name)
@@ -595,14 +608,19 @@ router.get("/players/:playerId", async(req, res) => {
         personId: nbaPlayer.personId,
         loggedIn: true,
         score: score,
-        username: req.session.username
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
 // Create league
-router.get("/leagues/create", (req, res) => {
+router.get("/leagues/create", async (req, res) => {
+    let user = await User.findById(req.session.userId)
     res.render("pages/createLeague", {
-        username: req.session.username
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
@@ -678,13 +696,16 @@ router.get("/leagues/:leagueId", async (req, res) => {
 // view all leagues
 router.get("/leagues", async(req, res) => {
     let leagues = await League.find({public: true}).limit(30).exec()
+    let user = await User.findById(req.session.userId)
     leagues.forEach(league => {
         league.usersAmount = league.users.length
     })
     // let leagues = await League.find({public: true})
     res.render("pages/allLeagues", {
         leagues: leagues,
-        username: req.session.username
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
@@ -723,14 +744,17 @@ router.post("/leagues/:leagueId/join", async (req, res) => {
 // league settings
 router.get("/leagues/:leagueId/settings", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
+    let user = await User.findById(req.session.userId)
     res.render("pages/leagueSettings", {
         league: league,
         username: req.session.username,
-        userId: req.session.userId
+        userId: req.session.userId,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
     })
 })
 
-// Leave league
+// Leave league POST
 router.post("/leagues/:leagueId/leave", async (req, res) => {
     let user = await User.findById(req.session.userId)
     let league = await League.findById(req.params.leagueId)
@@ -749,7 +773,7 @@ router.post("/leagues/:leagueId/leave", async (req, res) => {
     res.redirect(`/pages/dashboard`)
 })
 
-// Delete league
+// Delete league POST
 router.post("/leagues/:leagueId/delete", async(req, res) => {
     try{
         let league = await League.findById(req.params.leagueId)
@@ -770,7 +794,7 @@ router.post("/leagues/:leagueId/delete", async(req, res) => {
     }
 })
 
-// Accept request to join league
+// Accept request to join league POST
 router.post("/leagues/:leagueId/request/:requestId/accept", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.params.requestId)
@@ -797,7 +821,7 @@ router.post("/leagues/:leagueId/request/:requestId/accept", async (req, res) => 
     res.redirect(`/pages/leagues/${req.params.leagueId}/settings`)
 })
 
-// Reject request to join league
+// Reject request to join league POST
 router.post("/leagues/:leagueId/request/:requestId/reject", async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.params.requestId)
@@ -815,7 +839,7 @@ router.post("/leagues/:leagueId/request/:requestId/reject", async (req, res) => 
     res.redirect(`/pages/leagues/${req.params.leagueId}/settings`)
 })
 
-// recalculate team score
+// recalculate team score POST
 router.post("/league/:leagueId/teams/:teamId/calculateScore", async(req, res) => {
     let team = await Team.findById(req.params.teamId)
     let league = await League.findById(req.params.leagueId)
@@ -862,6 +886,14 @@ async function addScores(team){
     } catch (e){
         console.log(e)
     }
+}
+
+function checkNotifications(user){
+    let hasNotifications = false
+    if(user.notifications.length !== 0){
+        hasNotifications = true
+    }
+    return hasNotifications
 }
 
 module.exports = router
