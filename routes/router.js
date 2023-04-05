@@ -10,14 +10,9 @@ const League = require("./../database/league")
 const Changelog = require("./../database/changelog")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
-// const algorithm = "aes-256-cbc"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
 const schedule = require("node-schedule")
 const version = 0.1
-// const initVector = crypto.randomBytes(16)
-// const securityKey = crypto.randomBytes(32)
-// const cipher = crypto.createCipheriv(algorithm, securityKey, initVector)
-// const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector)
 
 let cachedPlayers
 
@@ -74,6 +69,8 @@ router.post("/users/register", async (req, res) => {
     // user.password = encryptedData + cipher.final("hex");
     user.password = req.body.password
     req.session.userId = user._id.toString()
+    req.session.isAdmin = false
+    req.session.username = user.username
     try{
         await user.save()
         res.redirect(`/pages/dashboard`)
@@ -93,13 +90,12 @@ router.post("/users/login", async (req, res) => {
     let user
     try{
         user = await User.findOne({username: req.body.username})
-        // let decryptedData = decipher.update(user.password, "hex", "utf-8");
-        // decryptedData += decipher.final("utf-8");
-        if(user.password == req.body.password){
+        const result = await user.comparePassword(req.body.password)
+        if(result == true){
                 req.session.userId = user._id.toString()
                 req.session.isAdmin = false
                 req.session.username = user.username
-                req.session.sessionId = req.sessionID
+                // req.session.sessionId = req.sessionID
                 res.redirect('/pages/dashboard')
         } else {
             throw new Error("Incorrect username or password")
