@@ -31,6 +31,31 @@ app.use('/robots.txt', function (req, res, next) {
     res.send("User-agent: *\nAllow: /");
 });
 
+app.get('/sitemap.xml', (req, res) => {
+    const baseUrl = 'https://www.example.com';
+    const pages = [
+      { url: '/', priority: 1.0 },
+      { url: '/pages/login', priority: 0.8 },
+      { url: '/pages/register', priority: 0.8 },
+    ];
+  
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+  
+    for (const page of pages) {
+      xml += '<url>';
+      xml += `<loc>${baseUrl}${page.url}</loc>`;
+      xml += `<changefreq>${page.changefreq}</changefreq>`;
+      xml += `<priority>${page.priority}</priority>`;
+      xml += '</url>';
+    }
+  
+    xml += '</urlset>';
+  
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
+  });
+
 app.use(cors({
     origin: "https://nbafantasy.games",
     credentials: true
