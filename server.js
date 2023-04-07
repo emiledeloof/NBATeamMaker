@@ -32,7 +32,7 @@ app.use('/robots.txt', function (req, res, next) {
 });
 
 app.get('/sitemap.xml', (req, res) => {
-    const baseUrl = 'https://www.example.com';
+    const baseUrl = 'https://nbafantasy.games';
     const pages = [
       { url: '/', priority: 1.0 },
       { url: '/pages/login', priority: 0.8 },
