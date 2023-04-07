@@ -481,6 +481,7 @@ nav ul li{
     overflow-y: scroll;
     overflow-x: hidden;
     right: 30px;
+    text-align: left;
 }
 
 #notificationButton{
@@ -492,8 +493,10 @@ nav ul li{
     border-radius: 50%;
     height: 7px;
     width: 7px;
+    top: -2px;
+    right: 3px;
     display: inline-block;
-    position: absolute;;
+    position: absolute;
 }
 
 #noNotif{
@@ -539,6 +542,24 @@ nav ul li{
     margin-left: 20%;
     margin-right: 3%;
     text-align: right;
+}
+
+#deleteButton{
+    background-color: rgb(255, 62, 62);
+    padding: 5px 10px;
+    border: none;
+    border-radius: 7px;
+    transition: 0.2s;
+}
+
+#deleteButton:hover{
+    cursor: pointer;
+    background-color: rgb(255, 21, 21);
+}
+
+.fa-trash{
+    color: white;
+    font-size: 15px;
 }
 
 /* Mobile compatibility */
