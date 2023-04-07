@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <nav>
     <ul>
         <li><a href="/">Home</a></li>
@@ -18,12 +19,18 @@
         </li>
         <li>
             <span id="notificationButton">
-                Notifications
+                <i class="fa-solid fa-bell"></i>
                 <% if(hasNotifications == true){ %>
                     <span id="dot"></span>
                 <% } %>
             </span>
             <div id="notificationWrapper" class="hidden">
+                <div id="notificationHeader">
+                    Notifications
+                    <form action="" method="POST">
+                        <button><i class="fa-solid fa-trash"></i></button>
+                    </form>
+                </div>
                 <% if(notifications.length !== 0){ %>
                     <% notifications.forEach(notification => { %>
                         <div class="notification">

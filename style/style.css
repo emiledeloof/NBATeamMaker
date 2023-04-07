@@ -475,7 +475,7 @@ nav ul li{
     z-index: 15;
     width: 500px;
     height: 400px;
-    background-color: #222222;
+    background-color: #141414;
     border-radius: 5px;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -506,6 +506,15 @@ nav ul li{
 }
 
 .notification:hover{
+    background-color: #303030;
+}
+
+.fa-bell{
+    padding: 5px 5px;
+}
+
+.fa-bell:hover{
+    cursor: pointer;
     background-color: #292929;
 }
 
