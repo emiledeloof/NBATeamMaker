@@ -33,6 +33,9 @@
                                 <form action="/pages/friends/<%= notification.data.id %>/accept?fromNotif=true" method="POST"><button>Accept</button></form>
                                 <form action="/pages/friends/<%= notification.data.id %>/reject?fromNotif=true" method="POST"><button>Reject</button></form>
                             <% } %>
+                            <% if(notification.type == 2){ %>
+                                <%= notification.username %> accepted your friend request.
+                            <% } %>
                         </div>
                     <% }) %>
                 <% } else { %>

@@ -50,7 +50,7 @@ app.use(new sessions({
     unset: 'destroy',
     store: store,
     cookie: {
-        maxAge: 1000*60,
+        maxAge: HOUR,
     },
     genid: (req) => {
         return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex");

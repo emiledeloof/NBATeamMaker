@@ -181,29 +181,28 @@ router.get("/search-user/:searchUser", sessionChecker, async(req, res) => {
 router.post("/friends/:friendId/add", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
-    if(user.friendRequestsSent.filter(request => request.username == friend.username).length == 0){
-        let sentRequestTo = {
-            username: friend.username,
-            id: friend._id.toString(),
-            date: Date.now()
-        }   
-        let dataToSend = {
-            username: user.username,
-            id: user._id.toString(),
-            date: Date.now()
-        }
-        user.friendRequestsSent.push(sentRequestTo)
-        friend.friendRequestsReceived.push(dataToSend)
-        let notification = {
-            type: 1,
-            userId: user._id.toString(),
-            data: dataToSend
-        }
-        friend.notifications.push(notification)
-    } else {
-        throw new Error("A friend request has already been sent.")
-    }
     try{
+        if(user.friendRequestsSent.filter(request => request.username == friend.username).length == 0 && user.friends.filter(friend => friend.id == req.params.friendId).length == 0){
+            let sentRequestTo = {
+                username: friend.username,
+                id: friend._id.toString(),
+                date: Date.now()
+            }   
+            let dataToSend = {
+                username: user.username,
+                id: user._id.toString(),
+                date: Date.now()
+            }
+            user.friendRequestsSent.push(sentRequestTo)
+            friend.friendRequestsReceived.push(dataToSend)
+            let notification = {
+                type: 1,
+                data: dataToSend
+            }
+            friend.notifications.push(notification)
+        } else {
+            throw new Error("A request has already been sent")
+        }
         await user.save()
         await friend.save()
     } catch(e){
@@ -222,11 +221,11 @@ router.post("/friends/:friendId/accept", sessionChecker, async(req, res) => {
     let friend = await User.findById(req.params.friendId)
     let dataToSend = {
         username: friend.username,
-        id: friend._id
+        id: friend._id.toString()
     }
     let sent = {
         username: user.username,
-        id: user._id
+        id: user._id.toString()
     }
 
     let indexOfRequest = user.friendRequestsReceived.findIndex(request => request.id == friend._id)
@@ -244,8 +243,17 @@ router.post("/friends/:friendId/accept", sessionChecker, async(req, res) => {
     let notificationIndex = user.notifications.findIndex(notif => notif.data.id == friend._id.toString())
     user.notifications.splice(notificationIndex, 1)
 
+    let notification = {
+        type: 2,
+        userId: user._id.toString(),
+        username: user.username,
+        date: Date.now()
+    }
+    friend.notifications.push(notification)
+
     try{
         await user.save()
+        friend.markModified("notifications")
         await friend.save()
     } catch (e){
         console.log(e)
