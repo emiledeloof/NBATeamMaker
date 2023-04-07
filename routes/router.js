@@ -12,7 +12,6 @@ const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
 const schedule = require("node-schedule")
-const version = 0.1
 
 let cachedPlayers
 
@@ -70,7 +69,6 @@ router.post("/users/register", async (req, res) => {
     let user = req.user
     user.username = req.body.username
     user.email = req.body.email
-    user.lastSeenVersion = version
     // let encryptedData = cipher.update(req.body.password, "utf-8", "hex");
     // user.password = encryptedData + cipher.final("hex");
     user.password = req.body.password
