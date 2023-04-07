@@ -23,18 +23,24 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h1><%= user.username %></h1>
-        <% if(currentUser.friendRequestsSent.filter(request => request.username == user.username).length == 0){ %>
+        <% if(currentUser.friendRequestsSent.filter(request => request.username == user.username).length == 0 && currentUser.friends.filter(friend => friend.id == user._id).length == 0){ %>
             <form action="/pages/friends/<%= user._id %>/add" method="POST">
                 <button class="submitButton">Add Friend</button>
             </form>
-        <% } else { %>
+        <% } else if(currentUser.friendRequestsSent.filter(request => request.username == user.username).length != 0){ %>
             <form action="/pages/friends/<%= user._id %>/undo" method="POST">
                 <button class="submitButton">Remove request</button>
             </form>
+        <% } else if(currentUser.friends.filter(friend => friend.id == user._id).length != 0){ %>
+            <form action="/pages/friends/<%= user._id %>/remove" method="POST">
+                <button class="submitButton">Remove friend</button>
+            </form>
         <% } %>
         <div class="content">
-            Best team:
-            <a href="/pages/leagues/<%= teams[0].league.id %>/teams/<%= teams[0]._id %>/view-other"><%= teams[0].name %> | <%= teams[0].teamScore %></a>
+            <% if(teams.length !== 0){ %>
+                Best team:
+                <a href="/pages/leagues/<%= teams[0].league.id %>/teams/<%= teams[0]._id %>/view-other"><%= teams[0].name %> | <%= teams[0].teamScore %></a>
+            <% } %>
         </div>
     </div>
 </body>

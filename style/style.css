@@ -79,11 +79,12 @@ nav a{
 }
 
 nav{
-    width: 70%;
+    width: 100%;
 }
 
 nav ul{
     display: flex;
+    align-items: center;
     margin-top: 30px;
     padding: 0;
 }
@@ -474,6 +475,13 @@ nav ul li{
     position: absolute;
     z-index: 15;
     width: 500px;
+    height: 400px;
+    background-color: #141414;
+    border-radius: 5px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    right: 30px;
+    text-align: left;
 }
 
 #notificationButton{
@@ -485,8 +493,73 @@ nav ul li{
     border-radius: 50%;
     height: 7px;
     width: 7px;
+    top: -2px;
+    right: 3px;
     display: inline-block;
-    position: absolute;;
+    position: absolute;
+}
+
+#noNotif{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.notification{
+    padding: 10px 10px;
+}
+
+.notification:hover{
+    background-color: #303030;
+}
+
+.fa-bell{
+    padding: 10px 10px;
+    border-radius: 50%;
+}
+
+.fa-bell:hover{
+    cursor: pointer;
+    background-color: #292929;
+}
+
+#notificationHeader{
+    display: flex;
+    align-items: center;
+    padding: 10px 10px;
+}
+
+#notificationHeader span, #notificationHeader form{
+    flex: 1;
+}
+
+#notificationHeader form{
+    text-align: right;
+}
+
+#notificationBell{
+    margin-left: 20%;
+    margin-right: 3%;
+    text-align: right;
+}
+
+#deleteButton{
+    background-color: rgb(255, 62, 62);
+    padding: 5px 10px;
+    border: none;
+    border-radius: 7px;
+    transition: 0.2s;
+}
+
+#deleteButton:hover{
+    cursor: pointer;
+    background-color: rgb(255, 21, 21);
+}
+
+.fa-trash{
+    color: white;
+    font-size: 15px;
 }
 
 /* Mobile compatibility */
@@ -557,5 +630,8 @@ nav ul li{
     .textWrapper{
         padding: 0 50px 50px 50px;
         margin-top: 50px;
+    }
+    #notificationBell{
+        margin-left: 0;
     }
 }

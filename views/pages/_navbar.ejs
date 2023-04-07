@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <nav>
     <ul>
         <li><a href="/">Home</a></li>
@@ -5,6 +6,39 @@
         <li><a href="/pages/teams/show">My teams</a></li>
         <li><a href="/pages/leagues/create">Create league</a></li>
         <li><a href="/pages/leagues">View all leagues</a></li>
+        <li id="notificationBell">
+            <span id="notificationButton">
+                <i class="fa-solid fa-bell"></i>
+                <% if(hasNotifications == true){ %>
+                    <span id="dot"></span>
+                <% } %>
+            </span>
+            <div id="notificationWrapper" class="hidden">
+                <div id="notificationHeader">
+                    <span>Notifications</span>
+                    <form action="/pages/notifications/delete-all" method="POST">
+                        <button id="deleteButton"><i class="fa-solid fa-trash"></i></button>
+                    </form>
+                </div>
+                <% if(notifications.length !== 0){ %>
+                    <% notifications.forEach(notification => { %>
+                        <div class="notification">
+                            <% if(notification.type == 1){ %>
+                                Friend request from: 
+                                <%= notification.data.username %>
+                                <form action="/pages/friends/<%= notification.data.id %>/accept?fromNotif=true" method="POST"><button>Accept</button></form>
+                                <form action="/pages/friends/<%= notification.data.id %>/reject?fromNotif=true" method="POST"><button>Reject</button></form>
+                            <% } %>
+                            <% if(notification.type == 2){ %>
+                                <%= notification.username %> accepted your friend request.
+                            <% } %>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <span id="noNotif">Seems pretty empty in here...</span>
+                <% } %>
+            </div>
+        </li>
         <li>
             <span id="usernameWrapper"><%= username %></>
             <ul id="profileUl" class="hidden">
@@ -16,27 +50,16 @@
                 </li>
             </ul>
         </li>
-        <li>
-            <span id="notificationButton">
-                Notifications
-                <% if(hasNotifications == true){ %>
-                    <span id="dot"></span>
-                <% } %>
-            </span>
-            <div id="notificationWrapper" class="hidden">
-                <% notifications.forEach(notification => { %>
-                    <% if(notification.type == 1){ %>
-                        Friend request from: 
-                        <%= notification.data.username %>
-                        <form action="/pages/friends/<%= notification.data.id %>/accept?fromNotif=true" method="POST"><button>Accept</button></form>
-                        <form action="/pages/friends/<%= notification.data.id %>/reject?fromNotif=true" method="POST"><button>Reject</button></form>
-                    <% } %>
-                <% }) %>
-            </div>
-        </li>
     </ul>
 </nav>
 <script>
+    document.addEventListener("click", (e) => {
+        if(document.getElementById("notificationWrapper").classList.contains("visible")){
+            if(e.target.id != "notificationButton" || e.target.id != "notificationWrapper"){
+                
+            }
+        }
+    })
     document.getElementById("usernameWrapper").addEventListener("click", (event) => {
         document.getElementById("profileUl").classList.toggle("visible")
         document.getElementById("profileUl").classList.toggle("hidden")

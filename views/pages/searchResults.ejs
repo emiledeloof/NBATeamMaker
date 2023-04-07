@@ -44,11 +44,11 @@
                 <% if(user._id != currentUser._id.toString()){ %>
                     <div class="card">
                         <a href="/pages/view-profile/<%= user._id %>"><%= user.username %></a>
-                        <% if(currentUser.friendRequestsSent.filter(request => request.username == user.username).length == 0){ %>
+                        <% if(currentUser.friendRequestsSent.filter(request => request.username == user.username).length == 0 && currentUser.friends.filter(friend => friend.id.toString() == user._id.toString()).length == 0){ %>
                             <form action="/pages/friends/<%= user._id %>/add?redirect=search&search=<%= search %>" method="POST">
                                 <button class="submitButton">Add Friend</button>
                             </form>
-                        <% } else { %>
+                        <% } else if(currentUser.friends.filter(friend => friend.username == user.username).length == 0) { %>
                             <form action="/pages/friends/<%= user._id %>/undo?redirect=search&search=<%= search %>" method="POST">
                                 <button class="submitButton">Remove request</button>
                             </form>

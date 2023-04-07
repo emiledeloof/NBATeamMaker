@@ -12,6 +12,8 @@ const MongoDBStore = require('connect-mongodb-session')(sessions);
 const cors = require("cors")
 const router = require("./routes/router")
 const backRouter = require("./routes/backRouter")
+const apiRouter = require("./routes/apiRouter");
+const User = require("./database/user")
 const app = express()
 const PORT = process.env.PORT || 5001
 const HOUR = 1000 * 60 * 60
@@ -54,17 +56,33 @@ app.use(new sessions({
         return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex");
     }
 }));
+// app.use(checkSession)
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
     if(req.session.userId){
-        res.render("pages/index", {loggedIn: true, username: req.session.username})
+        let user = await User.findById(req.session.userId)
+        res.render("pages/index", {
+            loggedIn: true, 
+            username: req.session.username,
+            notifications: user.notifications,
+            hasNotifications: checkNotifications(user)
+        })
     } else {
         res.render("pages/index", {loggedIn: false})
     }
 })
 
+function checkNotifications(user){
+    let hasNotifications = false
+    if(user.notifications.length !== 0){
+        hasNotifications = true
+    }
+    return hasNotifications
+}
+
 app.use("/pages", router)
 app.use("/back", backRouter)
+app.use("/api", apiRouter)
 
 app.all("*", (req, res) => {
     try{
