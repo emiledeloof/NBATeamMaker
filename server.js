@@ -45,7 +45,6 @@ app.get('/sitemap.xml', (req, res) => {
     for (const page of pages) {
       xml += '<url>';
       xml += `<loc>${baseUrl}${page.url}</loc>`;
-      xml += `<changefreq>${page.changefreq}</changefreq>`;
       xml += `<priority>${page.priority}</priority>`;
       xml += '</url>';
     }
