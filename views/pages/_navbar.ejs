@@ -24,19 +24,32 @@
                 <% } %>
             </span>
             <div id="notificationWrapper" class="hidden">
-                <% notifications.forEach(notification => { %>
-                    <% if(notification.type == 1){ %>
-                        Friend request from: 
-                        <%= notification.data.username %>
-                        <form action="/pages/friends/<%= notification.data.id %>/accept?fromNotif=true" method="POST"><button>Accept</button></form>
-                        <form action="/pages/friends/<%= notification.data.id %>/reject?fromNotif=true" method="POST"><button>Reject</button></form>
-                    <% } %>
-                <% }) %>
+                <% if(notifications.length !== 0){ %>
+                    <% notifications.forEach(notification => { %>
+                        <div class="notification">
+                            <% if(notification.type == 1){ %>
+                                Friend request from: 
+                                <%= notification.data.username %>
+                                <form action="/pages/friends/<%= notification.data.id %>/accept?fromNotif=true" method="POST"><button>Accept</button></form>
+                                <form action="/pages/friends/<%= notification.data.id %>/reject?fromNotif=true" method="POST"><button>Reject</button></form>
+                            <% } %>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <span id="noNotif">Seems pretty empty in here...</span>
+                <% } %>
             </div>
         </li>
     </ul>
 </nav>
 <script>
+    document.addEventListener("click", (e) => {
+        if(document.getElementById("notificationWrapper").classList.contains("visible")){
+            if(e.target.id != "notificationButton" || e.target.id != "notificationWrapper"){
+                
+            }
+        }
+    })
     document.getElementById("usernameWrapper").addEventListener("click", (event) => {
         document.getElementById("profileUl").classList.toggle("visible")
         document.getElementById("profileUl").classList.toggle("hidden")

@@ -16,8 +16,22 @@ const version = 0.1
 
 let cachedPlayers
 
+const sessionChecker = (req, res, next) => {
+    if (req.session && req.session.userId) {
+        // session exists
+        next();
+    } else {
+        // session doesn't exist or has expired, redirect to login page
+        res.redirect('/pages/login');
+    }
+}
+
 async function cachePlayers(){
-    cachedPlayers = await axios.get(nbaURL)
+    try{
+        cachedPlayers = await axios.get(nbaURL)
+    } catch(e){
+        console.log(e)
+    }
 }
 
 // schedule.scheduleJob("* * * * *", async () => {
@@ -38,20 +52,12 @@ schedule.scheduleJob("0 0 12 * * *", async () => {
         // console.log(teams[i])
         addScores(teams[i])
     }
+    console.log("Scores updated")
 })
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-// redirect dead route
-router.get("/", async (req, res) => {
-    if(req.session.userId){
-        res.redirect("/pages/dashboard")
-    } else{
-        res.redirect("/pages/login")
-    }
-})
 
 // register
 router.get("/register", (req, res) => {
@@ -115,7 +121,7 @@ router.post("/sign-out", async(req, res) => {
 })
 
 // dashboard
-router.get("/dashboard", async(req, res) => {
+router.get("/dashboard", sessionChecker, sessionChecker, async(req, res) => {
     let user = await User.findById(req.session.userId)
     let changelog = await Changelog.find().limit(15).exec()
     let leagues = await League.find({users: {$elemMatch: {id: req.session.userId}}}).limit(20).exec()
@@ -124,24 +130,20 @@ router.get("/dashboard", async(req, res) => {
             return b.teamScore - a.teamScore
         })
     })
-    try{
-        res.render("pages/dashboard", {
-            userId: req.session.userId, 
-            leagues: leagues,
-            changelog: changelog,
-            hasSeenChangelog: user.hasSeenChangelog,
-            URL: process.env.URL,
-            username: req.session.username,
-            notifications: user.notifications,
-            hasNotifications: checkNotifications(user)
-        })
-    } catch(e){
-        res.redirect("/error")
-    }
+    res.render("pages/dashboard", {
+        userId: req.session.userId, 
+        leagues: leagues,
+        changelog: changelog,
+        hasSeenChangelog: user.hasSeenChangelog,
+        URL: process.env.URL,
+        username: req.session.username,
+        notifications: user.notifications,
+        hasNotifications: checkNotifications(user)
+    })
 })
 
 // Change hasSeenChange state POST
-router.post("/dashboard/hasSeenChange/:userId", async(req, res) => {
+router.post("/dashboard/hasSeenChange/:userId", sessionChecker, async(req, res) => {
     let user = await User.findById(req.params.userId)
     user.hasSeenChangelog = true
     try{
@@ -154,12 +156,12 @@ router.post("/dashboard/hasSeenChange/:userId", async(req, res) => {
 })
 
 // search user POST
-router.post("/search-user", async(req, res) => {
+router.post("/search-user", sessionChecker, async(req, res) => {
     res.redirect(`/pages/search-user/${req.body.searchUser}`)
 })
 
 // search user results
-router.get("/search-user/:searchUser", async(req, res) => {
+router.get("/search-user/:searchUser", sessionChecker, async(req, res) => {
     let users = await User.find({username: {$regex: req.params.searchUser, $options: "i"}})
     let user = await User.findById(req.session.userId)
     res.render("pages/searchResults", {
@@ -176,7 +178,7 @@ router.get("/search-user/:searchUser", async(req, res) => {
 
 // add friend POST
 // Send friend request POST
-router.post("/friends/:friendId/add", async (req, res) => {
+router.post("/friends/:friendId/add", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
     if(user.friendRequestsSent.filter(request => request.username == friend.username).length == 0){
@@ -204,19 +206,18 @@ router.post("/friends/:friendId/add", async (req, res) => {
     try{
         await user.save()
         await friend.save()
-        // await notification.save()
     } catch(e){
         console.log(e)
     }
     if(req.query.redirect == "search"){
-        res.redirect(`/pages/searh-user/${req.query.search}`)
+        res.redirect(`/pages/search-user/${req.query.search}`)
     } else {
         res.redirect(`/pages/dashboard`)
     }
 })
 
 // Accept friend request POST
-router.post("/friends/:friendId/accept", async(req, res) => {
+router.post("/friends/:friendId/accept", sessionChecker, async(req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
     let dataToSend = {
@@ -257,7 +258,7 @@ router.post("/friends/:friendId/accept", async(req, res) => {
 })
 
 // Reject friend request POST
-router.post("/friends/:friendId/reject", async(req, res) => {
+router.post("/friends/:friendId/reject", sessionChecker, async(req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
 
@@ -284,7 +285,7 @@ router.post("/friends/:friendId/reject", async(req, res) => {
 })
 
 // Remove friend POST
-router.post("/friends/:friendId/remove", async (req, res) => {
+router.post("/friends/:friendId/remove", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.friendId)
 
@@ -304,19 +305,27 @@ router.post("/friends/:friendId/remove", async (req, res) => {
 })
 
 // Undo friend request POST
-router.post("/friends/:requestId/undo", async (req, res) => {
+router.post("/friends/:requestId/undo", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     let friend = await User.findById(req.params.requestId)
+
     let userIndex = friend.friendRequestsReceived.findIndex(request => request.id == req.session.userId)
     friend.friendRequestsReceived.splice(userIndex, 1)
+
     let friendIndex = user.friendRequestsSent.findIndex(request => request.id == req.params.requestId)
     user.friendRequestsSent.splice(friendIndex, 1)
+
+    let notifIndex = friend.notifications.findIndex(notification => notification.data.id == req.session.userId)
+    friend.notifications.splice(notifIndex, 1)
+
     try{
         await user.save()
+        friend.markModified("notifications")
         await friend.save()
     } catch(e){
         console.log(e)
     }
+
     if(req.query.redirect == "search"){
         res.redirect(`/pages/search-user/${req.query.search}`)
     } else {
@@ -325,7 +334,7 @@ router.post("/friends/:requestId/undo", async (req, res) => {
 })
 
 // profile
-router.get("/profile", async (req, res) => {
+router.get("/profile", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     if(user !== null){
         res.render("pages/profile", {
@@ -340,7 +349,7 @@ router.get("/profile", async (req, res) => {
 })
 
 // view other profile
-router.get("/view-profile/:otherUser", async(req, res) => {
+router.get("/view-profile/:otherUser", sessionChecker, async(req, res) => {
     let user = await User.findById(req.params.otherUser)
     let currentUser = await User.findById(req.session.userId)
     let teams = await Team.find({userId: user._id.toString()})
@@ -358,7 +367,7 @@ router.get("/view-profile/:otherUser", async(req, res) => {
 })
 
 // search
-router.post("/players/search", async(req, res) => {
+router.post("/players/search", sessionChecker, async(req, res) => {
     let request = await axios.get(`${URL}/players?search=${req.body.search}`)
     let user = await User.findById(req.session.userId)
     res.render("pages/searchResults", {
@@ -373,7 +382,7 @@ router.post("/players/search", async(req, res) => {
 })
 
 // player info
-router.get("/players/:id", async (req, res) => {
+router.get("/players/:id", sessionChecker, async (req, res) => {
     let player = await axios.get(`${URL}/players/${req.params.id}`)
     let stats = await axios.get(`${URL}/season_averages?player_ids[]=${req.params.id}`)
     let allPlayers = await axios.get(nbaURL)
@@ -397,7 +406,7 @@ router.get("/players/:id", async (req, res) => {
 })
 
 // add player to team POST
-// Create team
+// Create team POST
 router.post("/teams/leagues/:leagueId/add/players/:id", async (req, res) => {
     try{
         let player = await axios.get(`${URL}/players/${req.params.id}`)
@@ -501,7 +510,7 @@ router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
 })
 
 // create new team
-router.get("/leagues/:leagueId/teams/create", async (req, res) => {
+router.get("/leagues/:leagueId/teams/create", sessionChecker, async (req, res) => {
     let url = process.env.URL
     let user = await User.findById(req.session.userId)
     res.cookie("currentSession", req.sessionID, {
@@ -528,7 +537,7 @@ router.get("/teams/findPerson/:firstName/:lastName", async(req, res) => {
 })
 
 // delete team POST
-router.post("/leagues/:leagueId/teams/:id/delete", async(req, res) => {
+router.post("/leagues/:leagueId/teams/:id/delete", sessionChecker, async(req, res) => {
     await Team.findByIdAndDelete(req.params.id)
     let league = await League.findById(req.params.leagueId)
     let index = league.users.findIndex(user => user.teamId == req.params.id)
@@ -543,7 +552,7 @@ router.post("/leagues/:leagueId/teams/:id/delete", async(req, res) => {
 })
 
 // show all teams
-router.get("/teams/show", async(req, res) => {
+router.get("/teams/show", sessionChecker, async(req, res) => {
     let teams = await Team.find({userId: req.session.userId})
     let user = await User.findById(req.session.userId)
     res.render("pages/showTeams", {
@@ -555,7 +564,7 @@ router.get("/teams/show", async(req, res) => {
 })
 
 // view team
-router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
+router.get("/leagues/:leagueId/teams/:id/view", sessionChecker, async(req, res) => {
     let team = await Team.findById(req.params.id)
     let url = process.env.URL
     let user = await User.findById(req.session.userId)
@@ -574,7 +583,7 @@ router.get("/leagues/:leagueId/teams/:id/view", async(req, res) => {
 })
 
 // view other team
-router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
+router.get("/leagues/:leagueId/teams/:id/view-other", sessionChecker, async(req, res) => {
     let team = await Team.findById(req.params.id)
     let user = await User.findById(req.session.userId)
     let url = process.env.URL
@@ -595,7 +604,7 @@ router.get("/leagues/:leagueId/teams/:id/view-other", async(req, res) => {
 })
 
 // view player when logged in
-router.get("/players/:playerId", async(req, res) => {
+router.get("/players/:playerId", sessionChecker, async(req, res) => {
     let user = await User.findById(req.session.userId)
     let player = await axios.get(`${URL}/players/${req.params.playerId}`)
     let allPlayers = await axios.get(nbaURL)
@@ -615,7 +624,7 @@ router.get("/players/:playerId", async(req, res) => {
 })
 
 // Create league
-router.get("/leagues/create", async (req, res) => {
+router.get("/leagues/create", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     res.render("pages/createLeague", {
         username: req.session.username,
@@ -625,7 +634,7 @@ router.get("/leagues/create", async (req, res) => {
 })
 
 // Create league POST
-router.post("/leagues/create", async (req, res) => {
+router.post("/leagues/create", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     let userData = {
         username: user.username,
@@ -653,7 +662,7 @@ router.post("/leagues/create", async (req, res) => {
 })
 
 //view league
-router.get("/leagues/:leagueId", async (req, res) => {
+router.get("/leagues/:leagueId", sessionChecker, async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let teams = await Team.find({"league.id": req.params.leagueId})
     let user = await User.findById(req.session.userId)
@@ -694,7 +703,7 @@ router.get("/leagues/:leagueId", async (req, res) => {
 })
 
 // view all leagues
-router.get("/leagues", async(req, res) => {
+router.get("/leagues", sessionChecker, async(req, res) => {
     let leagues = await League.find({public: true}).limit(30).exec()
     let user = await User.findById(req.session.userId)
     leagues.forEach(league => {
@@ -710,7 +719,7 @@ router.get("/leagues", async(req, res) => {
 })
 
 // Search league POST
-router.post("/leagues/search", async(req, res) => {
+router.post("/leagues/search", sessionChecker, async(req, res) => {
     let leagues = await League.find({name: {$regex: req.body.league, $options: "i"}})
     res.render("pages/searchResults", {
         type: "league",
@@ -722,7 +731,7 @@ router.post("/leagues/search", async(req, res) => {
 })
 
 // request to join league POST
-router.post("/leagues/:leagueId/join", async (req, res) => {
+router.post("/leagues/:leagueId/join", sessionChecker, async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.session.userId)
     if(league.users.length < 50){
@@ -742,7 +751,7 @@ router.post("/leagues/:leagueId/join", async (req, res) => {
 })
 
 // league settings
-router.get("/leagues/:leagueId/settings", async (req, res) => {
+router.get("/leagues/:leagueId/settings", sessionChecker, async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.session.userId)
     res.render("pages/leagueSettings", {
@@ -755,7 +764,7 @@ router.get("/leagues/:leagueId/settings", async (req, res) => {
 })
 
 // Leave league POST
-router.post("/leagues/:leagueId/leave", async (req, res) => {
+router.post("/leagues/:leagueId/leave", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     let league = await League.findById(req.params.leagueId)
     let userIndex = user.leagues.findIndex(league => league.id == req.params.leagueId)
@@ -774,7 +783,7 @@ router.post("/leagues/:leagueId/leave", async (req, res) => {
 })
 
 // Delete league POST
-router.post("/leagues/:leagueId/delete", async(req, res) => {
+router.post("/leagues/:leagueId/delete", sessionChecker, async(req, res) => {
     try{
         let league = await League.findById(req.params.leagueId)
         let user = await User.findById(req.session.userId)
@@ -795,7 +804,7 @@ router.post("/leagues/:leagueId/delete", async(req, res) => {
 })
 
 // Accept request to join league POST
-router.post("/leagues/:leagueId/request/:requestId/accept", async (req, res) => {
+router.post("/leagues/:leagueId/request/:requestId/accept", sessionChecker, async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.params.requestId)
     let dataToSend = {
@@ -822,7 +831,7 @@ router.post("/leagues/:leagueId/request/:requestId/accept", async (req, res) => 
 })
 
 // Reject request to join league POST
-router.post("/leagues/:leagueId/request/:requestId/reject", async (req, res) => {
+router.post("/leagues/:leagueId/request/:requestId/reject", sessionChecker, async (req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.params.requestId)
     let dataToSend = {
@@ -840,7 +849,7 @@ router.post("/leagues/:leagueId/request/:requestId/reject", async (req, res) => 
 })
 
 // recalculate team score POST
-router.post("/league/:leagueId/teams/:teamId/calculateScore", async(req, res) => {
+router.post("/league/:leagueId/teams/:teamId/calculateScore", sessionChecker, async(req, res) => {
     let team = await Team.findById(req.params.teamId)
     let league = await League.findById(req.params.leagueId)
     let index = league.users.findIndex(user => user.id == req.session.userId)

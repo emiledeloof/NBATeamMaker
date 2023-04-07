@@ -36,6 +36,7 @@ schema.pre("save", function(next){
             next()
         })
     }
+    next()
 })
 
 schema.methods.comparePassword = async function(password){

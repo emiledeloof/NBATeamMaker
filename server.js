@@ -50,12 +50,13 @@ app.use(new sessions({
     unset: 'destroy',
     store: store,
     cookie: {
-        maxAge: HOUR,
+        maxAge: 1000*60,
     },
     genid: (req) => {
         return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex");
     }
 }));
+// app.use(checkSession)
 
 app.get("/", async (req, res) => {
     if(req.session.userId){
