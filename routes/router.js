@@ -870,6 +870,19 @@ router.post("/league/:leagueId/teams/:teamId/calculateScore", sessionChecker, as
     res.redirect(`/pages/leagues/${req.params.leagueId}/teams/${req.params.teamId}/view`)
 })
 
+// Remove all notifications POST
+router.post("/notifications/delete-all", sessionChecker, async(req, res) => {
+    let user = await User.findById(req.session.userId)
+    user.notifications = []
+    try{
+        await user.save()
+        res.redirect("back")
+    } catch(e){
+        console.log(e)
+        res.redirect("/error")
+    }
+})
+
 async function calculateScore(playerId, statsVar = null){
     if(statsVar == null){
         let stats = await axios.get(`${URL}/season_averages?player_ids[]=${playerId}`)

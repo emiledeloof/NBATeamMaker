@@ -79,11 +79,12 @@ nav a{
 }
 
 nav{
-    width: 70%;
+    width: 100%;
 }
 
 nav ul{
     display: flex;
+    align-items: center;
     margin-top: 30px;
     padding: 0;
 }
@@ -479,6 +480,7 @@ nav ul li{
     border-radius: 5px;
     overflow-y: scroll;
     overflow-x: hidden;
+    right: 30px;
 }
 
 #notificationButton{
@@ -510,12 +512,33 @@ nav ul li{
 }
 
 .fa-bell{
-    padding: 5px 5px;
+    padding: 10px 10px;
+    border-radius: 50%;
 }
 
 .fa-bell:hover{
     cursor: pointer;
     background-color: #292929;
+}
+
+#notificationHeader{
+    display: flex;
+    align-items: center;
+    padding: 10px 10px;
+}
+
+#notificationHeader span, #notificationHeader form{
+    flex: 1;
+}
+
+#notificationHeader form{
+    text-align: right;
+}
+
+#notificationBell{
+    margin-left: 20%;
+    margin-right: 3%;
+    text-align: right;
 }
 
 /* Mobile compatibility */
@@ -586,5 +609,8 @@ nav ul li{
     .textWrapper{
         padding: 0 50px 50px 50px;
         margin-top: 50px;
+    }
+    #notificationBell{
+        margin-left: 0;
     }
 }

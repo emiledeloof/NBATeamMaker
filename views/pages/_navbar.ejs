@@ -6,18 +6,7 @@
         <li><a href="/pages/teams/show">My teams</a></li>
         <li><a href="/pages/leagues/create">Create league</a></li>
         <li><a href="/pages/leagues">View all leagues</a></li>
-        <li>
-            <span id="usernameWrapper"><%= username %></>
-            <ul id="profileUl" class="hidden">
-                <li><a href="/pages/profile" id="profileLink" style="display: flex;"><img src="/user-solid.svg" width="20px"> <span>Profile</span></a></li>
-                <li>
-                    <form action="/pages/sign-out" method="POST">
-                        <button id="signOutButton" style="display: flex;"><img src="/signOut.svg" width="20px"><span> Sign out</span></button>
-                    </form>
-                </li>
-            </ul>
-        </li>
-        <li>
+        <li id="notificationBell">
             <span id="notificationButton">
                 <i class="fa-solid fa-bell"></i>
                 <% if(hasNotifications == true){ %>
@@ -26,8 +15,8 @@
             </span>
             <div id="notificationWrapper" class="hidden">
                 <div id="notificationHeader">
-                    Notifications
-                    <form action="" method="POST">
+                    <span>Notifications</span>
+                    <form action="/pages/notifications/delete-all" method="POST">
                         <button><i class="fa-solid fa-trash"></i></button>
                     </form>
                 </div>
@@ -49,6 +38,17 @@
                     <span id="noNotif">Seems pretty empty in here...</span>
                 <% } %>
             </div>
+        </li>
+        <li>
+            <span id="usernameWrapper"><%= username %></>
+            <ul id="profileUl" class="hidden">
+                <li><a href="/pages/profile" id="profileLink" style="display: flex;"><img src="/user-solid.svg" width="20px"> <span>Profile</span></a></li>
+                <li>
+                    <form action="/pages/sign-out" method="POST">
+                        <button id="signOutButton" style="display: flex;"><img src="/signOut.svg" width="20px"><span> Sign out</span></button>
+                    </form>
+                </li>
+            </ul>
         </li>
     </ul>
 </nav>
