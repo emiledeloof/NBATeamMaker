@@ -155,13 +155,21 @@ router.post("/dashboard/hasSeenChange/:userId", sessionChecker, async(req, res) 
 
 // search user POST
 router.post("/search-user", sessionChecker, async(req, res) => {
-    res.redirect(`/pages/search-user/${req.body.searchUser}`)
+    if(req.query.leagueInvite == "true"){
+        res.redirect(`/pages/search-user/${req.body.searchUser}?leagueInvite=true&leagueId=${req.query.leagueId}`)
+    } else {
+        res.redirect(`/pages/search-user/${req.body.searchUser}`)
+    }
 })
 
 // search user results
 router.get("/search-user/:searchUser", sessionChecker, async(req, res) => {
     let users = await User.find({username: {$regex: req.params.searchUser, $options: "i"}})
     let user = await User.findById(req.session.userId)
+    let isInvite = false
+    if(req.query.leagueInvite == "true"){
+        isInvite = true
+    }
     res.render("pages/searchResults", {
         users: users,
         type: "user",
@@ -170,7 +178,9 @@ router.get("/search-user/:searchUser", sessionChecker, async(req, res) => {
         currentUser: user,
         username: req.session.username,
         notifications: user.notifications,
-        hasNotifications: checkNotifications(user)
+        hasNotifications: checkNotifications(user),
+        isInvite: isInvite,
+        leagueId: req.query.leagueId
     })
 })
 
@@ -754,6 +764,33 @@ router.post("/leagues/:leagueId/join", sessionChecker, async (req, res) => {
         console.log(e)
     }
     res.redirect(`/pages/leagues/${req.params.leagueId}`)
+})
+
+// Send league invite POST
+router.post("/leagues/:leagueId/user/:userId/invite", sessionChecker ,async(req, res) => {
+    let league = await League.findById(req.params.leagueId)
+    let user = await User.findById(req.params.userId)
+    let invite = {
+        leagueId: req.params.leagueId,
+        leagueName: league.name,
+        from: req.session.userId,
+        to: req.params.userId,
+        date: Date.now(),
+    }
+
+    user.leagueInvites.push(invite)
+    league.invitesSent.push(invite)
+
+    try{
+        user.markModified("leagueInvites")
+        league.markModified("invitesSent")
+        await user.save()
+        await league.save()
+        res.redirect("back")
+    } catch(e){
+        console.log(e)
+        res.redirect("/error")
+    }
 })
 
 // league settings

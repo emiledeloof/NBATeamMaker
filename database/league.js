@@ -12,7 +12,8 @@ const schema = new mongoose.Schema({
     maxUsers: {
         type: Number,
         max: 50
-    }
+    },
+    invitesSent: []
 })
 
 module.exports = mongoose.model("league", schema)

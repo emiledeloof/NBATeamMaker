@@ -48,6 +48,11 @@
                 <button>Leave league</button>
             </form>
         <% } %>
+        <h3>League invites</h3>
+        <form action="/pages/search-user?leagueInvite=true&leagueId=<%= league._id %>" method="POST">
+            <input type="text" id="searchUser" name="searchUser">
+            <button class="submitButton">Search</button>
+        </form>
     </div>
 </body>
 </html>
