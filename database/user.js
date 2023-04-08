@@ -10,7 +10,6 @@ const schema = new mongoose.Schema({
     },
     email: {
         type: String,
-        
     },
     password: {
         type: String,
@@ -35,8 +34,9 @@ schema.pre("save", function(next){
             this.password = hash
             next()
         })
+    } else{
+        next()
     }
-    next()
 })
 
 schema.methods.comparePassword = async function(password){
