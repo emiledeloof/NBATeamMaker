@@ -830,7 +830,24 @@ router.post("/leagues/:leagueId/invite/accept", async(req, res) => {
 })
 
 // Reject league invite POST
+router.post("/leagues/:leagueId/invite/reject", async(req, res) => {
+    let user = await User.findById(req.session.userId)
+    let league = await League.findById(req.params.leagueId)
 
+    let inviteIndex = user.leagueInvites.findIndex(invite => invite.leagueId == league._id.toString())
+    user.leagueInvites.splice(inviteIndex, 1)
+
+    let leagueInviteIndex = league.invitesSent.findIndex(invite => invite.to == user._id.toString())
+    league.invitesSent.splice(leagueInviteIndex, 1)
+    try{
+        await user.save()
+        await league.save()
+        res.redirect("back")
+    } catch(e){
+        console.log(e)
+        res.redirect("/error")
+    }
+})
 
 // league settings
 router.get("/leagues/:leagueId/settings", sessionChecker, async (req, res) => {
