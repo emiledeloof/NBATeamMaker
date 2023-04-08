@@ -18,10 +18,11 @@ const app = express()
 const PORT = process.env.PORT || 5001
 const HOUR = 1000 * 60 * 60
 
-mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority")
+// mongoose.connect(process.env.DATABASE_URL)
+mongoose.connect("mongodb://localhost:27017/NBAFantasy")
 
 const store = new MongoDBStore({
-    uri: "mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority",
+    uri: "mongodb://localhost:27017/NBAFantasy",
     collection: 'sessions',
     expires: HOUR
 });

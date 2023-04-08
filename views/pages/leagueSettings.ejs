@@ -39,6 +39,11 @@
         <% } else { %>
             <h4>No requests to join this league.</h4>
         <% } %>
+        <h3>League invites</h3>
+        <form action="/pages/search-user?leagueInvite=true&leagueId=<%= league._id %>" method="POST">
+            <input type="text" id="searchUser" name="searchUser">
+            <br><br><button class="submitButton">Search</button>
+        </form><br><br>
         <% if(league.users.length === 1 || league.users.find(lUser => lUser.id == userId).isOwner == true){ %>
             <form action="/pages/leagues/<%= league._id %>/delete" method="POST">
                 <button>Delete league</button>
@@ -48,11 +53,6 @@
                 <button>Leave league</button>
             </form>
         <% } %>
-        <h3>League invites</h3>
-        <form action="/pages/search-user?leagueInvite=true&leagueId=<%= league._id %>" method="POST">
-            <input type="text" id="searchUser" name="searchUser">
-            <button class="submitButton">Search</button>
-        </form>
     </div>
 </body>
 </html>

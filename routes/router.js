@@ -767,6 +767,7 @@ router.post("/leagues/:leagueId/join", sessionChecker, async (req, res) => {
 })
 
 // Send league invite POST
+// Invite user to league POST
 router.post("/leagues/:leagueId/user/:userId/invite", sessionChecker ,async(req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.params.userId)
@@ -792,6 +793,44 @@ router.post("/leagues/:leagueId/user/:userId/invite", sessionChecker ,async(req,
         res.redirect("/error")
     }
 })
+
+// Accept league invite POSt
+router.post("/leagues/:leagueId/invite/accept", async(req, res) => {
+    let user = await User.findById(req.session.userId)
+    let league = await League.findById(req.params.leagueId)
+    let leagueData = {
+        username: user.username,
+        id: user._id.toString(),
+        date: Date.now(),
+        teamId: null,
+        isOwner: false
+    }
+    let userData = {
+        id: league._id.toString(),
+        name: league.name
+    }
+
+    league.users.push(leagueData)
+    user.leagues.push(userData)
+
+    let inviteIndex = user.leagueInvites.findIndex(invite => invite.leagueId == league._id.toString())
+    user.leagueInvites.splice(inviteIndex, 1)
+
+    let leagueInviteIndex = league.invitesSent.findIndex(invite => invite.to == user._id.toString())
+    league.invitesSent.splice(leagueInviteIndex, 1)
+
+    try{
+        await league.save()
+        await user.save()
+        res.redirect("back")
+    } catch(e){
+        console.log(e)
+        res.redirect("/error")
+    }
+})
+
+// Reject league invite POST
+
 
 // league settings
 router.get("/leagues/:leagueId/settings", sessionChecker, async (req, res) => {
