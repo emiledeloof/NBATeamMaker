@@ -771,6 +771,7 @@ router.post("/leagues/:leagueId/join", sessionChecker, async (req, res) => {
 router.post("/leagues/:leagueId/user/:userId/invite", sessionChecker ,async(req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.params.userId)
+    let currentUser = await User.findById(req.session.userId)
     let invite = {
         leagueId: req.params.leagueId,
         leagueName: league.name,
@@ -778,11 +779,19 @@ router.post("/leagues/:leagueId/user/:userId/invite", sessionChecker ,async(req,
         to: req.params.userId,
         date: Date.now(),
     }
+    let notification = {
+        type: 3,
+        leagueName: league.name,
+        leagueId: league._id.toString(),
+        from: currentUser.username
+    }
 
+    user.notifications.push(notification)
     user.leagueInvites.push(invite)
     league.invitesSent.push(invite)
 
     try{
+        user.markModified("notifications")
         user.markModified("leagueInvites")
         league.markModified("invitesSent")
         await user.save()
@@ -808,6 +817,9 @@ router.post("/leagues/:leagueId/invite/accept", async(req, res) => {
     let userData = {
         id: league._id.toString(),
         name: league.name
+    }
+    let notification = {
+        type: 4
     }
 
     league.users.push(leagueData)

@@ -32,6 +32,10 @@
                             <% if(notification.type == 2){ %>
                                 <%= notification.username %> accepted your friend request.
                             <% } %>
+                            <% if(notification.type == 3){ %>
+                                <%= notification.from %> sent you an invite to join <%= notification.leagueName %>
+                                <form action="/pages/leagues/<%=  %>"></form>
+                            <% } %>
                         </div>
                     <% }) %>
                 <% } else { %>
