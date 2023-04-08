@@ -55,9 +55,11 @@
                                 </form>
                             <% } else {} %>
                         <% } else { %>
-                            <form action="/pages/leagues/<%= leagueId %>/user/<%= user._id %>/invite" method="POST">
-                                <button class="submitButton">Invite</button>
-                            </form>
+                            <% if(user.leagueInvites.filter(invite => invite.leagueId == leagueId).length == 0 && user.leagues.filter(league => league.id == leagueId).length == 0){ %>
+                                <form action="/pages/leagues/<%= leagueId %>/user/<%= user._id %>/invite" method="POST">
+                                    <button class="submitButton">Invite</button>
+                                </form>
+                            <% } %>
                         <% } %>
                     </div>
                 <% } %>
