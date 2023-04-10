@@ -34,7 +34,7 @@
             <div>
                 <a href="/pages/leagues/<%= league._id %>" class="leagueCards">
                     <label><%= league.name %></label>
-                    <label><%= league.usersAmount %>/50</label>
+                    <label><%= league.usersAmount %>/<%= league.maxUsers %></label>
                 </a>
             </div>
         <% }) %>

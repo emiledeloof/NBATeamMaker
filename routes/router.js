@@ -661,6 +661,7 @@ router.post("/leagues/create", sessionChecker, async (req, res) => {
     league.name = req.body.name
     league.users.push(userData)
     league.public = req.body.public
+    league.maxUsers = req.body.maxUsers
     let leagueData = {
         id: league._id,
         name: league.name

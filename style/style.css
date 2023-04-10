@@ -129,6 +129,15 @@ nav ul li{
     user-select: none;
 }
 
+.defaultUp{
+    position: absolute;
+    color: grey;
+    top: 2px;
+    font-size: 12px;
+    left: 5px;
+    user-select: none;
+}
+
 .textarea{
     padding: 15px 5px 3px 5px;
     border: 0.5px solid grey;

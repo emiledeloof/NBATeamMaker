@@ -28,6 +28,10 @@
                 <input type="text" id="name" name="name" class="inputs" onfocusout="checkElement('name', 'nameLabel')" maxlength="35" required>
                 <label for="name" class="inputLabel" id="nameLabel">Name</label>
             </div>
+            <div class="inputsWrapper">
+                <input type="number" id="maxUsers" name="maxUsers" class="inputs" max="50" value="30">
+                <label for="maxUsers" class="defaultUp" id="maxUsersLabel">Maximum users</label>
+            </div>
             <label>Availability</label>
             <select name="public" id="public">
                 <option value="true">Public</option>
