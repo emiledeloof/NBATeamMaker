@@ -19,10 +19,10 @@ const PORT = process.env.PORT || 5001
 const HOUR = 1000 * 60 * 60
 
 // mongoose.connect(process.env.DATABASE_URL)
-mongoose.connect("mongodb://localhost:27017/NBAFantasy")
+mongoose.connect("mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority")
 
 const store = new MongoDBStore({
-    uri: "mongodb://localhost:27017/NBAFantasy",
+    uri: "mongodb+srv://admin:admin@cluster0.licu4m5.mongodb.net/?retryWrites=true&w=majority",
     collection: 'sessions',
     expires: HOUR
 });

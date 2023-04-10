@@ -81,7 +81,7 @@
                     <div class="profileTextWrapper">
                         <%= invite.leagueName %>
                     </div>
-                    <form action="/pages/leagues/<%= invite.leagueId %>/invite/accept" method="POST">
+                    <form action="/pages/leagues/<%= invite.leagueId %>/invite/accept/user/<%= invite.from %>" method="POST">
                         <button>Accept</button>
                     </form>
                     <form action="/pages/leagues/<%= invite.leagueId %>/invite/reject" method="POST">

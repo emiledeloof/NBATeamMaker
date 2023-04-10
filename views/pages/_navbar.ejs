@@ -34,7 +34,15 @@
                             <% } %>
                             <% if(notification.type == 3){ %>
                                 <%= notification.from %> sent you an invite to join <%= notification.leagueName %>
-                                <form action="/pages/leagues/<%=  %>"></form>
+                                <form action="/pages/leagues/<%= notification.leagueId %>/invite/accept/user/<%= notification.fromId %>" method="POST">
+                                    <button>Accept</button>
+                                </form>
+                                <form action="/pages/leagues/<%= notification.leagueId %>/invite/reject" method="POST">
+                                    <button>Reject</button>
+                                </form>
+                            <% } %>
+                            <% if(notification.type == 4){ %>
+                                <%= notification.username %> accepted your invite to join <%= notification.leagueName %> 
                             <% } %>
                         </div>
                     <% }) %>

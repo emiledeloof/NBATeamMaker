@@ -766,6 +766,7 @@ router.post("/leagues/:leagueId/join", sessionChecker, async (req, res) => {
 
 // Send league invite POST
 // Invite user to league POST
+// Send invite
 router.post("/leagues/:leagueId/user/:userId/invite", sessionChecker ,async(req, res) => {
     let league = await League.findById(req.params.leagueId)
     let user = await User.findById(req.params.userId)
@@ -781,7 +782,8 @@ router.post("/leagues/:leagueId/user/:userId/invite", sessionChecker ,async(req,
         type: 3,
         leagueName: league.name,
         leagueId: league._id.toString(),
-        from: currentUser.username
+        from: currentUser.username,
+        fromId: currentUser._id.toString()
     }
 
     user.notifications.push(notification)
@@ -802,9 +804,11 @@ router.post("/leagues/:leagueId/user/:userId/invite", sessionChecker ,async(req,
 })
 
 // Accept league invite POSt
-router.post("/leagues/:leagueId/invite/accept", async(req, res) => {
+// Accept invite
+router.post("/leagues/:leagueId/invite/accept/user/:userId", async(req, res) => {
     let user = await User.findById(req.session.userId)
     let league = await League.findById(req.params.leagueId)
+    let receipiant = await User.findById(req.params.userId)
     let leagueData = {
         username: user.username,
         id: user._id.toString(),
@@ -817,11 +821,17 @@ router.post("/leagues/:leagueId/invite/accept", async(req, res) => {
         name: league.name
     }
     let notification = {
-        type: 4
+        type: 4,
+        userId: user._id.toString(),
+        username: user.username,
+        date: Date.now(),
+        leagueName: league.name,
+        leagueId: league._id.toString()
     }
 
     league.users.push(leagueData)
     user.leagues.push(userData)
+    receipiant.notifications.push(notification)
 
     let inviteIndex = user.leagueInvites.findIndex(invite => invite.leagueId == league._id.toString())
     user.leagueInvites.splice(inviteIndex, 1)
@@ -829,9 +839,13 @@ router.post("/leagues/:leagueId/invite/accept", async(req, res) => {
     let leagueInviteIndex = league.invitesSent.findIndex(invite => invite.to == user._id.toString())
     league.invitesSent.splice(leagueInviteIndex, 1)
 
+    let notificationIndex = user.notifications.findIndex(notification => notification.leagueId == req.params.leagueId)
+    user.notifications.splice(notificationIndex, 1)
+
     try{
         await league.save()
         await user.save()
+        await receipiant.save()
         res.redirect("back")
     } catch(e){
         console.log(e)
@@ -849,6 +863,10 @@ router.post("/leagues/:leagueId/invite/reject", async(req, res) => {
 
     let leagueInviteIndex = league.invitesSent.findIndex(invite => invite.to == user._id.toString())
     league.invitesSent.splice(leagueInviteIndex, 1)
+
+    let notificationIndex = user.notifications.findIndex(notification => notification.leagueId == req.params.leagueId)
+    user.notifications.splice(notificationIndex, 1)
+
     try{
         await user.save()
         await league.save()
