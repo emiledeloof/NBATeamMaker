@@ -421,122 +421,67 @@ router.get("/players/:id", sessionChecker, async (req, res) => {
 
 // add player to team POST
 // Create team POST
-router.post("/teams/leagues/:leagueId/add/players/:id", async (req, res) => {
+router.post("/teams/leagues/:leagueId/add/players/:playerId/position/:position", async (req, res) => {
+    let user = await User.findById(req.session.userId)
+    let league = await League.findById(req.params.leagueId)
+    let player = await axios.get(`${URL}/players/${req.params.playerId}`)
+    let userIndex = league.users.findIndex(user => user.id == req.session.userId)
+    let team
+    if(league.users[userIndex].teamId === null){
+        team = new Team()
+        team.league = {
+            id: req.params.leagueId,
+            name: league.name
+        }
+        team.userId = req.session.userId
+        league.users[userIndex].teamId = team._id.toString()
+    } else {
+        team = await Team.findById(league.users[userIndex].teamId)
+    }
     try{
-        let player = await axios.get(`${URL}/players/${req.params.id}`)
-        let league = await League.findById(req.params.leagueId)
-        let index = league.users.findIndex(user => user.id == req.session.userId)
-        let isAuthenticated = false
-        let team
-        if(await Team.findOne({name: req.query.teamName})){
-            team = await Team.findOne({name: req.query.teamName})
-            if(team.userId == req.session.userId){
-                isAuthenticated = true
-            }
+        if(team.players.find(player => player.id == req.params.playerId) == undefined && team.players.find(player => player.position == req.params.position) == undefined){
+            player.data.position = req.params.position
+            team.players.push(player.data)
         } else {
-            req.team = new Team()
-            team = req.team
-            team.name = req.query.teamName
-            team.userId = req.session.userId
-            team.league = {
-                id: req.params.leagueId,
-                name: league.name
-            }
-            league.users[index].teamId = team._id.toString()
-            league.markModified("users")
-            isAuthenticated = true
+            throw new Error("already player on this position or this player already on team.")
         }
-        if(isAuthenticated == true){
-            switch(req.body.position || req.query.position){
-                case "C":
-                    team.center = player.data
-                    break;
-                case "PF":
-                    team.powerForward = player.data
-                    break;
-                case "SF":
-                    team.smallForward = player.data
-                    break;
-                case "SG":
-                    team.shootingGuard = player.data
-                    break;
-                case "PG":
-                    team.pointGuard = player.data
-                    break;
-            }
-        } else{
-            throw new Error("A team with this name already exists! \nPlease refresh the page to create another team.")
-        }
-        addScores(team)
-        team.markModified("shootingGuard")
-        team.markModified("pointGuard")
-        team.markModified("powerForward")
-        team.markModified("smallForward")
-        team.markModified("center")
-        league.users[index].teamScore = team.teamScore
-        await team.save()
+        league.markModified("users")
         await league.save()
-        res.status(200).json({message: "Succes"})
-    } catch (e){
+        await team.save()
+        res.json({message: "all good", status: 200})
+    } catch(e){
         console.log(e)
-        res.status(406).json({message: e.toString()})
+        res.json({message: "error, check terminal", status: 406})
     }
 })
 
 // edit player on team POST
 router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
-    let player = await axios.get(`${URL}/players/${req.params.id}`)
-    let team = await Team.findById(req.params.teamId)
-    let league = await League.findById(team.league.id)
-    let index = league.users.findIndex(user => user.id == team.userId)
-    switch(req.body.position || req.query.position){
-        case "C":
-            team.center = player.data
-            break;
-        case "PF":
-            team.powerForward = player.data
-            break;
-        case "SF":
-            team.smallForward = player.data
-            break;
-        case "SG":
-            team.shootingGuard = player.data
-            break;
-        case "PG":
-            team.pointGuard = player.data
-            break;
-    }
-    try{
-        await addScores(team)
-        team.markModified("shootingGuard")
-        team.markModified("pointGuard")
-        team.markModified("powerForward")
-        team.markModified("smallForward")
-        team.markModified("center")
-        league.markModified("users")
-        await team.save()
-        await league.save()
-        res.end()
-    } catch(e){
-        console.log(e)
-        res.send(e)
-    }
+    
 })
 
 // create new team
 router.get("/leagues/:leagueId/teams/create", sessionChecker, async (req, res) => {
-    let url = process.env.URL
     let user = await User.findById(req.session.userId)
+    let league = await League.findById(req.params.leagueId)
     res.cookie("currentSession", req.sessionID, {
         sameSite:"lax"
     })
     cachePlayers()
+    let team = null
+    try{
+        let userId = league.users.findIndex(user => user.id == req.session.userId)
+        team = await Team.findById(league.users[userId].teamId)
+    } catch(e){
+        console.log(e)
+    }
     res.render("pages/createTeam", {
-        url: url, 
+        url: process.env.URL, 
         leagueId: req.params.leagueId,
         username: req.session.username,
         notifications: user.notifications,
-        hasNotifications: checkNotifications(user)
+        hasNotifications: checkNotifications(user),
+        team: team
     })
 })
 

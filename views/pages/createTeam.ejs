@@ -23,25 +23,35 @@
     <div class="container">
         <%- include("_navbar.ejs") %>
         <h2>Create team</h2>
-        <div class="createTeamConfirm">
-            <input type="text" placeholder="Team name" id="teamName">
-            <button id="createTeamName">Start creating!</button>
-        </div>
         <div class="createTeamWrapper">
             <div class="createTeam">
-                Point guard: <label id="PG"></label>
-                <a class="button PG">Add player</a>
-                <br> Shooting guard: <label id="SG"></label>
-                <a class="button SG">Add player</a>
-                <br> Small forward: <label id="SF"></label>
-                <a class="button SF">Add player</a>
-                <br> Power forward: <label id="PF"></label>
-                <a class="button PF">Add player</a>
-                <br> Center: <label id="C"></label>
-                <a class="button C">Add player</a>
+                <% if(team == null){ %>
+                    Point guard: <label id="PG"></label>
+                    <a class="button PG">Add player</a>
+                    <br> Shooting guard: <label id="SG"></label>
+                    <a class="button SG">Add player</a>
+                    <br> Small forward: <label id="SF"></label>
+                    <a class="button SF">Add player</a>
+                    <br> Power forward: <label id="PF"></label>
+                    <a class="button PF">Add player</a>
+                    <br> Center: <label id="C"></label>
+                    <a class="button C">Add player</a>
+                <% } else { %>
+                    <% let player %>
+                    Point guard: <label id="PG"></label>
+                    <a class="button PG"><% player = team.players.find(player => player.position == "PG") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <br> Shooting guard: <label id="SG"></label>
+                    <a class="button SG"><% player = team.players.find(player => player.position == "SG") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <br> Small forward: <label id="SF"></label>
+                    <a class="button SF"><% player = team.players.find(player => player.position == "SF") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <br> Power forward: <label id="PF"></label>
+                    <a class="button PF"><% player = team.players.find(player => player.position == "PF") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <br> Center: <label id="C"></label>
+                    <a class="button C"><% player = team.players.find(player => player.position == "C") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                <% } %>
             </div>
             <div id="searchPlayer">
-                <h3>Search for player</h3>
+                <h3>Search for player at position <label id="positionLabel"></label></h3>
                 <input type="text" id="searchInput">
                 <button onclick="search()">Search</button>
                 <div id="searchResults"></div>
@@ -115,43 +125,32 @@
         document.addEventListener("click", async (e) => {
             if(e.target.classList.contains("button")){
                 position = e.target.classList[1]
+                document.getElementById("positionLabel").innerText = position
                 searchPlayer.style.display = "block"
             }
             if(e.target.classList.contains("addPlayer")){
-                let resultsWrapper = document.getElementById("searchResults")
-                while (resultsWrapper.firstChild) {
-                    resultsWrapper.removeChild(resultsWrapper.firstChild);
-                }
-                let searchInput = document.getElementById("searchInput")
-                let playerName = e.target.parentNode.childNodes[1].innerText
                 let playerId = e.target.parentNode.childNodes[3].innerText
-                searchInput.value = ""
-                document.getElementById(position).innerText = playerName
-                document.querySelector("." + position).remove()
-                document.getElementById("searchPlayer").style.display = "none"
-                await fetch(`http://127.0.0.1:5001/pages/teams/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
-                // await fetch(`<%= //url %>/pages/teams/leagues/<%= //leagueId%>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
+                fetch(`/pages/teams/leagues/<%= leagueId %>/add/players/${playerId}/position/${position}`, {
                     method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "access-control-allow-credentials": true
-                    }
+                    credentials: "include"
                 })
                 .then(response => response.json())
                 .then((response) => {
-                    if(response.status == 406){
+                    if(response.status == 200){
+                        let resultsWrapper = document.getElementById("searchResults")
+                        while (resultsWrapper.firstChild) {
+                            resultsWrapper.removeChild(resultsWrapper.firstChild);
+                        }
+                        let searchInput = document.getElementById("searchInput")
+                        let playerName = e.target.parentNode.childNodes[1].innerText
+                        searchInput.value = ""
+                        document.getElementById(position).innerText = playerName
+                        document.querySelector("." + position).remove()
+                        document.getElementById("searchPlayer").style.display = "none"
+                    } else {
                         alert(response.message)
                     }
                 })
-            }
-            if(e.target.id == "createTeamName"){
-                teamName = document.getElementById("teamName").value
-                if(teamName){
-                    document.querySelector(".createTeamWrapper").style.display = "block"
-                    document.querySelector(".createTeamConfirm").style.display = "none"
-                } else{
-                    alert("Please enter a team name before getting started.")
-                }
             }
             if(e.target.id == "closeOverlay"){
                 document.getElementById("statsOverlay").style.display = "none"
@@ -191,7 +190,7 @@
                     let createdDiv = document.createElement("div")
                     let idLabel = document.createElement("label")
                     let createdImg
-                    await fetch(`http://127.0.0.1:5001/pages/teams/findPerson/${player.first_name}/${player.last_name}`)
+                    await fetch(`/pages/teams/findPerson/${player.first_name}/${player.last_name}`)
                     .then(response => response.json())
                     .then((response) => {
                         // if(response.personId !== null){
