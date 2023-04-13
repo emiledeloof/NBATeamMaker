@@ -123,13 +123,13 @@
                     resultsWrapper.removeChild(resultsWrapper.firstChild);
                 }
                 let searchInput = document.getElementById("searchInput")
-                let playerName = e.target.parentNode.childNodes[0].innerText
-                let playerId = e.target.parentNode.childNodes[2].innerText
+                let playerName = e.target.parentNode.childNodes[1].innerText
+                let playerId = e.target.parentNode.childNodes[3].innerText
                 searchInput.value = ""
                 document.getElementById(position).innerText = playerName
                 document.querySelector("." + position).remove()
                 document.getElementById("searchPlayer").style.display = "none"
-                await fetch(`https://nbafantasy.games/pages/teams/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
+                await fetch(`http://127.0.0.1:5001/pages/teams/leagues/<%= leagueId %>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                 // await fetch(`<%= //url %>/pages/teams/leagues/<%= //leagueId%>/add/players/${playerId}?position=${position}&teamName=${teamName}`, {
                     method: "POST",
                     credentials: "include",
@@ -194,14 +194,14 @@
                     await fetch(`http://127.0.0.1:5001/pages/teams/findPerson/${player.first_name}/${player.last_name}`)
                     .then(response => response.json())
                     .then((response) => {
-                        if(response.personId !== null){
+                        // if(response.personId !== null){
                             createdImg = document.createElement("img")
                             createdImg.src = `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${response.personId}.png` 
                             createdImg.alt = "No picture"
                             createdImg.onerror = "this.remove()"
                             createdImg.style.width = "100px" 
                             createdDiv.append(createdImg)
-                        }
+                        // }
                     })
                     createdButton.innerText = "Add player"
                     createdButton.classList.add("addPlayer")

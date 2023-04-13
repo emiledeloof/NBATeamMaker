@@ -557,6 +557,7 @@ router.post("/leagues/:leagueId/teams/:id/delete", sessionChecker, async(req, re
     let index = league.users.findIndex(user => user.teamId == req.params.id)
     try{
         league.users[index].teamId = null
+        league.users[index].teamScore = null
         league.markModified("users")
         await league.save()
     } catch (e) {
@@ -1046,4 +1047,6 @@ function checkNotifications(user){
     return hasNotifications
 }
 
-module.exports = router
+module.exports = {
+    router: router
+}
