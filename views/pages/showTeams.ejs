@@ -32,8 +32,8 @@
                 <% teams.forEach(team => { %>
                     <div class="teamCard">
                         <a href="/pages/leagues/<%= team.league.id %>/teams/<%= team._id %>/view">
-                            <label><%= team.name %></label>
-                            <br>League: <%= team.league.name %>
+                            <label><%= team.league.name %></label>
+                            <label>Current team score: <%= team.teamScore %></label>
                         </a>
                         <form action="/pages/leagues/<%= team.league.id %>/teams/<%= team._id %>/delete" method="POST">                        
                             <button class="delete actionButton">Delete</button>

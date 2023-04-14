@@ -39,182 +39,49 @@
                 <% } else { %>
                     <% let player %>
                     Point guard: <label id="PG"></label>
-                    <a class="button PG"><% player = team.players.find(player => player.position == "PG") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <a class="button PG"> <% player = team.players.find(player => player.position == "PG") %> 
+                        <% if(player == undefined){ %>
+                            Add player
+                        <% } else { %>
+                            <%= player.full_name %>
+                        <% } %>
+                    </a>
                     <br> Shooting guard: <label id="SG"></label>
-                    <a class="button SG"><% player = team.players.find(player => player.position == "SG") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <a class="button SG"> <% player = team.players.find(player => player.position == "SG") %> 
+                        <% if(player == undefined){ %>
+                            Add player
+                        <% } else { %>
+                            <%= player.full_name %>
+                        <% } %>
+                    </a>
                     <br> Small forward: <label id="SF"></label>
-                    <a class="button SF"><% player = team.players.find(player => player.position == "SF") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <a class="button SF"> <% player = team.players.find(player => player.position == "SF") %> 
+                        <% if(player == undefined){ %>
+                            Add player
+                        <% } else { %>
+                            <%= player.full_name %>
+                        <% } %>
+                    </a>
                     <br> Power forward: <label id="PF"></label>
-                    <a class="button PF"><% player = team.players.find(player => player.position == "PF") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <a class="button PF"> <% player = team.players.find(player => player.position == "PF") %> 
+                        <% if(player == undefined){ %>
+                            Add player
+                        <% } else { %>
+                            <%= player.full_name %>
+                        <% } %>
+                    </a>
                     <br> Center: <label id="C"></label>
-                    <a class="button C"><% player = team.players.find(player => player.position == "C") %> <% if(player !== undefined) {player.first_name + " " + player.last_name} else {"Add player"} %></a>
+                    <a class="button C"> <% player = team.players.find(player => player.position == "C") %> 
+                        <% if(player == undefined){ %>
+                            Add player
+                        <% } else { %>
+                            <%= player.full_name %>
+                        <% } %>
+                    </a>
                 <% } %>
             </div>
-            <div id="searchPlayer">
-                <h3>Search for player at position <label id="positionLabel"></label></h3>
-                <input type="text" id="searchInput">
-                <button onclick="search()">Search</button>
-                <div id="searchResults"></div>
-            </div>
         </div>
-        <div id="statsOverlay">
-            <div id="statsWrapper">
-                <div id="closeWrapper">
-                    <a id="closeOverlay">X</a>
-                </div>
-                <h3 id="playerName">Player Name</h3>
-                <div id="playerStats">
-                    <div class="statsGrid">
-                        <div class="gridItem">
-                            Games Played:
-                        </div>
-                        <div class="gridItem">
-                            <label id="gamesPlayed"></label>
-                        </div>
-                        <div class="gridItem">
-                            Minutes:
-                        </div>
-                        <div class="gridItem">
-                            <label id="minutes"></label>
-                        </div>
-                        <div class="gridItem">
-                            FG%:
-                        </div>
-                        <div class="gridItem">
-                            <label id="fgPct"></label>
-                        </div>
-                        <div class="gridItem">
-                            Points:
-                        </div>
-                        <div class="gridItem">
-                            <label id="points"></label>
-                        </div>
-                        <div class="gridItem">
-                            Rebounds:
-                        </div>
-                        <div class="gridItem">
-                            <label id="rebounds"></label>
-                        </div>
-                        <div class="gridItem">
-                            Assists:
-                        </div>
-                        <div class="gridItem">
-                            <label id="assists"></label>
-                        </div>
-                        <div class="gridItem">
-                            Steals:
-                        </div>
-                        <div class="gridItem">
-                            <label id="steals"></label>
-                        </div>
-                        <div class="gridItem">
-                            Blocks:
-                        </div>
-                        <div class="gridItem">
-                            <label id="blocks"></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <%- include("teamCreator.ejs") %>
     </div>
-    <script>
-        let seachPlayer = document.getElementById("searchPlayer")
-        let position
-        let teamName
-        document.addEventListener("click", async (e) => {
-            if(e.target.classList.contains("button")){
-                position = e.target.classList[1]
-                document.getElementById("positionLabel").innerText = position
-                searchPlayer.style.display = "block"
-            }
-            if(e.target.classList.contains("addPlayer")){
-                let playerId = e.target.parentNode.childNodes[3].innerText
-                fetch(`/pages/teams/leagues/<%= leagueId %>/add/players/${playerId}/position/${position}`, {
-                    method: "POST",
-                    credentials: "include"
-                })
-                .then(response => response.json())
-                .then((response) => {
-                    if(response.status == 200){
-                        let resultsWrapper = document.getElementById("searchResults")
-                        while (resultsWrapper.firstChild) {
-                            resultsWrapper.removeChild(resultsWrapper.firstChild);
-                        }
-                        let searchInput = document.getElementById("searchInput")
-                        let playerName = e.target.parentNode.childNodes[1].innerText
-                        searchInput.value = ""
-                        document.getElementById(position).innerText = playerName
-                        document.querySelector("." + position).remove()
-                        document.getElementById("searchPlayer").style.display = "none"
-                    } else {
-                        alert(response.message)
-                    }
-                })
-            }
-            if(e.target.id == "closeOverlay"){
-                document.getElementById("statsOverlay").style.display = "none"
-            }
-            if(e.target.classList.contains("playerLabel")){
-                let playerId = e.target.parentNode.childNodes[2].innerText
-                document.getElementById("statsOverlay").style.display = "block"
-                document.getElementById("playerName").innerText = e.target.innerText
-                fetch(`https://www.balldontlie.io/api/v1/season_averages?season=2020&player_ids[]=${playerId}`)
-                .then(response => response.text())
-                .then(text => {
-                    let parsed = JSON.parse(text)
-                    document.getElementById("gamesPlayed").innerText = parsed.data[0].games_played
-                    document.getElementById("minutes").innerText = parsed.data[0].min
-                    document.getElementById("fgPct").innerText = (parsed.data[0].fg_pct * 100).toFixed(1)
-                    document.getElementById("points").innerText = parsed.data[0].pts
-                    document.getElementById("rebounds").innerText = parsed.data[0].reb
-                    document.getElementById("assists").innerText = parsed.data[0].ast
-                    document.getElementById("steals").innerText = parsed.data[0].stl
-                    document.getElementById("blocks").innerText = parsed.data[0].blk
-                })
-            }
-        })
-        async function search(){
-            let resultsWrapper = document.getElementById("searchResults")
-            while (resultsWrapper.firstChild) {
-                resultsWrapper.removeChild(resultsWrapper.firstChild);
-            }
-            let input = document.getElementById("searchInput").value
-            fetch(`https://www.balldontlie.io/api/v1/players?search=${input}`)
-            .then(response => response.text())
-            .then(text => {
-                let parsed = JSON.parse(text);
-                parsed.data.forEach(async (player) => {
-                    let createdLabel = document.createElement("label");
-                    let createdButton = document.createElement("button")
-                    let createdDiv = document.createElement("div")
-                    let idLabel = document.createElement("label")
-                    let createdImg
-                    await fetch(`/pages/teams/findPerson/${player.first_name}/${player.last_name}`)
-                    .then(response => response.json())
-                    .then((response) => {
-                        // if(response.personId !== null){
-                            createdImg = document.createElement("img")
-                            createdImg.src = `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${response.personId}.png` 
-                            createdImg.alt = "No picture"
-                            createdImg.onerror = "this.remove()"
-                            createdImg.style.width = "100px" 
-                            createdDiv.append(createdImg)
-                        // }
-                    })
-                    createdButton.innerText = "Add player"
-                    createdButton.classList.add("addPlayer")
-                    createdLabel.innerText = player.first_name + " " + player.last_name + "    "
-                    createdLabel.classList.add("playerLabel")
-                    idLabel.innerText = player.id
-                    idLabel.style.display = "none"
-                    createdDiv.append(createdLabel)
-                    createdDiv.append(createdButton)
-                    createdDiv.append(idLabel)
-                    resultsWrapper.append(createdDiv)
-                })
-            })
-        }
-    </script>
 </body>
 </html>

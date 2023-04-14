@@ -439,8 +439,9 @@ router.post("/teams/leagues/:leagueId/add/players/:playerId/position/:position",
         team = await Team.findById(league.users[userIndex].teamId)
     }
     try{
-        if(team.players.find(player => player.id == req.params.playerId) == undefined && team.players.find(player => player.position == req.params.position) == undefined){
+        if(team.players.find(player => player.id == req.params.playerId) == undefined && team.players.find(player => player.position == req.params.position) == undefined && team.players.length <= 5 ){
             player.data.position = req.params.position
+            player.data.full_name = player.data.first_name + " " + player.data.last_name
             team.players.push(player.data)
         } else {
             throw new Error("already player on this position or this player already on team.")
@@ -453,11 +454,6 @@ router.post("/teams/leagues/:leagueId/add/players/:playerId/position/:position",
         console.log(e)
         res.json({message: "error, check terminal", status: 406})
     }
-})
-
-// edit player on team POST
-router.post("/teams/:teamId/edit/players/:id", async (req, res) => {
-    
 })
 
 // create new team
