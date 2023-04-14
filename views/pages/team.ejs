@@ -27,21 +27,27 @@
             <button>Recalculate team score</button>
         </form>
         <div class="grid">
-            <% team.players.forEach(player => { %>
-                <div class="gridItem">
-                    <%= player.position %>: 
-                </div>
+            <% let positions = ["PG", "SG", "SF", "PF", "C"] %>
+            <% positions.forEach(position => { %>
+            <% let player = team.players.find(player => player.position == position) %>
+            <div class="gridItem">
+                <%= position %>
+            </div>
+            <% if(player !== undefined){ %>
                 <div class="gridItem">
                     <label id="<%= player.position %>">
-                    <a href="/pages/players/<%= player.id %>"><%= player.first_name %> <%= player.last_name %> </a><br>
+                    <a href="/pages/players/<%= player.id %>"><%= player.full_name %></a><br>
                     <% if(player.score){ %>
                         <%= player.score.score %>
                     <% } %>
                     </label>
                 </div>
-                <div class="gridItem">
-                    <a class="button PG">Edit player</a>
-                </div>
+            <% } else { %>
+                <div class="gridItem"></div>
+            <% } %>
+            <div class="gridItem">
+                <a class="button <%= position %>">Edit player</a>
+            </div>
             <% }) %>
             <div class="gridItem">
                 Total score:
