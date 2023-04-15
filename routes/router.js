@@ -439,7 +439,11 @@ router.post("/teams/leagues/:leagueId/add/players/:playerId/position/:position",
         team = await Team.findById(league.users[userIndex].teamId)
     }
     try{
-        if(team.players.find(player => player.id == req.params.playerId) == undefined && team.players.find(player => player.position == req.params.position) == undefined && team.players.length <= 5 ){
+        if(team.players.find(player => player.id == req.params.playerId) == undefined && team.players.length <= 5 ){
+            let index = team.players.findIndex(player => player.position == req.params.position)
+            if(index !== -1){
+                team.players.splice(index, 1)
+            }
             player.data.position = req.params.position
             player.data.full_name = player.data.first_name + " " + player.data.last_name
             team.players.push(player.data)
