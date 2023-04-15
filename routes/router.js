@@ -11,7 +11,7 @@ const Changelog = require("./../database/changelog")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
-const schedule = require("node-schedule")
+const schedule = require("node-schedule");
 
 let cachedPlayers
 
@@ -49,7 +49,13 @@ schedule.scheduleJob("0 0 12 * * *", async () => {
             sleep(7000)
         }
         // console.log(teams[i])
-        addScores(teams[i])
+        updateScores(teams[i])
+        try{
+            teams[i].markModified("players")
+            await teams[i].save()
+        } catch(e){
+            console.log(e)
+        }
     }
     console.log("Scores updated")
 })
@@ -980,6 +986,16 @@ async function addScores(team){
         team.teamScore = teamScore
         return teamScore
     } catch (e){
+        console.log(e)
+    }
+}
+
+async function updateScores(team){
+    try{
+        team.players.forEach(async (player) => {
+            player.score = await calculateScore(player.id)
+        })
+    } catch(e){
         console.log(e)
     }
 }
