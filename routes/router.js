@@ -35,28 +35,31 @@ async function cachePlayers(){
 
 // schedule.scheduleJob("* * * * *", async () => {
 schedule.scheduleJob("0 0 12 * * *", async () => {
-    // let date = new Date(Date.now()).toISOString().split("T")[0]
-    // let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
-    // games.data.data.forEach(game, async (game) => {
-    //     console.log(game)
-    //     let home = game.home_team.name
-    //     let visitors = game.visitor_team.name
-        
-    // })
-    let teams = await Team.find()
-    for(i=0; i<teams.length; i++){
-        if(i % 11 === 0){
-            sleep(7000)
+    let date = new Date(Date.now()).toISOString().split("T")[0]
+    let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
+    let i = 0
+    await games.data.data.forEach(async (game) => {
+        let home = game.home_team.name
+        let visitors = game.visitor_team.name
+        let homeTeams = await Team.find({"players.team.name": home})
+        let visitingTeams = await Team.find({"players.team.name": visitors})
+        if(homeTeams.length !==0){
+            i += 1
+            let player = homeTeams[0].players.find(player => player.team.name == home)
+            if(i % 11 === 0){
+                sleep(7000)
+            }
+            player.score = calculateScore(player.id)
+        } 
+        if(visitingTeams.length !== 0){
+            i += 1
+            let player = visitingTeams[0].players.find(player => player.team.name == visitors)
+            if(i % 11 === 0){
+                sleep(7000)
+            }
+            player.score = calculateScore(player.id)
         }
-        // console.log(teams[i])
-        updateScores(teams[i])
-        try{
-            teams[i].markModified("players")
-            await teams[i].save()
-        } catch(e){
-            console.log(e)
-        }
-    }
+    })
     console.log("Scores updated")
 })
 
