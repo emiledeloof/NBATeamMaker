@@ -421,7 +421,7 @@ router.get("/players/:id", sessionChecker, async (req, res) => {
 
 // add player to team POST
 // Create team POST
-router.post("/teams/leagues/:leagueId/add/players/:playerId/position/:position", async (req, res) => {
+router.post("/teams/leagues/:leagueId/add/players/:playerId/position/:position", sessionChecker, async (req, res) => {
     let user = await User.findById(req.session.userId)
     let league = await League.findById(req.params.leagueId)
     let player = await axios.get(`${URL}/players/${req.params.playerId}`)
@@ -446,11 +446,14 @@ router.post("/teams/leagues/:leagueId/add/players/:playerId/position/:position",
             }
             player.data.position = req.params.position
             player.data.full_name = player.data.first_name + " " + player.data.last_name
+            player.data.score = await calculateScore(player.data.id)
             team.players.push(player.data)
         } else {
-            throw new Error("already player on this position or this player already on team.")
+            throw new Error("This player already on this team.")
         }
         league.markModified("users")
+        league.users[userIndex].teamScore = await addScores(team)
+        team.markModified("players")
         await league.save()
         await team.save()
         res.json({message: "all good", status: 200})
@@ -970,15 +973,12 @@ async function calculateScore(playerId, statsVar = null){
 
 async function addScores(team){
     try{
-        if(team.shootingGuard && team.pointGuard && team.powerForward && team.smallForward && team.center){
-            team.center.score = await calculateScore(team.center.id)
-            team.powerForward.score = await calculateScore(team.powerForward.id)
-            team.smallForward.score = await calculateScore(team.smallForward.id)
-            team.shootingGuard.score = await calculateScore(team.shootingGuard.id)
-            team.pointGuard.score = await calculateScore(team.pointGuard.id)
-            team.teamScore = parseInt(team.center.score + team.powerForward.score + team.smallForward.score + team.shootingGuard.score + team.pointGuard.score)
-            return team.teamScore
-        }
+        let teamScore = 0
+        team.players.forEach(async (player) => {
+            teamScore += player.score
+        })
+        team.teamScore = teamScore
+        return teamScore
     } catch (e){
         console.log(e)
     }
