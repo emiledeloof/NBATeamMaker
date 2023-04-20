@@ -49,7 +49,7 @@ schedule.scheduleJob("0 0 12 * * *", async () => {
             if(i % 11 === 0){
                 sleep(7000)
             }
-            player.score = calculateScore(player.id)
+            player.score = await calculateScore(player.id)
         } 
         if(visitingTeams.length !== 0){
             i += 1
@@ -57,7 +57,7 @@ schedule.scheduleJob("0 0 12 * * *", async () => {
             if(i % 11 === 0){
                 sleep(7000)
             }
-            player.score = calculateScore(player.id)
+            player.score = await calculateScore(player.id)
         }
     })
     console.log("Scores updated")
@@ -93,7 +93,11 @@ router.post("/users/register", async (req, res) => {
 
 // login
 router.get("/login", (req, res) => {
-    res.render("pages/login")
+    if(req.query.error === "true"){
+        res.render("pages/login", {error: true})
+    } else {
+        res.render("pages/login", {error: false})
+    }
 })
 
 // login POST
@@ -103,17 +107,16 @@ router.post("/users/login", async (req, res) => {
         user = await User.findOne({username: req.body.username})
         const result = await user.comparePassword(req.body.password)
         if(result == true){
-                req.session.userId = user._id.toString()
-                req.session.isAdmin = false
-                req.session.username = user.username
-                // req.session.sessionId = req.sessionID
-                res.redirect('/pages/dashboard')
+            req.session.userId = user._id.toString()
+            req.session.isAdmin = false
+            req.session.username = user.username
+            res.redirect('/pages/dashboard')
         } else {
             throw new Error("Incorrect username or password")
         }
     } catch (e){
         console.log(e)
-        res.redirect("/pages/login")
+        res.redirect("/pages/login?error=true")
     }
 })
 

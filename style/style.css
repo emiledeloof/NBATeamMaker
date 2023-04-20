@@ -567,6 +567,27 @@ nav ul li{
     font-size: 15px;
 }
 
+#errorDiv{
+    background-color: rgb(250, 66, 66);
+    position: absolute;
+    top: 40px;
+    right: 50%;
+    transform: translateX(50%);
+    padding: 20px 20px;
+    border-radius: 10px;
+    animation: fadeAway 0.5s forwards;
+    animation-delay: 8s;
+}
+
+@keyframes fadeAway{
+    from{
+        opacity: 1;
+    } 
+    to{
+        opacity: 0;
+    }
+}
+
 /* Mobile compatibility */
 @media screen and (max-width: 600px){
     body{
