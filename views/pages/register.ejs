@@ -30,10 +30,18 @@
                         <label for="username" class="inputLabel" id="usernameLabel">Username</label>
                     </div>
                     <div class="inputsWrapper">
+                        <input type="email" id="email" name="email" class="inputs" onfocusout="checkElement('email', 'emailLabel')" maxlength="35" required>
+                        <label for="email" class="inputLabel" id="emailLabel">Email</label>
+                    </div>
+                    <div class="inputsWrapper">
                         <input type="password" id="password" name="password" class="inputs" onfocusout="checkElement('password', 'passwordLabel')" required>
                         <label for="password" class="inputLabel" id="passwordLabel">Password</label>
                     </div>
-                    <button class="submitButton">Register</button>
+                    <div class="inputsWrapper">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="inputs" onfocusout="checkElement('confirmPassword', 'confirmPasswordLabel')" required>
+                        <label for="confirmPassword" class="inputLabel" id="confirmPasswordLabel">Confirm password</label>
+                    </div>
+                    <button class="submitButton" id="realRegisterButton">Register</button>
                 </form>
                 <span id="line"></span>
                 <h5>Already have an account?</h5>
@@ -45,5 +53,20 @@
         </div>
     <!-- </div> -->
     <script src="/checkInput.js"></script>
+    <script>
+        document.getElementById("confirmPassword").addEventListener("input", () => {
+            let confirmPassword = document.getElementById("confirmPassword")
+            let password = document.getElementById("password")
+            if(confirmPassword.value !== password.value){
+                confirmPassword.classList.add("inputError")
+                document.getElementById("confirmPasswordLabel").innerText = "Passwords don't match"
+                document.getElementById("realRegisterButton").disabled = "disabled"
+            } else {
+                confirmPassword.classList.remove("inputError")
+                document.getElementById("confirmPasswordLabel").innerText = "Confirm password"
+                document.getElementById("realRegisterButton").disabled = ""
+            }
+        })
+    </script>
 </body>
 </html>

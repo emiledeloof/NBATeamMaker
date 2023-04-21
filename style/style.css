@@ -595,6 +595,18 @@ nav ul li{
     animation-delay: 8s;
 }
 
+.inputError{
+    border: 0.5px solid red;
+    box-shadow: 0 0 7px red;
+    outline: none;
+}
+
+.inputError:focus{
+    border: 0.5px solid red;
+    box-shadow: 0 0 7px red;
+    outline: none;
+}
+
 @keyframes fadeAway{
     from{
         opacity: 1;
