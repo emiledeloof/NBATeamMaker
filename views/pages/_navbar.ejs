@@ -26,8 +26,8 @@
                             <% if(notification.type == 1){ %>
                                 Friend request from: 
                                 <%= notification.data.username %>
-                                <form action="/pages/friends/<%= notification.data.id %>/accept?fromNotif=true" method="POST"><button>Accept</button></form>
-                                <form action="/pages/friends/<%= notification.data.id %>/reject?fromNotif=true" method="POST"><button>Reject</button></form>
+                                <form action="/pages/friends/<%= notification.data.id %>/accept?fromNotif=true" method="POST"><button class="submitButton">Accept</button></form>
+                                <form action="/pages/friends/<%= notification.data.id %>/reject?fromNotif=true" method="POST"><button class="deleteButton">Reject</button></form>
                             <% } %>
                             <% if(notification.type == 2){ %>
                                 <%= notification.username %> accepted your friend request.
@@ -35,10 +35,10 @@
                             <% if(notification.type == 3){ %>
                                 <%= notification.from %> sent you an invite to join <%= notification.leagueName %>
                                 <form action="/pages/leagues/<%= notification.leagueId %>/invite/accept/user/<%= notification.fromId %>" method="POST">
-                                    <button>Accept</button>
+                                    <button class="submitButton">Accept</button>
                                 </form>
                                 <form action="/pages/leagues/<%= notification.leagueId %>/invite/reject" method="POST">
-                                    <button>Reject</button>
+                                    <button class="deleteButton">Reject</button>
                                 </form>
                             <% } %>
                             <% if(notification.type == 4){ %>

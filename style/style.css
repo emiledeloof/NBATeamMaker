@@ -171,6 +171,22 @@ nav ul li{
     background-color: #004ec4;
 }
 
+.deleteButton{
+    font-size: 15px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    width: 100px;
+    background-color: rgb(255, 62, 62);
+    border: 0px;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.deleteButton:hover{
+    cursor: pointer;
+    background-color: rgb(255, 21, 21);
+}
+
 #errorWrapper{
     display: flex;
     flex-direction: column;
