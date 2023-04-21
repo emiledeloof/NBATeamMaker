@@ -83,8 +83,12 @@ router.post("/users/register", async (req, res) => {
     req.session.isAdmin = false
     req.session.username = user.username
     try{
-        await user.save()
-        res.redirect(`/pages/dashboard`)
+        if(req.body.password === req.body.confirmPassword){
+            await user.save()
+            res.redirect(`/pages/dashboard`)
+        } else {
+            throw new Error("Passwords don't match")
+        }
     } catch (e){
         console.log(e)
         res.redirect("/pages/users/register")
