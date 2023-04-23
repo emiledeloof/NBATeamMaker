@@ -81,6 +81,7 @@ router.post("/users/register", async (req, res) => {
     user.username = req.body.username
     user.email = req.body.email
     user.password = req.body.password
+    user.passwordResetToken = null
     req.session.userId = user._id.toString()
     req.session.isAdmin = false
     req.session.username = user.username
@@ -140,6 +141,7 @@ router.get("/forgot-password", (req, res) => {
 })
 
 // Forgot password POST
+// Reset password POST
 router.post("/forgot-password", async(req, res) => {
     let user = await User.findOne({email: req.body.email})
     if(user !== null){
@@ -158,17 +160,22 @@ router.post("/forgot-password", async(req, res) => {
             from: "nbafantasygames@gmail.com", // sender address
             to: user.email, // list of receivers
             subject: "Reset password", // Subject line
-            text: `Use this link to reset your password: ${mailURL} \n \nDidn't exepct to receive this email? Don't worry, you can just ignore this email.`, // plain text body
+            text: `Use this link to reset your password: ${mailURL} \nThis link will expire in 15 minutes. \n \nDidn't exepct to receive this email? Don't worry, you can just ignore this email.`, // plain text body
         });
-        user.passwordResetToken = uuid
+        user.passwordResetToken = {
+            token: uuid,
+            timestamp: Date.now()
+        }
         console.log(info)
         try{
             await user.save()
         } catch(e){
             console.log(e)
         }
+        res.send("email sent")
+    } else {
+        res.send("Couldn't find a user with that email.")
     }
-    res.send("email sent")
 })
 
 // dashboard

@@ -25,11 +25,7 @@ const schema = new mongoose.Schema({
     leagues: [],
     leagueInvites: [],
     notifications: [],
-    passwordResetToken: {
-        type: String,
-        default: null,
-        unique: true
-    }
+    passwordResetToken: {},
 })
 
 schema.pre("save", function(next){

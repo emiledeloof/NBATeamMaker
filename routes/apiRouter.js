@@ -14,10 +14,11 @@ router.get("/reset-password/:token", async (req, res) => {
 })
 
 router.post("/reset-password/:token", async (req, res) => {
-    let user = await User.findOne({passwordResetToken: req.params.token})
+    let user = await User.findOne({"passwordResetToken.token": req.params.token})
     if(req.body.password === req.body.confirmPassword){
         try{
             user.password = req.body.confirmPassword
+            user.passwordResetToken = null
             await user.save()
         } catch(e){
             console.log(e)
