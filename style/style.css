@@ -595,6 +595,15 @@ nav ul li{
     animation-delay: 8s;
 }
 
+@keyframes fadeAway{
+    from{
+        opacity: 1;
+    } 
+    to{
+        opacity: 0;
+    }
+}
+
 .inputError{
     border: 0.5px solid red;
     box-shadow: 0 0 7px red;
@@ -607,13 +616,30 @@ nav ul li{
     outline: none;
 }
 
-@keyframes fadeAway{
-    from{
-        opacity: 1;
-    } 
-    to{
-        opacity: 0;
-    }
+.forgotSVGWrapper{
+    background-color: #b2b2b2;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#mainWrapper{
+    display: flex;
+    overflow-y: hidden;
+}
+
+#forgotWrapper, .forgotSVGWrapper{
+    flex: 1;
+}
+
+#forgotWrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-10%);
 }
 
 /* Mobile compatibility */

@@ -12,6 +12,7 @@ const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
 const schedule = require("node-schedule");
+const nodemailer = require("nodemailer")
 
 let cachedPlayers
 
@@ -130,6 +131,38 @@ router.post("/sign-out", async(req, res) => {
         if(e) console.log(e)
         else res.redirect("/")
     })
+})
+
+// Forgot password
+router.get("/forgot-password", (req, res) => {
+    res.render("pages/forgotPassword")
+})
+
+// Forgot password POST
+router.post("/forgot-password", async(req, res) => {
+    let user = await User.findOne({email: req.body.email})
+    if(user !== null){
+        let testAccount = await nodemailer.createTestAccount();
+        let transporter = nodemailer.createTransport({
+            service: "gmail",
+            host: "smtp.gmail.com",
+            secure: true,
+            auth: {
+                user: "nbafantasygames@gmail.com",
+                pass: "njoxwfrteifpadav"
+            }
+        });
+
+        let info = await transporter.sendMail({
+            from: "nbafantasygames@gmail.com", // sender address
+            to: "deloofemile@gmail.com", // list of receivers
+            subject: "Hello ✔", // Subject line
+            text: "Hello world?", // plain text body
+            html: "<b>Hello world?</b>", // html body
+        });
+        console.log(info)
+    }
+    res.send("email sent")
 })
 
 // dashboard
