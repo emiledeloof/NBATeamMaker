@@ -142,7 +142,6 @@ router.get("/forgot-password", (req, res) => {
 router.post("/forgot-password", async(req, res) => {
     let user = await User.findOne({email: req.body.email})
     if(user !== null){
-        let testAccount = await nodemailer.createTestAccount();
         let transporter = nodemailer.createTransport({
             service: "gmail",
             host: "smtp.gmail.com",
@@ -155,10 +154,9 @@ router.post("/forgot-password", async(req, res) => {
 
         let info = await transporter.sendMail({
             from: "nbafantasygames@gmail.com", // sender address
-            to: "deloofemile@gmail.com", // list of receivers
-            subject: "Hello ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<b>Hello world?</b>", // html body
+            to: user.email, // list of receivers
+            subject: "Reset password", // Subject line
+            text: `Use this link to reset your password: ${""} \n \nDidn't exepct to receive this email? Don't worry, you can just ignore this email.`, // plain text body
         });
         console.log(info)
     }
