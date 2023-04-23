@@ -24,7 +24,12 @@ const schema = new mongoose.Schema({
     friendRequestsSent: [],
     leagues: [],
     leagueInvites: [],
-    notifications: []
+    notifications: [],
+    passwordResetToken: {
+        type: String,
+        default: null,
+        unique: true
+    }
 })
 
 schema.pre("save", function(next){

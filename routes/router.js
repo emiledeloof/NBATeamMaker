@@ -11,8 +11,9 @@ const Changelog = require("./../database/changelog")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
-const schedule = require("node-schedule");
+const schedule = require("node-schedule")
 const nodemailer = require("nodemailer")
+const crypto = require("crypto")
 
 let cachedPlayers
 
@@ -151,14 +152,21 @@ router.post("/forgot-password", async(req, res) => {
                 pass: "njoxwfrteifpadav"
             }
         });
-
+        let uuid = crypto.randomUUID()
+        let mailURL = `${process.env.URL}/api/reset-password/${uuid}`
         let info = await transporter.sendMail({
             from: "nbafantasygames@gmail.com", // sender address
             to: user.email, // list of receivers
             subject: "Reset password", // Subject line
-            text: `Use this link to reset your password: ${""} \n \nDidn't exepct to receive this email? Don't worry, you can just ignore this email.`, // plain text body
+            text: `Use this link to reset your password: ${mailURL} \n \nDidn't exepct to receive this email? Don't worry, you can just ignore this email.`, // plain text body
         });
+        user.passwordResetToken = uuid
         console.log(info)
+        try{
+            await user.save()
+        } catch(e){
+            console.log(e)
+        }
     }
     res.send("email sent")
 })
