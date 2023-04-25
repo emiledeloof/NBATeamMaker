@@ -166,7 +166,6 @@ router.post("/forgot-password", async(req, res) => {
             token: uuid,
             timestamp: Date.now()
         }
-        console.log(info)
         try{
             await user.save()
         } catch(e){

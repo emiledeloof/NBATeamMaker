@@ -7,25 +7,31 @@ router.get("/types/notifications", (req, res) => {
     res.send(types.notificationTypes)
 })
 
+// Reset password
 router.get("/reset-password/:token", async (req, res) => {
     res.render("pages/resetPassword", {
         token: req.params.token
     })
 })
 
+// Reset password POST
 router.post("/reset-password/:token", async (req, res) => {
     let user = await User.findOne({"passwordResetToken.token": req.params.token})
-    if(req.body.password === req.body.confirmPassword){
-        try{
-            user.password = req.body.confirmPassword
-            user.passwordResetToken = null
-            await user.save()
-        } catch(e){
-            console.log(e)
+    if(user.passwordResetToken !== null && user.passwordResetToken.timestamp > Date.now() - 900000){
+        if(req.body.password === req.body.confirmPassword){
+            try{
+                user.password = req.body.confirmPassword
+                user.passwordResetToken = null
+                await user.save()
+            } catch(e){
+                console.log(e)
+            }
+            res.send("updated password. New password: " + req.body.confirmPassword)
+        } else {
+            res.redirect("back")
         }
-        res.send("updated password. New password: " + req.body.confirmPassword)
     } else {
-        res.redirect("back")
+        res.send("Token expired")
     }
 })
 
