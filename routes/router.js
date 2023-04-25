@@ -94,7 +94,7 @@ router.post("/users/register", async (req, res) => {
         }
     } catch (e){
         console.log(e)
-        res.redirect("/pages/users/register")
+        res.redirect("/pages/register")
     }
 })
 

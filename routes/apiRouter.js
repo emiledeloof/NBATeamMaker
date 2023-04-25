@@ -18,7 +18,7 @@ router.get("/reset-password/:token", async (req, res) => {
 // Reset password POST
 router.post("/reset-password/:token", async (req, res) => {
     let user = await User.findOne({"passwordResetToken.token": req.params.token})
-    if(user !== null && user.passwordResetToken !== null && user.passwordResetToken.timestamp > Date.now() - 90){
+    if(user !== null && user.passwordResetToken !== null && user.passwordResetToken.timestamp > Date.now() - 900000){
         if(req.body.password === req.body.confirmPassword){
             try{
                 user.password = req.body.confirmPassword
