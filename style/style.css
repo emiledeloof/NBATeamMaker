@@ -630,11 +630,11 @@ nav ul li{
     overflow-y: hidden;
 }
 
-#forgotWrapper, .forgotSVGWrapper{
+.forgotWrapper, .forgotSVGWrapper{
     flex: 1;
 }
 
-#forgotWrapper{
+.forgotWrapper{
     display: flex;
     flex-direction: column;
     align-items: center;

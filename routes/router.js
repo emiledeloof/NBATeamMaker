@@ -137,7 +137,9 @@ router.post("/sign-out", async(req, res) => {
 
 // Forgot password
 router.get("/forgot-password", (req, res) => {
-    res.render("pages/forgotPassword")
+    res.render("pages/forgotPassword", {
+        emailSent: false
+    })
 })
 
 // Forgot password POST
@@ -156,7 +158,7 @@ router.post("/forgot-password", async(req, res) => {
         });
         let uuid = crypto.randomUUID()
         let mailURL = `${process.env.URL}/api/reset-password/${uuid}`
-        let info = await transporter.sendMail({
+        await transporter.sendMail({
             from: "nbafantasygames@gmail.com", // sender address
             to: user.email, // list of receivers
             subject: "Reset password", // Subject line
@@ -171,9 +173,15 @@ router.post("/forgot-password", async(req, res) => {
         } catch(e){
             console.log(e)
         }
-        res.send("email sent")
+        res.render("pages/forgotPassword", {
+            emailSent: true,
+            sentSucces: true
+        })
     } else {
-        res.send("Couldn't find a user with that email.")
+        res.render("pages/forgotPassword", {
+            emailSent: true,
+            sentSucces: false
+        })
     }
 })
 
