@@ -38,6 +38,7 @@ app.get('/sitemap.xml', (req, res) => {
       { url: '/', priority: 1.0 },
       { url: '/pages/login', priority: 0.8 },
       { url: '/pages/register', priority: 0.8 },
+      { url: '/pages/forgot-password', priority: 0.4}
     ];
   
     let xml = '<?xml version="1.0" encoding="UTF-8"?>';
