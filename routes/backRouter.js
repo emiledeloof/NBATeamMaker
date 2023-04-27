@@ -19,16 +19,15 @@ router.get("/login", async(req, res) => {
 // Login backend
 router.post("/login", async(req, res) => {
     let username = req.body.username
-    let password = req.body.password
     let user = await User.findOne({username: username, isAdmin: true})
     try{
-        if(user.password == password){
+        const result = await user.comparePassword(req.body.password)
+        if(result === true && user.isAdmin === true){
             req.session.isAdmin = true
             req.session.userId = user._id.toString()
             req.session.username = user.username
             res.redirect("/back/dashboard")
         } else {
-            console.log(user.password, password)
             res.redirect("/back/login")
         }
     } catch(e){
