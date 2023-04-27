@@ -8,6 +8,7 @@ const User = require("./../database/user")
 const Team = require("./../database/team")
 const League = require("./../database/league")
 const Changelog = require("./../database/changelog")
+const HotPlayers = require("./../database/hotPlayers")
 const router = express.Router();
 const URL = "https://www.balldontlie.io/api/v1"
 const nbaURL = "http://data.nba.net/data/10s/prod/v1/2022/players.json"
@@ -1037,6 +1038,13 @@ async function calculateScore(playerId, statsVar = null){
     let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
     score = score.toFixed(0)
     let scoreData = parseInt(score)
+    if(score > 30000){
+        try{
+            let player = new HotPlayers()
+        } catch(e){
+            
+        }
+    }
     return scoreData
 }
 
