@@ -35,8 +35,8 @@ async function cachePlayers(){
     }
 }
 
-// schedule.scheduleJob("* * * * *", async () => {
-schedule.scheduleJob("0 0 12 * * *", async () => {
+// schedule.scheduleJob("* * * * *", async () => {      // dev
+schedule.scheduleJob("0 0 12 * * *", async () => {      // prod
     let date = new Date(Date.now()).toISOString().split("T")[0]
     let games = await axios.get(`${URL}/games?seasons[]=2022&start_date=${date.toString()}&end_date=${date.toString()}`)
     let i = 0
