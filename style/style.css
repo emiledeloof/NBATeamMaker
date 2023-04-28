@@ -306,6 +306,11 @@ nav ul li{
 .teamCard a{
     text-decoration: none;
     flex: 3;
+    display: flex;
+}
+
+.teamCard a label{
+    flex: 1;
 }
 
 .teamCard form{
