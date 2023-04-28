@@ -1038,11 +1038,16 @@ async function calculateScore(playerId, statsVar = null){
     let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
     score = score.toFixed(0)
     let scoreData = parseInt(score)
-    if(score > 30000){
+    if(score > 25000){
         try{
+            console.log(await HotPlayers.find({ "player.id": playerId }))
             let player = new HotPlayers()
+            let playerData = await axios.get(`${URL}/players/${playerId}`)
+            player.player = playerData.data
+            player.player.score = scoreData
+            await player.save()
         } catch(e){
-            
+            console.log(e)
         }
     }
     return scoreData
