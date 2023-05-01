@@ -60,6 +60,12 @@
                 <div class="gridItem">
                     <label id="blocks"></label>
                 </div>
+                <div class="gridItem">
+                    Score
+                </div>
+                <div class="gridItem">
+                    <label id="score"></label>
+                </div>
             </div>
         </div>
     </div>
@@ -118,6 +124,12 @@
                 document.getElementById("assists").innerText = parsed.data[0].ast
                 document.getElementById("steals").innerText = parsed.data[0].stl
                 document.getElementById("blocks").innerText = parsed.data[0].blk
+            }) 
+            fetch(`/pages/calculateScore/${playerId}`)
+            .then(response => response.text())
+            .then(text => {
+                let parsed = JSON.parse(text)
+                document.getElementById("score").innerText = parsed.message
             })
         }
     })

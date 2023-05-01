@@ -1024,6 +1024,10 @@ router.post("/notifications/delete-all", sessionChecker, async(req, res) => {
     }
 })
 
+router.get("/calculateScore/:playerId", async(req, res) => {
+    res.json({message: await calculateScore(req.params.playerId)})
+})
+
 async function calculateScore(playerId, statsVar = null){
     if(statsVar == null){
         let stats = await axios.get(`${URL}/season_averages?player_ids[]=${playerId}`)
@@ -1038,18 +1042,19 @@ async function calculateScore(playerId, statsVar = null){
     let score = 1000 + ppgScore + apgScore + spgScore + blkScore + rpgScore - turnoverScore
     score = score.toFixed(0)
     let scoreData = parseInt(score)
-    if(score > 25000){
-        try{
-            console.log(await HotPlayers.find({ "player.id": playerId }))
-            let player = new HotPlayers()
-            let playerData = await axios.get(`${URL}/players/${playerId}`)
-            player.player = playerData.data
-            player.player.score = scoreData
-            await player.save()
-        } catch(e){
-            console.log(e)
-        }
-    }
+    // if(scoreData > 20000){
+    //     try{
+    //         if(await HotPlayers.find({ "player.id": playerId }).length === 0){
+    //             let player = new HotPlayers()
+    //             let playerData = await axios.get(`${URL}/players/${playerId}`)
+    //             player.player = playerData.data
+    //             player.player.score = scoreData
+    //             await player.save()
+    //         }
+    //     } catch(e){
+    //         // console.log(e)
+    //     }
+    // }
     return scoreData
 }
 
